@@ -46,6 +46,9 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
 export AR=$TOOLCHAIN/bin/llvm-ar
+export CC=$thecc
+export AS=$CC
+export CXX=$thecxx
 export AS=$TOOLCHAIN/bin/llvm-as
 export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
