@@ -10,9 +10,9 @@ then
   export CFLAGS+=" -O3 -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
-     export CFLAGS+=" -O3 -mstackrealign"
+     export CFLAGS+=" -Ofast -mstackrealign"
   else
-     export CFLAGS+=" -O3"
+     export CFLAGS+=" -Ofast"
   fi
 fi
 
@@ -68,7 +68,6 @@ fi
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
 #   --with-extra-cflags="$CPPFLAGS" \
 
-env -u CFLAGS -u LDFLAGS
 bash ./configure \
     --with-version-pre=- \
     --openjdk-target=$TARGET \
@@ -88,12 +87,12 @@ bash ./configure \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
-    AR=$AR \
-    NM=$NM \
-    OBJCOPY=$OBJCOPY \
-    OBJDUMP=$OBJDUMP \
-    STRIP=$STRIP \
-        $platform_args || \
+    AR="$AR" \
+    NM="$NM" \
+    OBJCOPY="$OBJCOPY" \
+    OBJDUMP="$OBJDUMP" \
+    STRIP="$STRIP" \
+    $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
   echo "\n\nCONFIGURE ERROR $error_code , config.log:"
@@ -101,12 +100,10 @@ if [[ "$error_code" -ne 0 ]]; then
   exit $error_code
 fi
 
-jobs=4
-
 cd build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEBUG_LEVEL}
-make JOBS=$jobs images || \
+make JOBS="$(nproc)" images || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
   echo "Build failure, exited with code $error_code. Trying again."
-  make JOBS=$jobs images
+  make JOBS="$(nproc)" images
 fi
