@@ -2509,8 +2509,8 @@ index c6e012ecf..d4f956756 100644
 
  diff --git a/src/java.base/share/native/libjli/java.c b/src/java.base/share/native/libjli/java.c
 index 3b4a15b..1bca2bc 100644
---- a/storage/emulated/0/jdk/jdk21/jdk21u/src/java.base/share/native/libjli/java.c
-+++ b/storage/emulated/0/jdk/jdk21/jdk21u-android/src/java.base/share/native/libjli/java.c
+--- a/src/java.base/share/native/libjli/java.c
++++ b/src/java.base/share/native/libjli/java.c
 @@ -56,6 +56,32 @@
  #include "java.h"
  #include "jni.h"
