@@ -1,5 +1,5 @@
 diff --git a/jdk/src/share/bin/java.c b/jdk/src/share/bin/java.c
-index d74b185..79c5762 100644
+index d74b185..1bdcc34 100644
 --- a/jdk/src/share/bin/java.c
 +++ b/jdk/src/share/bin/java.c
 @@ -52,7 +52,7 @@
@@ -11,7 +11,7 @@ index d74b185..79c5762 100644
  /*
   * A NOTE TO DEVELOPERS: For performance reasons it is important that
   * the program image remain relatively small until after SelectVersion
-@@ -168,6 +168,35 @@ static jlong threadStackSize    = 0;  /* stack size of the new thread */
+@@ -168,6 +168,37 @@ static jlong threadStackSize    = 0;  /* stack size of the new thread */
  static jlong maxHeapSize        = 0;  /* max heap size */
  static jlong initialHeapSize    = 0;  /* inital heap size */
  
@@ -21,7 +21,8 @@ index d74b185..79c5762 100644
 +#ifdef __ANDROID__
 +#include <stdbool.h>
 +#include <dlfcn.h>
-#define M_BIONIC_SET_HEAP_TAGGING_LEVEL (-204)
++#define M_BIONIC_SET_HEAP_TAGGING_LEVEL (-204)
++
 +static void android_disable_tags() {
 +    void *lib_handle = dlopen("libc.so", RTLD_LAZY);
 +    if (lib_handle) {
@@ -48,7 +49,7 @@ index d74b185..79c5762 100644
  /*
   * Entry point.
   */
-@@ -204,6 +233,9 @@ JLI_Launch(int argc, char ** argv,              /* main argc, argc */
+@@ -204,6 +235,9 @@ JLI_Launch(int argc, char ** argv,              /* main argc, argc */
      _wc_enabled = cpwildcard;
      _ergo_policy = ergo;
  
@@ -58,7 +59,7 @@ index d74b185..79c5762 100644
      InitLauncher(javaw);
      DumpState();
      if (JLI_IsTraceLauncher()) {
-@@ -2103,4 +2135,4 @@ JLI_ReportMessage(const char* fmt, ...)
+@@ -2103,4 +2137,4 @@ JLI_ReportMessage(const char* fmt, ...)
      vfprintf(stderr, fmt, vl);
      fprintf(stderr, "\n");
      va_end(vl);
