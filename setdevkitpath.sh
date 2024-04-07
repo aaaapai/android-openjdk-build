@@ -1,6 +1,6 @@
 # Use the old NDK r10e to not get internal compile error at
 # https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u/blob/aarch64-shenandoah-jdk8u272-b10/jdk/src/share/native/sun/java2d/loops/GraphicsPrimitiveMgr.c
-export NDK_VERSION=r17
+export NDK_VERSION=r10e
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
