@@ -1,0 +1,66 @@
+diff --git a/jdk/src/share/bin/java.c b/jdk/src/share/bin/java.c
+index d74b185..79c5762 100644
+--- a/jdk/src/share/bin/java.c
++++ b/jdk/src/share/bin/java.c
+@@ -52,7 +52,7 @@
+ 
+ 
+ #include "java.h"
+-
++#include "jni.h"
+ /*
+  * A NOTE TO DEVELOPERS: For performance reasons it is important that
+  * the program image remain relatively small until after SelectVersion
+@@ -168,6 +168,35 @@ static jlong threadStackSize    = 0;  /* stack size of the new thread */
+ static jlong maxHeapSize        = 0;  /* max heap size */
+ static jlong initialHeapSize    = 0;  /* inital heap size */
+ 
++/*
++ * fixes Tagged Pointers see:https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/enhancing-memory-safety
++ */
++#ifdef __ANDROID__
++#include <stdbool.h>
++#include <dlfcn.h>
++static void android_disable_tags() {
++    void *lib_handle = dlopen("libc.so", RTLD_LAZY);
++    if (lib_handle) {
++        if (android_get_device_api_level() >= 31) {
++            int (*mallopt_func)(int, int) = dlsym(lib_handle, "mallopt");
++            if (mallopt_func) {
++                mallopt_func(M_BIONIC_SET_HEAP_TAGGING_LEVEL, 0);
++            }
++            return;
++        }
++        /* android_get_device_api_level() < 31 */
++        bool (*android_mallopt)(int opcode, void* arg, size_t arg_size) = dlsym(lib_handle, "android_mallopt");
++        if (android_mallopt) {
++            int android_malloc_tag_level = 0;
++            android_mallopt(8, &android_malloc_tag_level, sizeof(android_malloc_tag_level));
++        }
++        dlclose(lib_handle);
++    }
++}
++#else
++static void android_disable_tags(){}
++#endif
++
+ /*
+  * Entry point.
+  */
+@@ -204,6 +233,9 @@ JLI_Launch(int argc, char ** argv,              /* main argc, argc */
+     _wc_enabled = cpwildcard;
+     _ergo_policy = ergo;
+ 
++    //disable_tag
++    android_disable_tags();
++  
+     InitLauncher(javaw);
+     DumpState();
+     if (JLI_IsTraceLauncher()) {
+@@ -2103,4 +2135,4 @@ JLI_ReportMessage(const char* fmt, ...)
+     vfprintf(stderr, fmt, vl);
+     fprintf(stderr, "\n");
+     va_end(vl);
+-}
++}
+\ No newline at end of file
