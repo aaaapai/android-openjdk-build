@@ -26,31 +26,18 @@ export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 # cp -R /usr/include/X11 $ANDROID_INCLUDE/
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
-if [ "$BUILD_IOS" != "1" ]; then
-  export CFLAGS+=" -O3 -D__ANDROID__"
+export CFLAGS+=" -O3 -D__ANDROID__"
 
-  ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
-  ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
-  AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
+ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
+ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
+AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 
-  export LDFLAGS+=" -L`pwd`/dummy_libs"
+export LDFLAGS+=" -L`pwd`/dummy_libs"
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
-  mkdir -p dummy_libs
-  ar cru dummy_libs/libpthread.a
-  ar cru dummy_libs/libthread_db.a
-else
-  ln -s -f /opt/X11/include/X11 $ANDROID_INCLUDE/
-  platform_args="--with-toolchain-type=clang"
-  # --disable-precompiled-headers
-  AUTOCONF_x11arg="--with-x=/opt/X11/include/X11 --prefix=/usr/lib"
-  sameflags="-arch arm64 -isysroot $thesysroot -miphoneos-version-min=12.0 -DHEADLESS=1 -I$PWD/ios-missing-include -Wno-implicit-function-declaration"
-  export CFLAGS+=" $sameflags"
-  export CXXFLAGS="$sameflags"
-  export LDFLAGS+=" -miphoneos-version-min=12.0"
-
-  HOMEBREW_NO_AUTO_UPDATE=1 brew install ldid xquartz
-fi
+mkdir -p dummy_libs
+ar cru dummy_libs/libpthread.a
+ar cru dummy_libs/libthread_db.a
 
 # fix building libjawt
 ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
@@ -60,17 +47,16 @@ ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
 cd openjdk
 
 # Apply patches
-if [ "$BUILD_IOS" != "1" ]; then
-  git reset --hard
-  git apply --reject --whitespace=fix ../patches/jdk8u_android.diff || echo "git apply failed (universal patch set)"
-  if [ "$TARGET_JDK" != "aarch32" ]; then
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_main.diff || echo "git apply failed (main non-universal patch set)"
-  else
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_aarch32.diff || echo "git apply failed (aarch32 non-universal patch set)"
-  fi
-  if [[ "$TARGET_JDK" == "x86" ]]; then
-    git apply --reject --whitespace=fix ../patches/jdk8u_android_page_trap_fix.diff || echo "git apply failed (x86 page trap fix)"
-  fi
+git reset --hard
+git apply --reject --whitespace=fix ../patches/jdk8u_android.diff || echo "git apply failed (universal patch set)"
+git apply --reject --whitespace=fix ../patches/jdk8u_android_distags.diff || echo "git apply failed (universal patch set)"
+if [ "$TARGET_JDK" != "aarch32" ]; then
+   git apply --reject --whitespace=fix ../patches/jdk8u_android_main.diff || echo "git apply failed (main non-universal patch set)"
+else
+   git apply --reject --whitespace=fix ../patches/jdk8u_android_aarch32.diff || echo "git apply failed (aarch32 non-universal patch set)"
+fi
+if [[ "$TARGET_JDK" == "x86" ]]; then
+   git apply --reject --whitespace=fix ../patches/jdk8u_android_page_trap_fix.diff || echo "git apply failed (x86 page trap fix)"
 fi
 
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
