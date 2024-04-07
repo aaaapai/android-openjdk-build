@@ -1,1 +1,0 @@
-exec $thecxx -arch arm64 -isysroot $thesysroot "$@"
