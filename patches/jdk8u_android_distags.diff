@@ -1,7 +1,7 @@
-diff --git a/jdk/src/share/bin/java.c b/jdk/src/share/bin/java.c
-index d74b185..1bdcc34 100644
---- a/jdk/src/share/bin/java.c
-+++ b/jdk/src/share/bin/java.c
+diff --git a/jdk8/java.c b/jdk8-android/java.c
+index d74b185..33a64de 100644
+--- a/jdk8/java.c
++++ b/jdk8-android/java.c
 @@ -52,7 +52,7 @@
  
  
@@ -11,7 +11,7 @@ index d74b185..1bdcc34 100644
  /*
   * A NOTE TO DEVELOPERS: For performance reasons it is important that
   * the program image remain relatively small until after SelectVersion
-@@ -168,6 +168,37 @@ static jlong threadStackSize    = 0;  /* stack size of the new thread */
+@@ -168,6 +168,42 @@ static jlong threadStackSize    = 0;  /* stack size of the new thread */
  static jlong maxHeapSize        = 0;  /* max heap size */
  static jlong initialHeapSize    = 0;  /* inital heap size */
  
@@ -21,19 +21,24 @@ index d74b185..1bdcc34 100644
 +#ifdef __ANDROID__
 +#include <stdbool.h>
 +#include <dlfcn.h>
++#include <sys/system_properties.h>
++
 +#define M_BIONIC_SET_HEAP_TAGGING_LEVEL (-204)
 +
 +static void android_disable_tags() {
++    char sdk[3] = "0";
++    __system_property_get("ro.build.version.sdk", sdk);
++    int sdk_verison = atoi(sdk);
 +    void *lib_handle = dlopen("libc.so", RTLD_LAZY);
 +    if (lib_handle) {
-+        if (android_get_device_api_level() >= 31) {
++        if (sdk_verison >= 31) {
 +            int (*mallopt_func)(int, int) = dlsym(lib_handle, "mallopt");
 +            if (mallopt_func) {
 +                mallopt_func(M_BIONIC_SET_HEAP_TAGGING_LEVEL, 0);
 +            }
 +            return;
 +        }
-+        /* android_get_device_api_level() < 31 */
++        /* sdk_verison < 31 */
 +        bool (*android_mallopt)(int opcode, void* arg, size_t arg_size) = dlsym(lib_handle, "android_mallopt");
 +        if (android_mallopt) {
 +            int android_malloc_tag_level = 0;
@@ -49,7 +54,7 @@ index d74b185..1bdcc34 100644
  /*
   * Entry point.
   */
-@@ -204,6 +235,9 @@ JLI_Launch(int argc, char ** argv,              /* main argc, argc */
+@@ -204,6 +240,9 @@ JLI_Launch(int argc, char ** argv,              /* main argc, argc */
      _wc_enabled = cpwildcard;
      _ergo_policy = ergo;
  
@@ -59,7 +64,7 @@ index d74b185..1bdcc34 100644
      InitLauncher(javaw);
      DumpState();
      if (JLI_IsTraceLauncher()) {
-@@ -2103,4 +2137,4 @@ JLI_ReportMessage(const char* fmt, ...)
+@@ -2103,4 +2142,4 @@ JLI_ReportMessage(const char* fmt, ...)
      vfprintf(stderr, fmt, vl);
      fprintf(stderr, "\n");
      va_end(vl);
