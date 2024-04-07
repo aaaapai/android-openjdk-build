@@ -21,6 +21,7 @@ index d74b185..79c5762 100644
 +#ifdef __ANDROID__
 +#include <stdbool.h>
 +#include <dlfcn.h>
+#define M_BIONIC_SET_HEAP_TAGGING_LEVEL (-204)
 +static void android_disable_tags() {
 +    void *lib_handle = dlopen("libc.so", RTLD_LAZY);
 +    if (lib_handle) {
