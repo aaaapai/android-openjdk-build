@@ -1,7 +1,7 @@
-diff --git a/jdk8/java.c b/jdk8-android/java.c
+diff --git a/jdk/src/share/bin/java.c b/jdk/src/share/bin/java.c
 index d74b185..33a64de 100644
---- a/jdk8/java.c
-+++ b/jdk8-android/java.c
+--- a/jdk/src/share/bin/java.c
++++ b/jdk/src/share/bin/java.c
 @@ -52,7 +52,7 @@
  
  
