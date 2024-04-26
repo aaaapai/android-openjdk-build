@@ -41,9 +41,9 @@ export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export LDFLAGS="$TOOLCHAIN/sysroot/usr/lib/${TARGET-2}/${API}"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET-2}/${API}"
 else
-  export LDFLAGS="$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
 fi
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
