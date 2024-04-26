@@ -7,12 +7,12 @@ export CUPS_DIR=$PWD/cups-2.4.7
 export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export CFLAGS+=" -O3 -D__thumb__"
+  export CFLAGS+=" -Ofast -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
-     export CFLAGS+=" -O3 -mstackrealign"
+     export CFLAGS+=" -Ofast -mstackrealign"
   else
-     export CFLAGS+=" -O3"
+     export CFLAGS+=" -Ofast"
   fi
 fi
 

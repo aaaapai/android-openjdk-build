@@ -1,6 +1,6 @@
 # Use the old NDK r10e to not get internal compile error at (still?)
 # https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u/blob/aarch64-shenandoah-jdk8u272-b10/jdk/src/share/native/sun/java2d/loops/GraphicsPrimitiveMgr.c
-export NDK_VERSION=r21
+export NDK_VERSION=r25c
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
@@ -27,20 +27,24 @@ fi
 export JVM_PLATFORM=linux
 # Set NDK
 export API=21
-if [[ -z "$ANDROID_NDK_ROOT" ]]; then
-  export NDK=$PWD/android-ndk-$NDK_VERSION
-  export ANDROID_NDK_ROOT=$NDK
-else
-  export NDK_USE_EXISTING=1
-  export NDK=$ANDROID_NDK_ROOT
+
+# Runners usually ship with a recent NDK already
+if [[ -z "$ANDROID_NDK_HOME" ]]
+then
+  export ANDROID_NDK_HOME=$PWD/android-ndk-$NDK_VERSION
 fi
-export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+
+export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
-export LDFLAGS="-L$NDK/platforms/android-$API/arch-$TARGET_SHORT/usr/lib"
-
+if [[ "$TARGET_JDK" == "arm" ]]
+then
+  export LDFLAGS="$TOOLCHAIN/sysroot/usr/lib/${TARGET-2}/${API}"
+else
+  export LDFLAGS="$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
+fi
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
