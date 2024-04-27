@@ -1,4 +1,4 @@
-# mobile-openjdk8-build-multiarch 
+# mobile-openjdk21-build
 
 Based on http://openjdk.java.net/projects/mobile/android.html
 
