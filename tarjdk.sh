@@ -30,7 +30,7 @@ cp -rv jre_override/lib/* jdkout/lib/ || true
 cd jreout
 
 # Strip in place all .so files thanks to the ndk
-find ./ -name '*.so' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
+find ./ -name '*' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
 tar cJf ../jre17-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
 cd ../jdkout
