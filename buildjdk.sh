@@ -41,6 +41,7 @@ platform_args="--with-toolchain-type=gcc \
   AS=${AS} \
   NM=${NM} \
   STRIP=${STRIP} \
+  READELF=${READELF} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
