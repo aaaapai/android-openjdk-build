@@ -49,7 +49,6 @@ export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
-export PYTHON3=$TOOLCHAIN/python3/bin/python3
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
