@@ -40,7 +40,6 @@ platform_args="--with-toolchain-type=gcc \
   AR=${AR} \
   AS=${AS} \
   NM=${NM} \
-  OBJDUMP=${OBJDUMP} \
   STRIP=${STRIP} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
