@@ -31,9 +31,6 @@ cd jreout
 
 # Strip
 find ./ -name '*.so' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
-find jreout/bin/ -name '*' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
-find jreout/lib/ -name 'jexec' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
-find jreout/lib/ -name 'jspawnhelper' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
 
 tar cJf ../jre17-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
