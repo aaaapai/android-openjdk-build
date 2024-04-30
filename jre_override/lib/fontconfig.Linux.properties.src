@@ -125,20 +125,23 @@ filename.-b&h-lucidatypewriter-bold-r-normal-sans-*-%d-*-*-m-*-iso8859-1=$JRE_LI
 filename.-b&h-lucidatypewriter-medium-i-normal-sans-*-%d-*-*-m-*-iso8859-1=$JRE_LIB_FONTS/LucidaTypewriterRegular.ttf
 filename.-b&h-lucidatypewriter-bold-i-normal-sans-*-%d-*-*-m-*-iso8859-1=$JRE_LIB_FONTS/LucidaTypewriterBold.ttf
 
-filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-big5-0=/usr/share/fonts/zh_TW/TrueType/bsmi00lp.ttf
-filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-iso10646-1=/usr/share/fonts/zh_CN/TrueType/dwstzk.ttf
-filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-gbk-0=/usr/share/fonts/zh_CN/TrueType/dwstzk.ttf
-filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-gb2312.1980-0=/usr/share/fonts/zh_CN/TrueType/dwstzk.ttf
-filename.-ricoh-gothic-medium-r-normal--*-%d-*-*-c-*-jisx0201.1976-0=/usr/share/fonts/ja/TrueType/tlgothic.ttc
-filename.-ricoh-gothic-medium-r-normal--*-%d-*-*-c-*-jisx0208.1983-0=/usr/share/fonts/ja/TrueType/tlgothic.ttc
-filename.-ricoh-mincho-medium-r-normal--*-%d-*-*-c-*-jisx0201.1976-0=/usr/share/fonts/ja/TrueType/tlmincho.ttc
-filename.-ricoh-mincho-medium-r-normal--*-%d-*-*-c-*-jisx0208.1983-0=/usr/share/fonts/ja/TrueType/tlmincho.ttc
+filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-big5-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-iso10646-1=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-gbk-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-tlc-songti-medium-r-normal--*-%d-*-*-c-*-gb2312.1980-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-ricoh-gothic-medium-r-normal--*-%d-*-*-c-*-jisx0201.1976-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-ricoh-gothic-medium-r-normal--*-%d-*-*-c-*-jisx0208.1983-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-ricoh-mincho-medium-r-normal--*-%d-*-*-c-*-jisx0201.1976-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
+filename.-ricoh-mincho-medium-r-normal--*-%d-*-*-c-*-jisx0208.1983-0=$JRE_LIB_FONTS/Alibaba-PuHuiTi-Heavy.ttf
 
 
 # AWT X11 font paths
-awtfontpath.chinese-big5=/usr/share/fonts/zh_TW/TrueType
-awtfontpath.chinese-gb2312=/usr/share/fonts/zh_CN/TrueType
-awtfontpath.chinese-gbk=/usr/share/fonts/zh_CN/TrueType
-awtfontpath.chinese-iso10646=/usr/share/fonts/zh_CN/TrueType
+awtfontpath.chinese-big5=$JRE_LIB_FONTS
+awtfontpath.chinese-gb2312=$JRE_LIB_FONTS
+awtfontpath.chinese-gbk=$JRE_LIB_FONTS
+awtfontpath.chinese-iso10646=$JRE_LIB_FONTS
+awtfontpath.japanese-x0201=$JRE_LIB_FONTS
+awtfontpath.japanese-x0208=$JRE_LIB_FONTS
+nese-iso10646=/usr/share/fonts/zh_CN/TrueType
 awtfontpath.japanese-x0201=/usr/share/fonts/ja/TrueType
 awtfontpath.japanese-x0208=/usr/share/fonts/ja/TrueType
