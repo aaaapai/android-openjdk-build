@@ -2276,6 +2276,13 @@ diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/ja
 index 9371bc001..ab7dd0fc0 100644
 --- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
 +++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+@@ -80,5 +80,5 @@
+ // not relying on included headers.
+
+-#ifndef __GLIBC__
++#if !defined(__GLIBC__) && !defined(__ANDROID__)
+ // Alpine doesn't know these types, define them
+ typedef unsigned int       __uint32_t;
 @@ -140,6 +140,7 @@ typedef int fstatat64_func(int, const char *, struct stat64 *, int);
  typedef int unlinkat_func(int, const char*, int);
  typedef int renameat_func(int, const char*, int, const char*);
