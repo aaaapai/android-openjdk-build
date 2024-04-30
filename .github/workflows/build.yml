@@ -14,7 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.1.1    
+      uses: actions/checkout@v4.1.1
+    - name: set up python 3.12.3    
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12.3'
     - name: set up JDK 21
       uses: actions/setup-java@v4.1.0
       with:
@@ -23,7 +27,7 @@ jobs:
     - name: Install build dependencies
       run: |
         sudo apt update
-        sudo apt -y install autoconf python3 python-is-python3 unzip zip systemtap-sdt-dev libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxtst-dev libxt-dev
+        sudo apt -y install autoconf unzip zip systemtap-sdt-dev libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxtst-dev libxt-dev
     - name: Build with CI build script
       run: bash "ci_build_arch_${{matrix.arch}}.sh"
     - name: Upload JDK build output
