@@ -34,6 +34,14 @@ ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
+  OBJCOPY=${OBJCOPY} \
+  RANLIB=${RANLIB} \
+  LINK=${LINK} \
+  AR=${AR} \
+  AS=${AS} \
+  NM=${NM} \
+  STRIP=${STRIP} \
+  READELF=${READELF} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
@@ -91,7 +99,9 @@ if [[ "$error_code" -ne 0 ]]; then
   exit $error_code
 fi
 
-jobs=4
+jobs=$(nproc)
+
+echo Running ${jobs} jobs to build the jdk
 
 cd build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEBUG_LEVEL}
 make JOBS=$jobs images || \

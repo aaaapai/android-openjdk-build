@@ -13,8 +13,8 @@ work="$in/work"
 work1="$in/work1"
 
 # make sure paths exist
-mkdir -p $work
-mkdir -p $work1
+mkdir -p "$work"
+mkdir -p "$work1"
 mkdir -p "$out"
 
 # here comes a not-so-complicated functions to easily make desired arch
