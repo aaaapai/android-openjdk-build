@@ -4,7 +4,7 @@
 set -e
 . setdevkitpath.sh
 export FREETYPE_DIR=`pwd`/freetype-${BUILD_FREETYPE_VERSION}/build_android-${TARGET_SHORT}
-export CUPS_DIR=`pwd`/cups-2.2.4
+export CUPS_DIR=`pwd`/cups-2.4.7
 
 cd openjdk/build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-release
-make JOBS=4 images
+make JOBS=$(nproc) images
