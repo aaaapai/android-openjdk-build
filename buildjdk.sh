@@ -3,7 +3,7 @@ set -e
 . setdevkitpath.sh
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
-export CUPS_DIR=$PWD/cups-2.2.4
+export CUPS_DIR=$PWD/cups-2.4.7
 export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
@@ -33,8 +33,16 @@ ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
-  --with-freetype-lib=$FREETYPE_DIR/lib \
   --build=x86_64-unknown-linux-gnu \
+  --with-freetype-lib=$FREETYPE_DIR/lib \
+  OBJCOPY=${OBJCOPY} \
+  RANLIB=${RANLIB} \
+  LINK=${LINK} \
+  AR=${AR} \
+  AS=${AS} \
+  NM=${NM} \
+  STRIP=${STRIP} \
+  READELF=${READELF} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
@@ -47,9 +55,9 @@ export LDFLAGS+=" -L$PWD/dummy_libs"
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
 mkdir -p dummy_libs
-ar cru dummy_libs/libpthread.a
-ar cru dummy_libs/librt.a
-ar cru dummy_libs/libthread_db.a
+ar cr dummy_libs/libpthread.a
+ar cr dummy_libs/librt.a
+ar cr dummy_libs/libthread_db.a
 
 # fix building libjawt
 ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
@@ -58,11 +66,7 @@ cd openjdk
 
 # Apply patches
 git reset --hard
-if [[ "$TARGET_JDK" == "arm" ]] || [[ "$TARGET_JDK" == "x86" ]]; then
-  git apply --reject --whitespace=fix ../patches/jdk21u_android_32.diff || echo "git apply failed (Android patch set)"
-else
-  git apply --reject --whitespace=fix ../patches/jdk21u_android_64.diff || echo "git apply failed (Android patch set)"
-fi
+git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git apply failed (Android patch set)"
 
 # rm -rf build
 
@@ -70,6 +74,7 @@ fi
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
+    --with-version-pre=- \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
@@ -95,7 +100,9 @@ if [[ "$error_code" -ne 0 ]]; then
   exit $error_code
 fi
 
-jobs=4
+jobs=$(nproc)
+
+echo Running ${jobs} jobs to build the jdk
 
 cd build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEBUG_LEVEL}
 make JOBS=$jobs images || \
