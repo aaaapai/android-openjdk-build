@@ -1291,6 +1291,43 @@ index 90c7d3c93..0a10fba48 100644
  #endif
  
  #ifdef AMD64
+diff --git a/src/hotspot/share/utilities/elfFile.hpp b/src/hotspot/share/utilities/elfFile.hpp
+index 32ce08821..7103f3736 100644
+--- a/src/hotspot/share/utilities/elfFile.hpp
++++ b/src/hotspot/share/utilities/elfFile.hpp
+@@ -47,8 +47,10 @@ typedef Elf64_Phdr      Elf_Phdr;
+ typedef Elf64_Sym       Elf_Sym;
+ 
+ #if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
++#ifndef ELF_ST_TYPE
+ #define ELF_ST_TYPE ELF64_ST_TYPE
+ #endif
++#endif
+ 
+ #else
+ 
+@@ -62,7 +64,7 @@ typedef Elf32_Shdr      Elf_Shdr;
+ typedef Elf32_Phdr      Elf_Phdr;
+ typedef Elf32_Sym       Elf_Sym;
+ 
+-#if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
++#if (!defined(_ALLBSD_SOURCE) || defined(__APPLE__)) && !defined(ELF_ST_TYPE)
+ #define ELF_ST_TYPE ELF32_ST_TYPE
+ #endif
+ #endif
+diff --git a/sdcard/1/1/jdk22/1 b/sdcard/1/1/jdk22/2
+index 43bb24b..ec65f10 100644
+--- a/sdcard/1/1/jdk22/1
++++ b/sdcard/1/1/jdk22/2
+@@ -48,7 +48,7 @@ ElfSymbolTable::~ElfSymbolTable() {
+ }
+
+ bool ElfSymbolTable::compare(const Elf_Sym* sym, address addr, int* stringtableIndex, int* posIndex, int* offset, ElfFuncDescTable* funcDescTable) {
+-  if (STT_FUNC == ELF_ST_TYPE(sym->st_info)) {
++  if (STT_FUNC == ELF64_ST_TYPE(sym->st_info)) {
+     Elf64_Xword st_size = sym->st_size;
+     const Elf_Shdr* shdr = _section.section_header();
+     address sym_addr;
 diff --git a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp b/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
 index 3da670ef4..89f2d944a 100644
 --- a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
