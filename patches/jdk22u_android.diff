@@ -473,7 +473,7 @@ index 42680218d..403d8905b 100644
  }
  
 
-@@ -5101,7 +5178,46 @@ bool os::is_thread_cpu_time_supported() {
+@@ -5101,7 +5178,46 @@
  // Linux doesn't yet have a (official) notion of processor sets,
  // so just return the system wide load average.
  int os::loadavg(double loadavg[], int nelem) {
@@ -1291,30 +1291,6 @@ index 90c7d3c93..0a10fba48 100644
  #endif
  
  #ifdef AMD64
-diff --git a/src/hotspot/share/utilities/elfFile.hpp b/src/hotspot/share/utilities/elfFile.hpp
-index 32ce08821..7103f3736 100644
---- a/src/hotspot/share/utilities/elfFile.hpp
-+++ b/src/hotspot/share/utilities/elfFile.hpp
-@@ -47,8 +47,10 @@ typedef Elf64_Phdr      Elf_Phdr;
- typedef Elf64_Sym       Elf_Sym;
- 
- #if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
-+#ifndef ELF_ST_TYPE
- #define ELF_ST_TYPE ELF64_ST_TYPE
- #endif
-+#endif
- 
- #else
- 
-@@ -62,7 +64,7 @@ typedef Elf32_Shdr      Elf_Shdr;
- typedef Elf32_Phdr      Elf_Phdr;
- typedef Elf32_Sym       Elf_Sym;
- 
--#if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
-+#if (!defined(_ALLBSD_SOURCE) || defined(__APPLE__)) && !defined(ELF_ST_TYPE)
- #define ELF_ST_TYPE ELF32_ST_TYPE
- #endif
- #endif
 diff --git a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp b/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
 index 3da670ef4..89f2d944a 100644
 --- a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
