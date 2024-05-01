@@ -1315,10 +1315,10 @@ index 32ce08821..7103f3736 100644
  #define ELF_ST_TYPE ELF32_ST_TYPE
  #endif
  #endif
-diff --git a/sdcard/1/1/jdk22/1 b/sdcard/1/1/jdk22/2
+diff --git a/src/hotspot/share/utilities/elfSymbolTable.cpp b/src/hotspot/share/utilities/elfSymbolTable.cpp
 index 43bb24b..ec65f10 100644
---- a/sdcard/1/1/jdk22/1
-+++ b/sdcard/1/1/jdk22/2
+--- a/src/hotspot/share/utilities/elfSymbolTable.cpp
++++ b/src/hotspot/share/utilities/elfSymbolTable.cpp
 @@ -48,7 +48,7 @@ ElfSymbolTable::~ElfSymbolTable() {
  }
 
