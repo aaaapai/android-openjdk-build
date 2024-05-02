@@ -472,8 +472,7 @@ index 42680218d..403d8905b 100644
    }
  }
  
-
-@@ -5171,7 +5256,46 @@
+@@ -5171,7 +5256,46 @@ // System loadavg support.  Returns -1 if load average cannot be obtained.
  // Linux doesn't yet have a (official) notion of processor sets,
  // so just return the system wide load average.
  int os::loadavg(double loadavg[], int nelem) {
