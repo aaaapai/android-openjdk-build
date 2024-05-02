@@ -859,9 +859,9 @@ index cf0f48974..04a5930b5 100644
    int bootsec = -1;
    int currsec = time(nullptr);
    struct utmpx* ent;
-@@ -467,6 +470,7 @@ void os::Posix::print_uptime_info(outputStream* st) {
+@@ -474,6 +477,7 @@
    if (bootsec != -1) {
-     os::print_dhm(st, "OS uptime:", (long) (currsec-bootsec));
+     os::print_dhm(st, "OS uptime:", currsec-bootsec);
    }
 +#endif
  }
