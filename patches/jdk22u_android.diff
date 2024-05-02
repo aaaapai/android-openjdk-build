@@ -857,7 +857,7 @@ index cf0f48974..04a5930b5 100644
  void os::Posix::print_uptime_info(outputStream* st) {
 +#ifndef __ANDROID__
    int bootsec = -1;
-   int currsec = time(nullptr);
+   time_t currsec = time(nullptr);
    struct utmpx* ent;
 @@ -474,6 +477,7 @@
    if (bootsec != -1) {
