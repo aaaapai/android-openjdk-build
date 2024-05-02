@@ -473,7 +473,7 @@ index 42680218d..403d8905b 100644
  }
  
 
-@@ -5101,7 +5178,46 @@
+@@ -5171,7 +5256,46 @@
  // Linux doesn't yet have a (official) notion of processor sets,
  // so just return the system wide load average.
  int os::loadavg(double loadavg[], int nelem) {
@@ -1315,19 +1315,6 @@ index 32ce08821..7103f3736 100644
  #define ELF_ST_TYPE ELF32_ST_TYPE
  #endif
  #endif
-diff --git a/src/hotspot/share/utilities/elfSymbolTable.cpp b/src/hotspot/share/utilities/elfSymbolTable.cpp
-index 43bb24b..ec65f10 100644
---- a/src/hotspot/share/utilities/elfSymbolTable.cpp
-+++ b/src/hotspot/share/utilities/elfSymbolTable.cpp
-@@ -48,7 +48,7 @@ ElfSymbolTable::~ElfSymbolTable() {
- }
-
- bool ElfSymbolTable::compare(const Elf_Sym* sym, address addr, int* stringtableIndex, int* posIndex, int* offset, ElfFuncDescTable* funcDescTable) {
--  if (STT_FUNC == ELF_ST_TYPE(sym->st_info)) {
-+  if (STT_FUNC == ELF64_ST_TYPE(sym->st_info)) {
-     Elf64_Xword st_size = sym->st_size;
-     const Elf_Shdr* shdr = _section.section_header();
-     address sym_addr;
 diff --git a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp b/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
 index 3da670ef4..89f2d944a 100644
 --- a/src/hotspot/share/utilities/globalDefinitions_gcc.hpp
