@@ -7,5 +7,5 @@ set -e
 wget https://downloads.sourceforge.net/project/freetype/freetype2/$BUILD_FREETYPE_VERSION/freetype-$BUILD_FREETYPE_VERSION.tar.gz
 tar xf freetype-$BUILD_FREETYPE_VERSION.tar.gz
 wget https://github.com/OpenPrinting/cups/releases/download/v2.4.8/cups-2.4.8-source.tar.gz
-tar xf cups-2.4.8-source.tar.gz
+tar xf cups-${BUILD_cups_VERSION}-source.tar.gz
 rm cups-2.4.8-source.tar.gz freetype-$BUILD_FREETYPE_VERSION.tar.gz
