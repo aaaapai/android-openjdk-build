@@ -4,7 +4,7 @@ set -e
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups-2.4.7
-export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
+export CFLAGS+=" -DLE_STANDALONE -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -O3 -D__thumb__"
@@ -67,6 +67,7 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk22u_android.diff || echo "git apply failed (Android patch set)"
+git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed"
 
 # rm -rf build
 
