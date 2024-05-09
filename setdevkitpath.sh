@@ -7,6 +7,11 @@ then
   export BUILD_FREETYPE_VERSION="2.13.2"
 fi
 
+if [[ -z "$BUILD_cups_VERSION" ]]
+then
+  export BUILD_FREETYPE_VERSION="2.4.8"
+fi
+
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
 then
   export JDK_DEBUG_LEVEL=release
