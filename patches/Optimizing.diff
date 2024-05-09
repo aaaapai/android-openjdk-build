@@ -1,0 +1,259 @@
+diff --git a/src/java.base/share/classes/java/util/Random.java b/src/java.base/share/classes/java/util/Random.java
+index e663efc2a5776..a905ff06c1905 100644
+--- a/src/java.base/share/classes/java/util/Random.java
++++ b/src/java.base/share/classes/java/util/Random.java
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 1995, 2022, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 1995, 2023, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -466,10 +466,17 @@ protected int next(int bits) {
+      */
+     @Override
+     public void nextBytes(byte[] bytes) {
+-        for (int i = 0, len = bytes.length; i < len; )
+-            for (int rnd = nextInt(),
+-                 n = Math.min(len - i, Integer.SIZE/Byte.SIZE);
+-                 n-- > 0; rnd >>= Byte.SIZE)
++        int i = 0;
++        int len = bytes.length;
++
++        for (int words = len >> 2; words--> 0; ) {
++            int rnd = nextInt();
++            unsafe.putIntUnaligned(bytes, (long)Unsafe.ARRAY_BYTE_BASE_OFFSET + i, rnd, false);
++            i += Integer.BYTES;
++        }
++
++        if (i < len)
++            for (int rnd = nextInt(); i < len; rnd >>>= Byte.SIZE)
+                 bytes[i++] = (byte)rnd;
+     }
+ 
+diff --git a/src/java.base/share/classes/java/util/random/RandomGenerator.java b/src/java.base/share/classes/java/util/random/RandomGenerator.java
+index b38c4eee8f0cc..74be5241d9254 100644
+--- a/src/java.base/share/classes/java/util/random/RandomGenerator.java
++++ b/src/java.base/share/classes/java/util/random/RandomGenerator.java
+@@ -29,13 +29,14 @@
+ import java.security.SecureRandom;
+ import java.util.Objects;
+ import java.util.concurrent.ThreadLocalRandom;
+-import jdk.internal.util.random.RandomSupport;
+-
+ import java.util.stream.DoubleStream;
+ import java.util.stream.IntStream;
+ import java.util.stream.LongStream;
+ import java.util.stream.Stream;
+ 
++import jdk.internal.util.ByteArrayLittleEndian;
++import jdk.internal.util.random.RandomSupport;
++
+ import static java.lang.Math.*;
+ 
+ /**
+@@ -652,8 +653,8 @@ default void nextBytes(byte[] bytes) {
+         int len = bytes.length;
+         for (int words = len >> 3; words--> 0; ) {
+             long rnd = nextLong();
+-            for (int n = 8; n--> 0; rnd >>>= Byte.SIZE)
+-                bytes[i++] = (byte)rnd;
++            ByteArrayLittleEndian.setLong(bytes, i, rnd);
++            i += Long.BYTES;
+         }
+         if (i < len)
+             for (long rnd = nextLong(); i < len; rnd >>>= Byte.SIZE)
+diff --git a/test/jdk/java/util/Random/NextBytes.java b/test/jdk/java/util/Random/NextBytes.java
+index c3c3f69ef7c27..51fea18c67521 100644
+--- a/test/jdk/java/util/Random/NextBytes.java
++++ b/test/jdk/java/util/Random/NextBytes.java
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2005, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2005, 2023, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -24,39 +24,59 @@
+ /*
+  * @test
+  * @bug 4261170
+- * @summary Tests for Random.nextBytes
++ * @summary Tests for RandomGenerator.nextBytes
+  * @author Martin Buchholz
++ * @run junit NextBytes
+  */
+ 
+ import java.util.Arrays;
++import java.util.List;
+ import java.util.Random;
++import java.util.function.Supplier;
++import java.util.random.RandomGenerator;
++import java.util.random.RandomGeneratorFactory;
++import java.util.stream.IntStream;
++
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.Arguments;
++import org.junit.jupiter.params.provider.MethodSource;
++
++import static org.junit.jupiter.api.Assertions.*;
+ 
+ public class NextBytes {
+-    private static void realMain(String[] args) throws Throwable {
+-        byte[] expected = new byte[]
+-            {27, -105, -24, 83, -77, -29, 119, -74, -106, 68, 54};
+-        Random r = new java.util.Random(2398579034L);
+-        for (int i = 0; i <= expected.length; i++) {
+-            r.setSeed(2398579034L);
++
++    private static final long SEED = 2398579034L;
++
++    private static List<Arguments> params() {
++        return List.of(
++            Arguments.of(
++                "Random",
++                new byte[]{27, -105, -24, 83, -77, -29, 119, -74, -106, 68, 54, 46, 50, 46, 25, -16}
++            ),
++            Arguments.of(
++                "L32X64MixRandom",
++                new byte[]{-57, 102, 42, 34, -3, -113, 78, -20, 24, -17, 59, 11, -29, -86, -98, -37}
++            ),
++            Arguments.of(
++                "L64X128StarStarRandom",
++                new byte[]{109, -78, 16, -38, -12, -24, 77, 109, -79, -97, -9, 40, 123, 118, 43, 7}
++            ),
++            Arguments.of(
++                "Xoshiro256PlusPlus",
++                new byte[]{121, -17, 31, -115, 26, -119, 64, 25, -15, 63, 29, -125, -72, 53, -20, 7}
++            )
++        );
++    }
++
++    @ParameterizedTest
++    @MethodSource("params")
++    void testNextBytes(String algo, byte[] expected) throws Throwable {
++        RandomGeneratorFactory factory = RandomGeneratorFactory.of(algo);
++        assertAll(IntStream.rangeClosed(0, expected.length).mapToObj(i -> () -> {
+             byte[] actual = new byte[i];
+-            r.nextBytes(actual);
+-            //System.out.println(Arrays.toString(actual));
+-            check(Arrays.equals(actual, Arrays.copyOf(expected,i)));
+-        }
++            factory.create(SEED).nextBytes(actual);
++            assertArrayEquals(Arrays.copyOf(expected, i), actual);
++        }));
+     }
+ 
+-    //--------------------- Infrastructure ---------------------------
+-    static volatile int passed = 0, failed = 0;
+-    static void pass() {passed++;}
+-    static void fail() {failed++; Thread.dumpStack();}
+-    static void fail(String msg) {System.out.println(msg); fail();}
+-    static void unexpected(Throwable t) {failed++; t.printStackTrace();}
+-    static void check(boolean cond) {if (cond) pass(); else fail();}
+-    static void equal(Object x, Object y) {
+-        if (x == null ? y == null : x.equals(y)) pass();
+-        else fail(x + " not equal to " + y);}
+-    public static void main(String[] args) throws Throwable {
+-        try {realMain(args);} catch (Throwable t) {unexpected(t);}
+-        System.out.printf("%nPassed = %d, failed = %d%n%n", passed, failed);
+-        if (failed > 0) throw new AssertionError("Some tests failed");}
+ }
+diff --git a/test/micro/org/openjdk/bench/java/util/RandomGeneratorNextBytes.java b/test/micro/org/openjdk/bench/java/util/RandomGeneratorNextBytes.java
+new file mode 100644
+index 0000000000000..8abd277da0b68
+--- /dev/null
++++ b/test/micro/org/openjdk/bench/java/util/RandomGeneratorNextBytes.java
+@@ -0,0 +1,57 @@
++/*
++ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
++ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++ *
++ * This code is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 only, as
++ * published by the Free Software Foundation.
++ *
++ * This code is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ * version 2 for more details (a copy is included in the LICENSE file that
++ * accompanied this code).
++ *
++ * You should have received a copy of the GNU General Public License version
++ * 2 along with this work; if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
++ * or visit www.oracle.com if you need additional information or have any
++ * questions.
++ */
++package org.openjdk.bench.java.util;
++
++import java.util.concurrent.TimeUnit;
++import java.util.random.RandomGenerator;
++
++import org.openjdk.jmh.annotations.*;
++
++@BenchmarkMode(Mode.Throughput)
++@OutputTimeUnit(TimeUnit.MILLISECONDS)
++@State(Scope.Thread)
++@Warmup(iterations = 7, time = 3)
++@Measurement(iterations = 5, time = 3)
++@Fork(value = 1)
++public class RandomGeneratorNextBytes {
++
++    @Param({"Random", "L32X64MixRandom", "Xoshiro256PlusPlus"})
++    private String algo;
++
++    @Param({"1", "2", "4", "8", "16", "32", "64", "128", "256", "1024", "4096", "16384"})
++    private int length;
++
++    private RandomGenerator generator;
++    private byte[] array;
++
++    @Setup
++    public void setup() {
++        generator = RandomGenerator.of(algo);
++        array = new byte[length];
++    }
++
++    @Benchmark
++    public void testNextBytes() {
++        generator.nextBytes(array);
++    }
++}
+diff --git a/src/java.base/share/classes/java/util/ArrayList.java b/src/java.base/share/classes/java/util/ArrayList.java
+index 5fcf79e95c3f1..2ba77bb2be1ce 100644
+--- a/src/java.base/share/classes/java/util/ArrayList.java
++++ b/src/java.base/share/classes/java/util/ArrayList.java
+@@ -1582,6 +1582,13 @@ public int characteristics() {
+                 }
+             };
+         }
++
++        @Override
++        public void sort(Comparator<? super E> c) {
++            checkForComodification();
++            root.sortRange(c, offset, offset + size);
++            updateSizeAndModCount(0);
++        }
+     }
+ 
+     /**
+@@ -1799,10 +1806,14 @@ private void replaceAllRange(UnaryOperator<E> operator, int i, int end) {
+     }
+ 
+     @Override
+-    @SuppressWarnings("unchecked")
+     public void sort(Comparator<? super E> c) {
++        sortRange(c, 0, size);
++    }
++
++    @SuppressWarnings("unchecked")
++    private void sortRange(Comparator<? super E> c, int fromIndex, int toIndex) {
+         final int expectedModCount = modCount;
+-        Arrays.sort((E[]) elementData, 0, size, c);
++        Arrays.sort((E[]) elementData, fromIndex, toIndex, c);
+         if (modCount != expectedModCount)
+             throw new ConcurrentModificationException();
+         modCount++;
