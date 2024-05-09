@@ -8,4 +8,4 @@ wget https://downloads.sourceforge.net/project/freetype/freetype2/$BUILD_FREETYP
 tar xf freetype-$BUILD_FREETYPE_VERSION.tar.gz
 wget https://github.com/OpenPrinting/cups/releases/download/v2.4.8/cups-2.4.8-source.tar.gz
 tar xf cups-${BUILD_cups_VERSION}-source.tar.gz
-rm cups-2.4.8-source.tar.gz freetype-$BUILD_FREETYPE_VERSION.tar.gz
+rm cups-${BUILD_FREETYPE_VERSION}-source.tar.gz freetype-$BUILD_FREETYPE_VERSION.tar.gz
