@@ -41,7 +41,7 @@ then
   export ANDROID_NDK_LATEST_HOME=$PWD/android-ndk-$NDK_VERSION
 fi
 
-export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
+export TOOLCHAIN=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64
 
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
