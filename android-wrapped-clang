@@ -5,6 +5,6 @@ if [[ "$1" = "--version" ]]; then
   echo "This is free software; see the source for copying conditions.  There is NO"
   echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 else
-  exec $thecc -Wno-unknown-warning-option "${@/-fno-var-tracking-assignments/}"
+  exec $thecc -Wno-unknown-warning-option -Wno-error=implicit-function-declaration "${@/-fno-var-tracking-assignments/}"
   # exec $thecc "$theargs"
 fi
