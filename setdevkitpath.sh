@@ -34,9 +34,9 @@ export JVM_PLATFORM=linux
 export API=21
 
 # Runners usually ship with a recent NDK already
-if [[ -z "$ANDROID_NDK_HOME" ]]
+if [[ -z "$ANDROID_NDK_LATEST_HOME" ]]
 then
-  export ANDROID_NDK_HOME=$PWD/android-ndk-$NDK_VERSION
+  export ANDROID_NDK_LATEST_HOME=$PWD/android-ndk-$NDK_VERSION
 fi
 
 export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
