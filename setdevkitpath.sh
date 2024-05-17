@@ -34,8 +34,6 @@ export JVM_PLATFORM=linux
 export API=21
 
 # Runners usually ship with a recent NDK already
-export ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/26.3.11579264
-
 if [[ -z "$ANDROID_NDK_LATEST_HOME" ]]
 then
   export ANDROID_NDK_LATEST_HOME=$PWD/android-ndk-$NDK_VERSION
@@ -45,12 +43,12 @@ export TOOLCHAIN=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64
 
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
-export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET/asm" # -I/usr/include -I/usr/lib
+export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API} -L$TOOLCHAIN/sysroot/usr/lib"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API}"
 else
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API} -L$TOOLCHAIN/sysroot/usr/lib"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
 fi
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
@@ -61,7 +59,7 @@ export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld
+export LD=$TOOLCHAIN/bin/ld.lld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
