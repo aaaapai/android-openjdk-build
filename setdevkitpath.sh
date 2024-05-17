@@ -45,12 +45,12 @@ export TOOLCHAIN=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64
 
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
-export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
+export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET/asm" # -I/usr/include -I/usr/lib
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API}"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API} -L$TOOLCHAIN/sysroot/usr/lib"
 else
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API} -L$TOOLCHAIN/sysroot/usr/lib"
 fi
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
@@ -61,7 +61,7 @@ export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld
+export LD=$TOOLCHAIN/bin/ld.lld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
