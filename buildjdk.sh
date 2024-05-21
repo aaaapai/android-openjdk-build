@@ -68,6 +68,7 @@ cd openjdk
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk22u_android.diff || echo "git apply failed (Android patch set)"
 git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed"
+git apply --reject --whitespace=fix ../patches/SUNWprivate_1.1_fix.diff || echo "git apply failed"
 
 # rm -rf build
 
@@ -94,6 +95,8 @@ bash ./configure \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
     NM=${NM} \
+    READELF=${READELF} \
+    LINK=${LINK} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
