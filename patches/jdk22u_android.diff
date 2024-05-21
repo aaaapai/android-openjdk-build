@@ -2493,9 +2493,7 @@ diff --git a/make/hotspot/lib/JvmMapfile.gmk b/make/hotspot/lib/JvmMapfile.gmk
 index 64dafee..443e26c 100644
 --- a/make/hotspot/lib/JvmMapfile.gmk
 +++ b/make/hotspot/lib/JvmMapfile.gmk
-@@ -53,7 +53,7 @@ endif
- # platform dependent.
- 
+@@ -51,5 +51,5 @@
  ifeq ($(call isTargetOs, linux), true)
 -  DUMP_SYMBOLS_CMD := $(NM) $(NMFLAGS) --defined-only *$(OBJ_SUFFIX)
 +  DUMP_SYMBOLS_CMD := $(NM) $(NMFLAGS) --defined-only --extern-only *$(OBJ_SUFFIX)
