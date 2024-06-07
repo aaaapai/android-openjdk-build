@@ -1,4 +1,4 @@
-name: Build OpenJDK21 for Android
+name: Build OpenJDK for Android
 
 on:
   workflow_dispatch:
