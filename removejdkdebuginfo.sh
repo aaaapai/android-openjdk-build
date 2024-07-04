@@ -8,7 +8,7 @@ imagespath=openjdk/build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEB
 rm -rf dizout jreout jdkout dSYM-temp
 mkdir -p dizout dSYM-temp/{lib,bin}
 
-cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so $imagespath/jdk/lib/
+cp freetype-${BUILD_FREETYPE_VERSION}/build_android-$TARGET_SHORT/lib/libfreetype.so $imagespath/jdk/lib/
 
 cp -r $imagespath/jdk jdkout
 
@@ -38,8 +38,8 @@ $JLINK_STRIP_ARG \
 --release-info=jdkout/release \
 --compress=0 
 
-cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
-cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
+cp freetype-${BUILD_FREETYPE_VERSION}/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
+cp freetype-${BUILD_FREETYPE_VERSION}/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
 
 # mv jreout/lib/${TARGET_JDK}/libfontmanager.diz jreout/lib/${TARGET_JDK}/libfontmanager.diz.keep
 # find jreout -name "*.debuginfo" | xargs -- rm
