@@ -3,8 +3,8 @@ set -e
 . setdevkitpath.sh
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
-export CUPS_DIR=$PWD/cups-2.4.7
-export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
+export CUPS_DIR=$PWD/cups
+export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -O3 -D__thumb__"
@@ -12,7 +12,7 @@ else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -O3 -mstackrealign"
   else
-     export CFLAGS+=" -O3"
+     export CFLAGS+=" -O3 -flto=auto"
   fi
 fi
 
@@ -92,6 +92,16 @@ bash ./configure \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
+    OBJDUMP=${OBJDUMP} \
+    STRIP=${STRIP} \
+    NM=${NM} \
+    AR=${AR} \
+    OBJCOPY=${OBJCOPY} \
+    CXXFILT=${CXXFILT} \
+    BUILD_NM=${NM} \
+    BUILD_AR=${AR} \
+    BUILD_OBJCOPY=${OBJCOPY} \
+    BUILD_STRIP=${STRIP} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
