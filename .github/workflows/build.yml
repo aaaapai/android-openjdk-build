@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.1
