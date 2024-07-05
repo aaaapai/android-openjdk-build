@@ -68,12 +68,6 @@ cd openjdk
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk22u_android.diff || echo "git apply failed (Android patch set)"
 git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/18198.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/18487.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/19092.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/18605.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/19626.diff || echo "git apply failed"
-git apply --reject --whitespace=fix ../patches/16991.diff || echo "git apply failed"
 
 # rm -rf build
 
