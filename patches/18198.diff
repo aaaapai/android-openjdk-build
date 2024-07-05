@@ -1,0 +1,181 @@
+diff --git a/src/hotspot/share/opto/subnode.cpp b/src/hotspot/share/opto/subnode.cpp
+index 7eb7922c5fbd8..445eb16821443 100644
+--- a/src/hotspot/share/opto/subnode.cpp
++++ b/src/hotspot/share/opto/subnode.cpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 1997, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 1997, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -1623,25 +1623,8 @@ Node *BoolNode::Ideal(PhaseGVN *phase, bool can_reshape) {
+     return new BoolNode( ncmp, _test.negate() );
+   }
+ 
+-  // Change ((x & m) u<= m) or ((m & x) u<= m) to always true
+-  // Same with ((x & m) u< m+1) and ((m & x) u< m+1)
+-  if (cop == Op_CmpU &&
+-      cmp1_op == Op_AndI) {
+-    Node* bound = nullptr;
+-    if (_test._test == BoolTest::le) {
+-      bound = cmp2;
+-    } else if (_test._test == BoolTest::lt &&
+-               cmp2->Opcode() == Op_AddI &&
+-               cmp2->in(2)->find_int_con(0) == 1) {
+-      bound = cmp2->in(1);
+-    }
+-    if (cmp1->in(2) == bound || cmp1->in(1) == bound) {
+-      return ConINode::make(1);
+-    }
+-  }
+-
+   // Change ((x & (m - 1)) u< m) into (m > 0)
+-  // This is the off-by-one variant of the above
++  // This is the off-by-one variant of ((x & m) u<= m)
+   if (cop == Op_CmpU &&
+       _test._test == BoolTest::lt &&
+       cmp1_op == Op_AndI) {
+@@ -1827,9 +1810,39 @@ Node *BoolNode::Ideal(PhaseGVN *phase, bool can_reshape) {
+ }
+ 
+ //------------------------------Value------------------------------------------
++// Change ((x & m) u<= m) or ((m & x) u<= m) to always true
++// Same with ((x & m) u< m+1) and ((m & x) u< m+1)
++const Type* BoolNode::Value_cmpu_and_mask(PhaseValues* phase) const {
++  Node* cmp = in(1);
++  if (cmp != nullptr && cmp->Opcode() == Op_CmpU) {
++    Node* cmp1 = cmp->in(1);
++    Node* cmp2 = cmp->in(2);
++
++    if (cmp1->Opcode() == Op_AndI) {
++      Node* bound = nullptr;
++      if (_test._test == BoolTest::le) {
++        bound = cmp2;
++      } else if (_test._test == BoolTest::lt && cmp2->Opcode() == Op_AddI && cmp2->in(2)->find_int_con(0) == 1) {
++        bound = cmp2->in(1);
++      }
++
++      if (cmp1->in(2) == bound || cmp1->in(1) == bound) {
++        return TypeInt::ONE;
++      }
++    }
++  }
++
++  return nullptr;
++}
++
+ // Simplify a Bool (convert condition codes to boolean (1 or 0)) node,
+ // based on local information.   If the input is constant, do it.
+ const Type* BoolNode::Value(PhaseGVN* phase) const {
++  const Type* t = Value_cmpu_and_mask(phase);
++  if (t != nullptr) {
++    return t;
++  }
++
+   return _test.cc2logical( phase->type( in(1) ) );
+ }
+ 
+diff --git a/src/hotspot/share/opto/subnode.hpp b/src/hotspot/share/opto/subnode.hpp
+index f424e258db2cf..4a4b475668d04 100644
+--- a/src/hotspot/share/opto/subnode.hpp
++++ b/src/hotspot/share/opto/subnode.hpp
+@@ -347,6 +347,7 @@ class BoolNode : public Node {
+   BoolNode* negate(PhaseGVN* phase);
+   virtual int Opcode() const;
+   virtual Node *Ideal(PhaseGVN *phase, bool can_reshape);
++  const Type* Value_cmpu_and_mask(PhaseValues* phase) const;
+   virtual const Type* Value(PhaseGVN* phase) const;
+   virtual const Type *bottom_type() const { return TypeInt::BOOL; }
+   uint match_edge(uint idx) const { return 0; }
+diff --git a/test/hotspot/jtreg/compiler/c2/gvn/TestBoolNodeGVN.java b/test/hotspot/jtreg/compiler/c2/gvn/TestBoolNodeGVN.java
+new file mode 100644
+index 0000000000000..ff872c99bd928
+--- /dev/null
++++ b/test/hotspot/jtreg/compiler/c2/gvn/TestBoolNodeGVN.java
+@@ -0,0 +1,85 @@
++/*
++ * Copyright (c) 2024 Red Hat and/or its affiliates. All rights reserved.
++ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++ *
++ * This code is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 only, as
++ * published by the Free Software Foundation.
++ *
++ * This code is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ * version 2 for more details (a copy is included in the LICENSE file that
++ * accompanied this code).
++ *
++ * You should have received a copy of the GNU General Public License version
++ * 2 along with this work; if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
++ * or visit www.oracle.com if you need additional information or have any
++ * questions.
++ */
++
++package compiler.c2.gvn;
++
++import compiler.lib.ir_framework.*;
++
++import java.util.Random;
++
++/**
++ * @test
++ * @bug 8327381
++ * @summary Refactor boolean node tautology transformations
++ * @library /test/lib /
++ * @run driver compiler.c2.gvn.TestBoolNodeGVN
++ */
++public class TestBoolNodeGVN {
++    public static void main(String[] args) {
++        TestFramework.run();
++        testCorrectness();
++    }
++
++    /**
++     * Test changing ((x & m) u<= m) or ((m & x) u<= m) to always true, same with ((x & m) u< m+1) and ((m & x) u< m+1)
++     * The test is only applicable to x64, aarch64 and riscv64 for having <code>Integer.compareUnsigned</code>
++     * intrinsified.
++     */
++    @Test
++    @Arguments(values = {Argument.DEFAULT, Argument.DEFAULT})
++    @IR(failOn = IRNode.CMP_U,
++        phase = CompilePhase.AFTER_PARSING,
++        applyIfPlatformOr = {"x64", "true", "aarch64", "true", "riscv64", "true"})
++    public static boolean testShouldReplaceCpmU(int x, int m) {
++        return !(Integer.compareUnsigned((x & m), m) > 0) & // assert in inversions to generates the pattern looking for
++               !(Integer.compareUnsigned((m & x), m) > 0) &
++               Integer.compareUnsigned((x & m), m + 1) < 0 &
++               Integer.compareUnsigned((m & x), m + 1) < 0;
++    }
++
++    @Test
++    @Arguments(values = {Argument.DEFAULT, Argument.DEFAULT})
++    @IR(counts = {IRNode.CMP_U, "4"},
++        phase = CompilePhase.AFTER_PARSING,
++        applyIfPlatformOr = {"x64", "true", "aarch64", "true", "riscv64", "true"})
++    public static boolean testShouldHaveCpmU(int x, int m) {
++        return !(Integer.compareUnsigned((x & m), m - 1) > 0) |
++                !(Integer.compareUnsigned((m & x), m - 1) > 0) |
++                Integer.compareUnsigned((x & m), m + 2) < 0 |
++                Integer.compareUnsigned((m & x), m + 2) < 0;
++    }
++
++    private static void testCorrectness() {
++        int[] values = {
++                0, 1, 5, 8, 16, 42, 100, new Random().nextInt(0, Integer.MAX_VALUE), Integer.MAX_VALUE
++        };
++
++        for (int x : values) {
++            for (int m : values) {
++                if (!testShouldReplaceCpmU(x, m)) {
++                    throw new RuntimeException("Bad result for x = " + x + " and m = " + m + ", expected always true");
++                }
++            }
++        }
++    }
++}

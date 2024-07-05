@@ -165,7 +165,8 @@ index d80b804a2..fd2a8ed15 100644
  
 -ifeq ($(call isTargetOs, linux), true)
 +ifeq ($(call isTargetOs, android linux), true)
-   DUMP_SYMBOLS_CMD := $(NM) $(NMFLAGS) --defined-only *$(OBJ_SUFFIX)
+-  DUMP_SYMBOLS_CMD := $(NM) $(NMFLAGS) --defined-only *$(OBJ_SUFFIX)
++  DUMP_SYMBOLS_CMD := $(NM) $(NMFLAGS) --defined-only --extern-only *$(OBJ_SUFFIX)
    ifneq ($(FILTER_SYMBOLS_PATTERN), )
      FILTER_SYMBOLS_PATTERN := $(FILTER_SYMBOLS_PATTERN)|
 diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
@@ -2201,7 +2202,7 @@ index 902cf9673..3b8acd66b 100644
  #ifndef NET_UTILS_MD_H
  #define NET_UTILS_MD_H
  
-+#ifdef ANDROID
++#ifdef __ANDROID__
 +#include <netinet/in.h>
 +#endif
  #include <netdb.h>

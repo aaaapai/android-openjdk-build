@@ -1,0 +1,228 @@
+diff --git a/src/hotspot/share/gc/z/zDriver.cpp b/src/hotspot/share/gc/z/zDriver.cpp
+index 3836f330142f1..7334594fe5311 100644
+--- a/src/hotspot/share/gc/z/zDriver.cpp
++++ b/src/hotspot/share/gc/z/zDriver.cpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2015, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -65,14 +65,6 @@ void ZDriver::initialize() {
+   _lock = new ZLock();
+ }
+ 
+-void ZDriver::lock() {
+-  _lock->lock();
+-}
+-
+-void ZDriver::unlock() {
+-  _lock->unlock();
+-}
+-
+ void ZDriver::set_minor(ZDriverMinor* minor) {
+   _minor = minor;
+ }
+@@ -89,22 +81,6 @@ ZDriverMajor* ZDriver::major() {
+   return _major;
+ }
+ 
+-ZDriverLocker::ZDriverLocker() {
+-  ZDriver::lock();
+-}
+-
+-ZDriverLocker::~ZDriverLocker() {
+-  ZDriver::unlock();
+-}
+-
+-ZDriverUnlocker::ZDriverUnlocker() {
+-  ZDriver::unlock();
+-}
+-
+-ZDriverUnlocker::~ZDriverUnlocker() {
+-  ZDriver::lock();
+-}
+-
+ ZDriver::ZDriver()
+   : _gc_cause(GCCause::_no_gc) {}
+ 
+@@ -205,7 +181,7 @@ void ZDriverMinor::run_thread() {
+     // Wait for GC request
+     const ZDriverRequest request = _port.receive();
+ 
+-    ZDriverLocker locker;
++    ZLocker<ZLock> locker(_lock);
+ 
+     abortpoint();
+ 
+@@ -458,7 +434,7 @@ void ZDriverMajor::run_thread() {
+     // Wait for GC request
+     const ZDriverRequest request = _port.receive();
+ 
+-    ZDriverLocker locker;
++    ZLocker<ZLock> locker(_lock);
+ 
+     ZBreakpoint::at_before_gc();
+ 
+diff --git a/src/hotspot/share/gc/z/zDriver.hpp b/src/hotspot/share/gc/z/zDriver.hpp
+index 6291a8f359ce2..365e72c0d8d61 100644
+--- a/src/hotspot/share/gc/z/zDriver.hpp
++++ b/src/hotspot/share/gc/z/zDriver.hpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2015, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -46,18 +46,16 @@ class ZDriverMajor;
+ class ZLock;
+ 
+ class ZDriver : public ZThread {
+-  friend class ZDriverLocker;
+-  friend class ZDriverUnlocker;
++  friend class ZGenerationOld;
+ 
+ private:
+-  static ZLock*        _lock;
+   static ZDriverMinor* _minor;
+   static ZDriverMajor* _major;
+ 
+   GCCause::Cause _gc_cause;
+ 
+-  static void lock();
+-  static void unlock();
++protected:
++  static ZLock*        _lock;
+ 
+ public:
+   static void initialize();
+@@ -131,16 +129,4 @@ class ZDriverMajor : public ZDriver {
+   size_t used_at_start() const;
+ };
+ 
+-class ZDriverLocker : public StackObj {
+-public:
+-  ZDriverLocker();
+-  ~ZDriverLocker();
+-};
+-
+-class ZDriverUnlocker : public StackObj {
+-public:
+-  ZDriverUnlocker();
+-  ~ZDriverUnlocker();
+-};
+-
+ #endif // SHARE_GC_Z_ZDRIVER_HPP
+diff --git a/src/hotspot/share/gc/z/zGeneration.cpp b/src/hotspot/share/gc/z/zGeneration.cpp
+index 50973f2562111..e335dfaeb9cc5 100644
+--- a/src/hotspot/share/gc/z/zGeneration.cpp
++++ b/src/hotspot/share/gc/z/zGeneration.cpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2021, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2021, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -976,12 +976,12 @@ ZGenerationOld::ZGenerationOld(ZPageTable* page_table, ZPageAllocator* page_allo
+ class ZGenerationCollectionScopeOld : public StackObj {
+ private:
+   ZStatTimer      _stat_timer;
+-  ZDriverUnlocker _unlocker;
++  ZUnlocker<ZLock>  _unlocker;
+ 
+ public:
+-  ZGenerationCollectionScopeOld(ConcurrentGCTimer* gc_timer)
++  ZGenerationCollectionScopeOld(ConcurrentGCTimer* gc_timer, ZLock* lock)
+     : _stat_timer(ZPhaseGenerationOld, gc_timer),
+-      _unlocker() {
++      _unlocker(lock) {
+     // Update statistics and set the GC timer
+     ZGeneration::old()->at_collection_start(gc_timer);
+   }
+@@ -997,7 +997,7 @@ bool ZGenerationOld::should_record_stats() {
+ }
+ 
+ void ZGenerationOld::collect(ConcurrentGCTimer* timer) {
+-  ZGenerationCollectionScopeOld scope(timer);
++  ZGenerationCollectionScopeOld scope(timer, ZDriver::_lock);
+ 
+   // Phase 1: Concurrent Mark
+   concurrent_mark();
+@@ -1036,7 +1036,7 @@ void ZGenerationOld::collect(ConcurrentGCTimer* timer) {
+   abortpoint();
+ 
+   {
+-    ZDriverLocker locker;
++    ZLocker<ZLock> locker(ZDriver::_lock);
+ 
+     // Phase 8: Concurrent Remap Roots
+     concurrent_remap_young_roots();
+@@ -1146,7 +1146,7 @@ void ZGenerationOld::pause_verify() {
+   // young collections during this verification.
+   if (ZVerifyRoots || ZVerifyObjects) {
+     // Limited verification
+-    ZDriverLocker locker;
++    ZLocker<ZLock> locker(ZDriver::_lock);
+     VM_ZVerifyOld().pause();
+   }
+ }
+diff --git a/src/hotspot/share/gc/z/zLock.hpp b/src/hotspot/share/gc/z/zLock.hpp
+index 640a9fb02d3ad..6f0c51aca9d34 100644
+--- a/src/hotspot/share/gc/z/zLock.hpp
++++ b/src/hotspot/share/gc/z/zLock.hpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2015, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -76,4 +76,14 @@ class ZLocker : public StackObj {
+   ~ZLocker();
+ };
+ 
++template <typename T>
++class ZUnlocker : public StackObj {
++private:
++  T* const _lock;
++
++public:
++  ZUnlocker(T* lock);
++  ~ZUnlocker();
++};
++
+ #endif // SHARE_GC_Z_ZLOCK_HPP
+diff --git a/src/hotspot/share/gc/z/zLock.inline.hpp b/src/hotspot/share/gc/z/zLock.inline.hpp
+index a45f789742400..19107389fbaa0 100644
+--- a/src/hotspot/share/gc/z/zLock.inline.hpp
++++ b/src/hotspot/share/gc/z/zLock.inline.hpp
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2015, 2023, Oracle and/or its affiliates. All rights reserved.
++ * Copyright (c) 2015, 2024, Oracle and/or its affiliates. All rights reserved.
+  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+  *
+  * This code is free software; you can redistribute it and/or modify it
+@@ -117,4 +117,19 @@ inline ZLocker<T>::~ZLocker() {
+   }
+ }
+ 
++template <typename T>
++inline ZUnlocker<T>::ZUnlocker(T* lock)
++  : _lock(lock) {
++  if (_lock != nullptr) {
++    _lock->unlock();
++  }
++}
++
++template <typename T>
++inline ZUnlocker<T>::~ZUnlocker() {
++  if (_lock != nullptr) {
++    _lock->lock();
++  }
++}
++
+ #endif // SHARE_GC_Z_ZLOCK_INLINE_HPP
