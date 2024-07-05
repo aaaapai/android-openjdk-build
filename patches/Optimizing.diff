@@ -257,3 +257,15 @@ index 5fcf79e95c3f1..2ba77bb2be1ce 100644
          if (modCount != expectedModCount)
              throw new ConcurrentModificationException();
          modCount++;
+diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
+index 8a461e647ab..b7e9fca8b6f 100644
+--- a/make/hotspot/lib/CompileJvm.gmk
++++ b/make/hotspot/lib/CompileJvm.gmk
+@@ -169,6 +169,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBJVM, \
+     DISABLED_WARNINGS_gcc_jvmciCodeInstaller.cpp := stringop-overflow, \
+     DISABLED_WARNINGS_gcc_jvmtiTagMap.cpp := stringop-overflow, \
+     DISABLED_WARNINGS_gcc_postaloc.cpp := address, \
++    DISABLED_WARNINGS_gcc_shenandoahLock.cpp := stringop-overflow, \
+     DISABLED_WARNINGS_gcc_synchronizer.cpp := stringop-overflow, \
+     DISABLED_WARNINGS_clang := $(DISABLED_WARNINGS_clang), \
+     DISABLED_WARNINGS_clang_arguments.cpp := missing-field-initializers, \
