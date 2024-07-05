@@ -7,11 +7,6 @@ then
   export BUILD_FREETYPE_VERSION="2.13.2"
 fi
 
-if [[ -z "$BUILD_CUPS_VERSION" ]]
-then
-  export BUILD_CUPS_VERSION="2.4.8"
-fi
-
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
 then
   export JDK_DEBUG_LEVEL=release
@@ -54,6 +49,8 @@ export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
+export DLLTOOL=/usr/bin/llvm-dlltool-18
+export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
@@ -61,8 +58,8 @@ export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
 export LD=$TOOLCHAIN/bin/ld.lld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
+export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
-
