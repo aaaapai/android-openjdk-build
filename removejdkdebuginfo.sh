@@ -8,9 +8,9 @@ targetpath=openjdk/build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEB
 rm -rf dizout jreout jdkout dSYM-temp
 mkdir -p dizout dSYM-temp/{lib,bin}
 
-cp freetype-${BUILD_FREETYPE_VERSION}/build_android-$TARGET_SHORT/lib/libfreetype.so $targetpath/jdk/lib/
+cp freetype-${BUILD_FREETYPE_VERSION}/build_android-$TARGET_SHORT/lib/libfreetype.so $targetpath/images/jdk/lib/
 
-cp -r $targetpath/jdk jdkout
+cp -r $targetpath/images/jdk jdkout
 
 # JDK no longer create separate JRE image, so we have to create one manually.
 #mkdir -p jreout/bin
