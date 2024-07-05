@@ -6,6 +6,4 @@ set -e
 
 wget https://downloads.sourceforge.net/project/freetype/freetype2/$BUILD_FREETYPE_VERSION/freetype-$BUILD_FREETYPE_VERSION.tar.gz
 tar xf freetype-$BUILD_FREETYPE_VERSION.tar.gz
-wget https://github.com/OpenPrinting/cups/releases/download/v${BUILD_CUPS_VERSION}/cups-${BUILD_CUPS_VERSION}-source.tar.gz
-tar xf cups-${BUILD_CUPS_VERSION}-source.tar.gz
-rm cups-${BUILD_CUPS_VERSION}-source.tar.gz freetype-$BUILD_FREETYPE_VERSION.tar.gz
+git clone --depth 1 https://github.com/OpenPrinting/cups
