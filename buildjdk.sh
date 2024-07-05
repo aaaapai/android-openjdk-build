@@ -4,7 +4,7 @@ set -e
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups-${BUILD_CUPS_VERSION}
-export CFLAGS+=" -DLE_STANDALONE -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -fno-semantic-interposition" # -I$FREETYPE_DIR -I$CUPS_DI
+export CFLAGS+=" -flto=auto -fgcse-after-reload -DLE_STANDALONE -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -fno-semantic-interposition -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -O3 -D__thumb__"
@@ -99,6 +99,16 @@ bash ./configure \
     RANLIB=${RANLIB} \
     AR=${AR} \
     AS=${AS} \
+    OBJDUMP=${OBJDUMP} \
+    STRIP=${STRIP} \
+    NM=${NM} \
+    AR=${AR} \
+    OBJCOPY=${OBJCOPY} \
+    CXXFILT=${CXXFILT} \
+    BUILD_NM=${NM} \
+    BUILD_AR=${AR} \
+    BUILD_OBJCOPY=${OBJCOPY} \
+    BUILD_STRIP=${STRIP} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
