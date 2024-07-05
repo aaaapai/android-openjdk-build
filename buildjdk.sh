@@ -45,7 +45,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   STRIP=$STRIP \
   "
 
-export CFLAGS+=" -DANDROID"
+export CFLAGS+=" -DANDROID -mllvm -polly"
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
