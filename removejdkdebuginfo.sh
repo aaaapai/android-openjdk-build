@@ -34,7 +34,7 @@ $JLINK_STRIP_ARG \
 --no-man-pages \
 --no-header-files \
 --release-info=jdkout/release \
---compress=0
+--compress=zip-9
 
 cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
 cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
