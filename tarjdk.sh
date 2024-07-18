@@ -5,11 +5,13 @@ set -e
 unset AR AS CC CXX LD OBJCOPY RANLIB STRIP CPPFLAGS LDFLAGS
 git clone --depth 1 -b v2.2.0 https://github.com/termux/termux-elf-cleaner || true
 cd termux-elf-cleaner
-# This is the last commit that uses autoconf, newer builds are using cmake
-autoreconf --install
-bash configure
-make CFLAGS=-D__ANDROID_API__=${API}
-cd ..
+mkdir build
+cd build
+export CFLAGS=-D__ANDROID_API__=${API}
+cmake ..
+make -j4
+unset CFLAGS
+cd ../..
 
 findexec() { find $1 -type f -name "*" -not -name "*.o" -exec sh -c '
     case "$(head -n 1 "$1")" in
