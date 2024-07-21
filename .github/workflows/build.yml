@@ -20,10 +20,6 @@ jobs:
       with:
         java-version: 24-ea
         distribution: zulu
-    - name: set up python   
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13.0-beta.3'
     - name: Install build dependencies
       run: |
         sudo apt update
