@@ -75,6 +75,8 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 
 bash ./configure \
     --with-version-pre=- \
+    --with-zlib=system \
+    --with-jmod-compress=zip-9 \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
