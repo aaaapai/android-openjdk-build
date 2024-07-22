@@ -1,0 +1,19 @@
+name: Build OpenJDK for Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_android:
+    strategy:
+      matrix:
+        arch: [ "aarch64"]
+      fail-fast: false
+
+    name: "Build for Android ${{matrix.arch}}"
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.4
+    - name: Build with CI build script
+      run: bash tarjdk.sh
