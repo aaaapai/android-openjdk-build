@@ -3,7 +3,7 @@ set -e
 . setdevkitpath.sh
 
 unset AR AS CC CXX LD OBJCOPY RANLIB STRIP CPPFLAGS LDFLAGS
-git clone --depth 1 -b v2.2.0 https://github.com/termux/termux-elf-cleaner || true
+git clone --depth 1 https://github.com/termux/termux-elf-cleaner || true
 cd termux-elf-cleaner
 mkdir build
 cd build
@@ -39,3 +39,6 @@ tar cJf ../jre17-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 cd ../jdkout
 tar cJf ../jdk17-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
+# Remove jreout and jdkout
+cd ..
+rm -rf jreout jdkout
