@@ -16,14 +16,12 @@ diff --git a/make/autoconf/flags-ldflags.m4 b/make/autoconf/flags-ldflags.m4
 index 2aca285d3..494262487 100644
 --- a/make/autoconf/flags-ldflags.m4
 +++ b/make/autoconf/flags-ldflags.m4
-@@ -173,7 +173,9 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
+@@ -173,7 +173,8 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
         test "x${OPENJDK_$1_CPU}" = xmips64el; then
        $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      else
--      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=gnu"
+       $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=gnu"
 +      # Android 5.x does not support GNU hash style
-+      # gnu
-+      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      fi
  
    elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
@@ -316,7 +314,7 @@ index 42680218d..403d8905b 100644
  #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
  
 -#ifdef MUSL_LIBC
-+#if defined(MUSL_LIBC) || defined(__ANDROID__)
++#if defined(MUSL_LIBC) || defined(__ANDROID__) && android_get_device_api_level() < 24)
  // dlvsym is not a part of POSIX
  // and musl libc doesn't implement it.
  static void *dlvsym(void *handle,
