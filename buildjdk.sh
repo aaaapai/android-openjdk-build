@@ -33,17 +33,23 @@ ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
-  --build=x86_64-unknown-linux-gnu \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-  OBJCOPY=${OBJCOPY} \
-  RANLIB=${RANLIB} \
-  LINK=${LINK} \
-  AR=${AR} \
-  AS=${AS} \
-  NM=${NM} \
+  OBJDUMP=${OBJDUMP} \
   STRIP=${STRIP} \
-  READELF=${READELF} \
+  NM=${NM} \
+  AR=${AR} \
+  OBJCOPY=${OBJCOPY} \
+  CXXFILT=${CXXFILT} \
+  BUILD_NM=${NM} \
+  BUILD_AR=${AR} \
+  BUILD_LD=${LD} \
+  BUILD_OBJCOPY=${OBJCOPY} \
+  BUILD_STRIP=${STRIP} \
   "
+if [[ "$TARGET_JDK" == "x86" ]]; then
+    platform_args+="--build=x86_64-unknown-linux-gnu \
+    "
+fi
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   AR=$AR \
@@ -92,16 +98,6 @@ bash ./configure \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
-    OBJDUMP=${OBJDUMP} \
-    STRIP=${STRIP} \
-    NM=${NM} \
-    AR=${AR} \
-    OBJCOPY=${OBJCOPY} \
-    CXXFILT=${CXXFILT} \
-    BUILD_NM=${NM} \
-    BUILD_AR=${AR} \
-    BUILD_OBJCOPY=${OBJCOPY} \
-    BUILD_STRIP=${STRIP} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
