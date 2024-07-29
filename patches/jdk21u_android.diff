@@ -2592,18 +2592,3 @@ index c0626e8f9a45..3cd0550eb314 100644
      fi
  
    elif test "x$TOOLCHAIN_TYPE" = xxlc; then
-diff --git a/make/autoconf/toolchain.m4 b/make/autoconf/toolchain.m4
-index 7a24815..d20a9ff 100644
---- a/make/autoconf/toolchain.m4
-+++ b/make/autoconf/toolchain.m4
-@@ -932,8 +932,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
-         UTIL_REQUIRE_PROGS(BUILD_CC, clang)
-         UTIL_REQUIRE_PROGS(BUILD_CXX, clang++)
-       else
--        UTIL_REQUIRE_PROGS(BUILD_CC, cc gcc)
--        UTIL_REQUIRE_PROGS(BUILD_CXX, CC g++)
-+        UTIL_REQUIRE_PROGS(BUILD_CC, clang gcc)
-+        UTIL_REQUIRE_PROGS(BUILD_CXX, clang++ g++)
-       fi
-       UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
-       UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
