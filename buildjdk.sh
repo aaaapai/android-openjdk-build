@@ -83,7 +83,7 @@ bash ./configure \
     --with-version-pre=- \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS -D__ANDROID_API__=${API}" \
+    --with-extra-cxxflags="$CFLAGS -D__ANDROID_MIN_SDK_VERSION__=${API}" \
     --with-extra-ldflags="$LDFLAGS" \
     --disable-precompiled-headers \
     --disable-warnings-as-errors \
