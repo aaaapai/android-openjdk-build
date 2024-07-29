@@ -56,7 +56,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   STRIP=$STRIP \
   "
 
-export CFLAGS+=" -mllvm -polly -DANDROID -D__ANDROID_API__=${API}"
+export CFLAGS+=" -mllvm -polly -DANDROID"
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
@@ -83,7 +83,7 @@ bash ./configure \
     --with-version-pre=- \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS" \
+    --with-extra-cxxflags="$CFLAGS -D__ANDROID_API__=${API}" \
     --with-extra-ldflags="$LDFLAGS" \
     --disable-precompiled-headers \
     --disable-warnings-as-errors \
