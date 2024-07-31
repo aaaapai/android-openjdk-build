@@ -40,10 +40,6 @@ platform_args="--with-toolchain-type=gcc \
   AR=${AR} \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
-  BUILD_NM=${NM} \
-  BUILD_AR=${AR} \
-  BUILD_OBJCOPY=${OBJCOPY} \
-  BUILD_STRIP=${STRIP} \
   "
 if [[ "$TARGET_JDK" == "x86" ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
