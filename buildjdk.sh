@@ -42,7 +42,6 @@ platform_args="--with-toolchain-type=gcc \
   CXXFILT=${CXXFILT} \
   BUILD_NM=${NM} \
   BUILD_AR=${AR} \
-  BUILD_LD=${LD} \
   BUILD_OBJCOPY=${OBJCOPY} \
   BUILD_STRIP=${STRIP} \
   "
@@ -83,7 +82,7 @@ bash ./configure \
     --with-version-pre=- \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS -D__ANDROID_MIN_SDK_VERSION__=${API}" \
+    --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
     --disable-precompiled-headers \
     --disable-warnings-as-errors \
