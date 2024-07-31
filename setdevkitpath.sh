@@ -26,7 +26,7 @@ fi
 
 export JVM_PLATFORM=linux
 # Set NDK
-export API=24
+export API=21
 
 # Runners usually ship with a recent NDK already
 if [[ -z "$ANDROID_NDK_HOME" ]]
