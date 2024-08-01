@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-git clone -b test --depth 1 https://github.com/aaaapai/dragonwell21 openjdk
+git clone --depth 1 https://github.com/kuaiwei/dragonwell21 openjdk
