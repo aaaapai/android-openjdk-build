@@ -16,13 +16,12 @@ diff --git a/make/autoconf/flags-ldflags.m4 b/make/autoconf/flags-ldflags.m4
 index 2aca285d3..494262487 100644
 --- a/make/autoconf/flags-ldflags.m4
 +++ b/make/autoconf/flags-ldflags.m4
-@@ -173,7 +173,9 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
+@@ -173,7 +173,8 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
         test "x${OPENJDK_$1_CPU}" = xmips64el; then
        $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      else
 -      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=gnu"
 +      # Android 5.x does not support GNU hash style
-+      # gnu
 +      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      fi
  
@@ -2610,105 +2609,3 @@ index 7a24815..d20a9ff 100644
        fi
        UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
        UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
-diff --git a/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp b/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
---- a/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
-+++ b/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
-@@ -31,41 +31,17 @@
- #include "utilities/debug.hpp"
-
- void ZNUMA::pd_initialize() {
--  _enabled = UseNUMA;
-+  _enabled = false;
- }
-
- uint32_t ZNUMA::count() {
--  if (!_enabled) {
--    // NUMA support not enabled
--    return 1;
--  }
-+  return 1;
-+}
-
--  return os::Linux::numa_max_node() + 1;
--}
--
- uint32_t ZNUMA::id() {
--  if (!_enabled) {
--    // NUMA support not enabled
--    return 0;
--  }
-+  return 0;
-+}
-
--  return os::Linux::get_node_by_cpu(ZCPU::id());
--}
--
- uint32_t ZNUMA::memory_id(uintptr_t addr) {
--  if (!_enabled) {
--    // NUMA support not enabled, assume everything belongs to node zero
--    return 0;
--  }
--
--  uint32_t id = (uint32_t)-1;
--
--  if (ZSyscall::get_mempolicy((int*)&id, nullptr, 0, (void*)addr, MPOL_F_NODE | MPOL_F_ADDR) == -1) {
--    ZErrno err;
--    fatal("Failed to get NUMA id for memory at " PTR_FORMAT " (%s)", addr, err.to_string());
--  }
--
--  assert(id < count(), "Invalid NUMA id");
--
--  return id;
-+  return 0;
- }
-diff --git a/src/hotspot/os/linux/gc/x/xNUMA_linux.cpp b/src/hotspot/os/linux/gc/x/xNUMA_linux.cpp
---- a/src/hotspot/os/linux/gc/x/xNUMA_linux.cpp
-+++ b/src/hotspot/os/linux/gc/x/xNUMA_linux.cpp
-@@ -31,41 +31,17 @@
- #include "utilities/debug.hpp"
-
- void XNUMA::pd_initialize() {
--  _enabled = UseNUMA;
-+  _enabled = false;
- }
-
- uint32_t XNUMA::count() {
--  if (!_enabled) {
--    // NUMA support not enabled
--    return 1;
--  }
-+  return 1;
-+}
-
--  return os::Linux::numa_max_node() + 1;
--}
--
- uint32_t XNUMA::id() {
--  if (!_enabled) {
--    // NUMA support not enabled
--    return 0;
--  }
-+  return 0;
-+}
-
--  return os::Linux::get_node_by_cpu(XCPU::id());
--}
--
- uint32_t XNUMA::memory_id(uintptr_t addr) {
--  if (!_enabled) {
--    // NUMA support not enabled, assume everything belongs to node zero
--    return 0;
--  }
--
--  uint32_t id = (uint32_t)-1;
--
--  if (XSyscall::get_mempolicy((int*)&id, nullptr, 0, (void*)addr, MPOL_F_NODE | MPOL_F_ADDR) == -1) {
--    XErrno err;
--    fatal("Failed to get NUMA id for memory at " PTR_FORMAT " (%s)", addr, err.to_string());
--  }
--
--  assert(id < count(), "Invalid NUMA id");
--
--  return id;
-+  return 0;
- }
