@@ -33,24 +33,25 @@ ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
-  --build=x86_64-unknown-linux-gnu \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-  OBJCOPY=${OBJCOPY} \
-  RANLIB=${RANLIB} \
-  LINK=${LINK} \
-  AR=${AR} \
-  AS=${AS} \
-  NM=${NM} \
+  OBJDUMP=${OBJDUMP} \
   STRIP=${STRIP} \
-  READELF=${READELF} \
+  NM=${NM} \
+  AR=${AR} \
+  OBJCOPY=${OBJCOPY} \
+  CXXFILT=${CXXFILT} \
   "
+if [[ "$TARGET_JDK" == "x86" ]]; then
+    platform_args+="--build=x86_64-unknown-linux-gnu \
+    "
+fi
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   AR=$AR \
   STRIP=$STRIP \
   "
 
-export CFLAGS+=" -DANDROID -mllvm -polly"
+export CFLAGS+=" -mllvm -polly -DANDROID"
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
@@ -74,8 +75,7 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
-    --with-version-pre=- \
-    --with-jmod-compress=zip-9 \
+    --with-version-pre=" " \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
@@ -93,16 +93,6 @@ bash ./configure \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
-    OBJDUMP=${OBJDUMP} \
-    STRIP=${STRIP} \
-    NM=${NM} \
-    AR=${AR} \
-    OBJCOPY=${OBJCOPY} \
-    CXXFILT=${CXXFILT} \
-    BUILD_NM=${NM} \
-    BUILD_AR=${AR} \
-    BUILD_OBJCOPY=${OBJCOPY} \
-    BUILD_STRIP=${STRIP} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then

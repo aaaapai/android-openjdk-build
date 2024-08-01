@@ -16,13 +16,12 @@ diff --git a/make/autoconf/flags-ldflags.m4 b/make/autoconf/flags-ldflags.m4
 index 2aca285d3..494262487 100644
 --- a/make/autoconf/flags-ldflags.m4
 +++ b/make/autoconf/flags-ldflags.m4
-@@ -173,7 +173,9 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
+@@ -173,7 +173,8 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
         test "x${OPENJDK_$1_CPU}" = xmips64el; then
        $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      else
 -      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=gnu"
 +      # Android 5.x does not support GNU hash style
-+      # gnu
 +      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
      fi
  
@@ -2555,3 +2554,58 @@ index 3b4a15b..1bca2bc 100644
      InitLauncher(javaw);
      DumpState();
      if (JLI_IsTraceLauncher()) {
+diff --git a/src/java.base/unix/native/libnet/net_util_md.c b/src/java.base/unix/native/libnet/net_util_md.c
+index 4ec11a136..01b85db4d 100644
+--- a/src/java.base/unix/native/libnet/net_util_md.c
++++ b/src/java.base/unix/native/libnet/net_util_md.c
+@@ -129,6 +129,7 @@ jint  IPv6_supported()
+     SOCKETADDRESS sa;
+     socklen_t sa_len = sizeof(SOCKETADDRESS);
+ 
++#ifndef __ANDROID__  // ANDROID: skip check, see libcore commit ae218d9b
+     fd = socket(AF_INET6, SOCK_STREAM, 0) ;
+     if (fd < 0) {
+         /*
+@@ -172,6 +173,7 @@ jint  IPv6_supported()
+         }
+     }
+ #endif
++#endif  // !defined __ANDROID__
+ 
+     /*
+      *  OK we may have the stack available in the kernel,
+diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
+index c0626e8f9a45..3cd0550eb314 100644
+--- a/make/autoconf/flags-cflags.m4
++++ b/make/autoconf/flags-cflags.m4
+@@ -58,13 +58,7 @@ AC_DEFUN([FLAGS_SETUP_SHARED_LIBS],
+       SET_SHARED_LIBRARY_NAME='-Wl,-soname=[$]1'
+       SET_SHARED_LIBRARY_MAPFILE='-Wl,-version-script=[$]1'
+ 
+-      # arm specific settings
+-      if test "x$OPENJDK_TARGET_CPU" = "xarm"; then
+-        # '-Wl,-z,origin' isn't used on arm.
+-        SET_SHARED_LIBRARY_ORIGIN='-Wl,-rpath,\$$$$ORIGIN[$]1'
+-      else
+-        SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
+-      fi
++      SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
+     fi
+ 
+   elif test "x$TOOLCHAIN_TYPE" = xxlc; then
+
+diff --git a/make/autoconf/toolchain.m4 b/make/autoconf/toolchain.m4
+index 7a24815..d20a9ff 100644
+--- a/make/autoconf/toolchain.m4
++++ b/make/autoconf/toolchain.m4
+@@ -932,8 +932,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
+         UTIL_REQUIRE_PROGS(BUILD_CC, clang)
+         UTIL_REQUIRE_PROGS(BUILD_CXX, clang++)
+       else
+-        UTIL_REQUIRE_PROGS(BUILD_CC, cc gcc)
+-        UTIL_REQUIRE_PROGS(BUILD_CXX, CC g++)
++        UTIL_REQUIRE_PROGS(BUILD_CC, clang gcc)
++        UTIL_REQUIRE_PROGS(BUILD_CXX, clang++ g++)
+       fi
+       UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
+       UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
