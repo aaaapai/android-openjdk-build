@@ -4,10 +4,13 @@ set -e
 unset AR AS CC CXX LD OBJCOPY RANLIB STRIP CPPFLAGS LDFLAGS
 git clone --depth 1 https://github.com/termux/termux-elf-cleaner
 cd termux-elf-cleaner
-autoreconf --install
-bash configure
-make CFLAGS=-D__ANDROID_API__=${API}
-cd ..
+mkdir build
+cd build
+export CFLAGS=-D__ANDROID_API__=${API}
+cmake ..
+make -j4
+unset CFLAGS
+cd ../..
 
 findexec() { find $1 -type f -name "*" -not -name "*.o" -exec sh -c '
     case "$(head -n 1 "$1")" in
@@ -19,8 +22,8 @@ exit 1
 ' sh {} \; -print
 }
 
-findexec jreout | xargs -- ./termux-elf-cleaner/termux-elf-cleaner
-findexec jdkout | xargs -- ./termux-elf-cleaner/termux-elf-cleaner
+findexec jreout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
+findexec jdkout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 
 cp -Rf jre_override/lib/* jreout/lib/
 cp -Rf jre_override/lib/* jdkout/jre/lib/
