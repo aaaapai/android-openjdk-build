@@ -1,14 +1,12 @@
 #!/bin/bash
 set -e
 
-if [ "$BUILD_IOS" != "1" ]; then
-
 unset AR AS CC CXX LD OBJCOPY RANLIB STRIP CPPFLAGS LDFLAGS
-git clone -b v2.2.0 --depth 1 https://github.com/termux/termux-elf-cleaner
+git clone --depth 1 https://github.com/termux/termux-elf-cleaner
 cd termux-elf-cleaner
 autoreconf --install
 bash configure
-make CFLAGS=-D__ANDROID_API__=24
+make CFLAGS=-D__ANDROID_API__=${API}
 cd ..
 
 findexec() { find $1 -type f -name "*" -not -name "*.o" -exec sh -c '
@@ -24,10 +22,8 @@ exit 1
 findexec jreout | xargs -- ./termux-elf-cleaner/termux-elf-cleaner
 findexec jdkout | xargs -- ./termux-elf-cleaner/termux-elf-cleaner
 
-fi
-
-sudo cp -R jre_override/lib/* jreout/lib/
-sudo cp -R jre_override/lib/* jdkout/jre/lib/
+cp -Rf jre_override/lib/* jreout/lib/
+cp -Rf jre_override/lib/* jdkout/jre/lib/
 
 cd jreout
 
