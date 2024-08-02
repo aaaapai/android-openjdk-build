@@ -49,6 +49,7 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk8u_android.diff || echo "git apply failed (universal patch set)"
+git apply --reject --whitespace=fix ../patches/ipv6_support.diff || echo "git apply failed (universal patch set)"
 git apply --reject --whitespace=fix ../patches/jdk8u_android_distags.diff || echo "git apply failed (universal patch set)"
 if [ "$TARGET_JDK" != "aarch32" ]; then
    git apply --reject --whitespace=fix ../patches/jdk8u_android_main.diff || echo "git apply failed (main non-universal patch set)"
