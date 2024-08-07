@@ -34,10 +34,12 @@ ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-  OBJCOPY=${OBJCOPY} \
-  AR=${AR} \
-  NM=${NM} \
-  STRIP=${STRIP} \
+    OBJDUMP=${OBJDUMP} \
+    STRIP=${STRIP} \
+    NM=${NM} \
+    AR=${AR} \
+    OBJCOPY=${OBJCOPY} \
+    CXXFILT=${CXXFILT} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
@@ -45,7 +47,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   STRIP=$STRIP \
   "
 
-export CFLAGS+=" -DANDROID -mllvm -polly"
+export CFLAGS+=" -mllvm -polly -DANDROID"
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
@@ -69,7 +71,7 @@ git apply --reject --whitespace=fix ../patches/jdk17u_android.diff || echo "git 
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
-    --with-version-pre=- \
+    --with-version-pre=" " \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
@@ -87,16 +89,6 @@ bash ./configure \
     --with-fontconfig-include=$ANDROID_INCLUDE \
     $AUTOCONF_x11arg $AUTOCONF_EXTRA_ARGS \
     --x-libraries=/usr/lib \
-    OBJDUMP=${OBJDUMP} \
-    STRIP=${STRIP} \
-    NM=${NM} \
-    AR=${AR} \
-    OBJCOPY=${OBJCOPY} \
-    CXXFILT=${CXXFILT} \
-    BUILD_NM=${NM} \
-    BUILD_AR=${AR} \
-    BUILD_OBJCOPY=${OBJCOPY} \
-    BUILD_STRIP=${STRIP} \
         $platform_args || \
 error_code=$?
 if [[ "$error_code" -ne 0 ]]; then
