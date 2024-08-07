@@ -10,6 +10,7 @@ export JDK_DEBUG_LEVEL=release
     echo "Downloading NDK"
     wget -nc -nv -O android-ndk-$NDK_VERSION-linux-x86_64.zip "https://dl.google.com/android/repository/android-ndk-$NDK_VERSION-linux.zip"
     unzip -q android-ndk-$NDK_VERSION-linux-x86_64.zip
+    export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.3.11579264
   fi
 cp devkit.info.${TARGET_SHORT} ${TOOLCHAIN}
 
