@@ -31,7 +31,7 @@ chmod +x android-wrapped-clang
 chmod +x android-wrapped-clang++
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
-platform_args="--with-toolchain-type=gcc \
+platform_args="--with-toolchain-type=clang \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
   OBJDUMP=${OBJDUMP} \
