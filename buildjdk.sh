@@ -36,8 +36,13 @@ platform_args="--with-toolchain-type=clang \
   STRIP=${STRIP} \
   CC=${CC} \
   CXX=${CXX} \
-  NM=${NM} \
-  AR=${AR} \
+  BUILD_NM=${NM} \
+  BUILD_AR=${AR} \
+  BUILD_STRIP=$STRIP \
+  BUILD_OBJCOPY=$OBJCOPY \
+  BUILD_LD="$LD" \
+  BUILD_LDCXX="$LD" \
+  BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
   "
