@@ -36,6 +36,8 @@ platform_args="--with-toolchain-type=gcc \
   --with-freetype-lib=$FREETYPE_DIR/lib \
   OBJDUMP=${OBJDUMP} \
   STRIP=${STRIP} \
+  CC=${CC} \
+  CXX=${CXX} \
   NM=${NM} \
   AR=${AR} \
   OBJCOPY=${OBJCOPY} \
