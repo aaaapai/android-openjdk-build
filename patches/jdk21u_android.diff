@@ -2607,16 +2607,10 @@ index 7a24815..d20a9ff 100644
 -VALID_TOOLCHAINS_linux="gcc clang"
 +VALID_TOOLCHAINS_linux="clang gcc"
  VALID_TOOLCHAINS_macosx="clang"
-@@ -932,8 +932,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
-         UTIL_REQUIRE_PROGS(BUILD_CC, clang)
-         UTIL_REQUIRE_PROGS(BUILD_CXX, clang++)
+@@ -932,4 +932,4 @@
        else
 -        UTIL_REQUIRE_PROGS(BUILD_CC, cc gcc)
--        UTIL_REQUIRE_PROGS(BUILD_CXX, cxx g++)
+-        UTIL_REQUIRE_PROGS(BUILD_CXX, CC g++)
 +        UTIL_REQUIRE_PROGS(BUILD_CC, CC gcc)
 +        UTIL_REQUIRE_PROGS(BUILD_CXX, CXX g++)
        fi
--      UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
--      UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
-+      UTIL_LOOKUP_PROGS(BUILD_NM, NM gcc-nm)
-+      UTIL_LOOKUP_PROGS(BUILD_AR, AR gcc-ar lib)
