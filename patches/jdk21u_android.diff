@@ -2598,7 +2598,7 @@ diff --git a/make/autoconf/toolchain.m4 b/make/autoconf/toolchain.m4
 index 7a24815..d20a9ff 100644
 --- a/make/autoconf/toolchain.m4
 +++ b/make/autoconf/toolchain.m4
-@@ -37,1 +37,1 @@
+@@ -37,6 +37,6 @@
  # All valid toolchains, regardless of platform (used by help.m4)
 -VALID_TOOLCHAINS_all="gcc clang xlc microsoft"
 +VALID_TOOLCHAINS_all="clang gcc xlc microsoft"
