@@ -2611,8 +2611,10 @@ index 7a24815..d20a9ff 100644
          UTIL_REQUIRE_PROGS(BUILD_CC, clang)
          UTIL_REQUIRE_PROGS(BUILD_CXX, clang++)
        else
-         UTIL_REQUIRE_PROGS(BUILD_CC, CC gcc)
-         UTIL_REQUIRE_PROGS(BUILD_CXX, CXX g++)
+-        UTIL_REQUIRE_PROGS(BUILD_CC, cc gcc)
+-        UTIL_REQUIRE_PROGS(BUILD_CXX, cxx g++)
++        UTIL_REQUIRE_PROGS(BUILD_CC, CC gcc)
++        UTIL_REQUIRE_PROGS(BUILD_CXX, CXX g++)
        fi
 -      UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
 -      UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
