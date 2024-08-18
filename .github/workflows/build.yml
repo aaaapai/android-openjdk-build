@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.4
@@ -20,10 +20,6 @@ jobs:
       with:
         java-version: 21
         distribution: temurin
-    - name: set up python   
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13.0-beta.3'
     - name: Install build dependencies
       run: |
         sudo apt update
