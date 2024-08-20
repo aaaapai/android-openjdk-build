@@ -26,7 +26,7 @@ fi
 
 export JVM_PLATFORM=linux
 # Set NDK
-export API=21
+export API=22
 
 # Runners usually ship with a recent NDK already
 if [[ -z "$ANDROID_NDK_HOME" ]]
@@ -52,8 +52,8 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 export DLLTOOL=/usr/bin/llvm-dlltool-18
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
-export CC=$PWD/android-wrapped-clang
-export CXX=$PWD/android-wrapped-clang++
+export CC=$thecc
+export CXX=$thecxx
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
 export LD=$TOOLCHAIN/bin/ld.lld
