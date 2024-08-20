@@ -56,7 +56,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   STRIP=$STRIP \
   "
 
-export CFLAGS+=" -mllvm -polly -DANDROID"
+export CFLAGS+=" -DANDROID -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -flto=auto -fwhole-program-vtables"
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
