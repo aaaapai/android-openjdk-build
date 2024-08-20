@@ -2598,6 +2598,15 @@ diff --git a/make/autoconf/toolchain.m4 b/make/autoconf/toolchain.m4
 index 7a24815..d20a9ff 100644
 --- a/make/autoconf/toolchain.m4
 +++ b/make/autoconf/toolchain.m4
+@@ -37,6 +37,6 @@
+ # All valid toolchains, regardless of platform (used by help.m4)
+-VALID_TOOLCHAINS_all="gcc clang xlc microsoft"
++VALID_TOOLCHAINS_all="clang gcc xlc microsoft"
+ 
+ # These toolchains are valid on different platforms
+-VALID_TOOLCHAINS_linux="gcc clang"
++VALID_TOOLCHAINS_linux="clang gcc"
+ VALID_TOOLCHAINS_macosx="clang"
 @@ -932,8 +932,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
          UTIL_REQUIRE_PROGS(BUILD_CC, clang)
          UTIL_REQUIRE_PROGS(BUILD_CXX, clang++)
