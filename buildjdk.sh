@@ -82,8 +82,8 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 bash ./configure \
     --with-version-pre=" " \
     --openjdk-target=$TARGET \
-    --with-extra-cflags="$CFLAGS" \
-    --with-extra-cxxflags="$CFLAGS" \
+    --with-extra-cflags="$CFLAGS -std=gnu17" \
+    --with-extra-cxxflags="$CFLAGS -std=gnu++17" \
     --with-extra-ldflags="$LDFLAGS" \
     --disable-precompiled-headers \
     --disable-warnings-as-errors \
