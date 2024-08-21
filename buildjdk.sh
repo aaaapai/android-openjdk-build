@@ -27,6 +27,8 @@ fi
 # cp -R /usr/include/X11 $ANDROID_INCLUDE/
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
+chmod +x android-wrapped-clang
+chmod +x android-wrapped-clang++
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=clang \
