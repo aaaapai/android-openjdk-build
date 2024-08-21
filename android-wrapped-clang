@@ -1,2 +1,2 @@
 #!/bin/bash
-  exec $thecc -std=gnu17
+exec $thecc -std=gnu17
