@@ -1,2 +1,2 @@
 #!/bin/bash
-  exec $thecxx -std=gnu++17
+exec $thecxx -std=gnu++17
