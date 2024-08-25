@@ -2590,7 +2590,7 @@ diff --git a/hotspot/src/share/vm/jfr/recorder/repository/jfrChunkWriter.cpp b/h
 index 64253c7064..a14035abb2 100644
 --- a/hotspot/src/share/vm/jfr/recorder/repository/jfrChunkWriter.cpp
 +++ b/hotspot/src/share/vm/jfr/recorder/repository/jfrChunkWriter.cpp
-@@ -32,6 +32,11 @@
+@@ -32,5 +32,10 @@
  #include "runtime/os.hpp"
  #include "runtime/os.hpp"
  
@@ -2599,9 +2599,8 @@ index 64253c7064..a14035abb2 100644
 +# define S_IWRITE S_IWUSR
 +#endif
 +
- static const u2 JFR_VERSION_MAJOR = 2;
- static const u2 JFR_VERSION_MINOR = 0;
- static const size_t MAGIC_LEN = 4;
+ const u2 JFR_VERSION_MAJOR = 2;
+ const u2 JFR_VERSION_MINOR = 0;
 diff --git a/hotspot/src/share/vm/jfr/recorder/repository/jfrEmergencyDump.cpp b/hotspot/src/share/vm/jfr/recorder/repository/jfrEmergencyDump.cpp
 index debe852b03..0b51d86fc8 100644
 --- a/hotspot/src/share/vm/jfr/recorder/repository/jfrEmergencyDump.cpp
