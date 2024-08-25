@@ -74,7 +74,7 @@ bash ./configure \
     --with-cacerts-file=${PWD}/common/security/cacerts \
     --with-milestone=fcs \
     --enable-unlimited-crypto \
-    --with-boot-jdk=../dragonwell8/dragonwell-8.15.16 \
+    --with-boot-jdk=../dragonwell8/dragonwell-8.19.20 \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
