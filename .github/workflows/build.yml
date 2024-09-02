@@ -13,31 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@main
     - name: set up JDK 8
-      uses: actions/setup-java@v4.1.0
+      uses: actions/setup-java@main
       with:
         java-version: '8'
         distribution: 'temurin'
     - name: Install build dependencies
       run: |
         sudo apt update
-        sudo apt -y install autoconf python3 python-is-python3 unzip zip systemtap-sdt-dev gcc-multilib g++-multilib libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev
+        sudo apt -y install systemtap-sdt-dev gcc-multilib g++-multilib libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev
     - name: Build with CI build script
       run: bash "ci_build_arch_${{matrix.arch}}.sh"
     - name: Upload JDK build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: "jdk8-${{matrix.arch}}"
         path: jdk8*.tar.xz
 
     - name: Upload JRE build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: 'jre8-${{matrix.arch}}'
         path: jre8*.tar.xz
     - name: Upload JRE debuginfo build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: "jre8-debuginfo-${{matrix.arch}}"
         path: dizout
@@ -47,31 +47,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@main
     - name: Get jre8-aarch32
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre8-aarch32
         path: pojav
     - name: Get jre8-aarch64
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre8-aarch64
         path: pojav
     - name: Get jre8-x86
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre8-x86
         path: pojav
     - name: Get jre8-x86_64
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre8-x86_64
         path: pojav
     - name: Repack JRE
       run: bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre8-pojav
     - name: Upload artifact
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
           name: jre8-pojav
           path: pojav/jre8-pojav/*
