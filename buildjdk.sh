@@ -7,12 +7,13 @@ then
   export TARGET_JDK=aarch32
   export TARGET_PHYS=aarch32-linux-androideabi
   export JVM_VARIANTS=client
+  export CFLAGS+=" -D__thumb__"
 else
   export TARGET_PHYS=$TARGET
 fi
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
-export CUPS_DIR=$PWD/cups-2.2.4
+export CUPS_DIR=$PWD/cups
 export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 
 # if [[ "$TARGET_JDK" == "aarch32" ]] || [[ "$TARGET_JDK" == "aarch64" ]]
@@ -26,7 +27,7 @@ export CFLAGS+=" -DLE_STANDALONE" # -I$FREETYPE_DIR -I$CUPS_DI
 # cp -R /usr/include/X11 $ANDROID_INCLUDE/
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
-export CFLAGS+=" -O3 -D__ANDROID__"
+export CFLAGS+=" -O3 -DANDROID"
 
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
