@@ -22,7 +22,7 @@ jobs:
     - name: Install build dependencies
       run: |
         sudo apt update
-        sudo apt -y install systemtap-sdt-dev gcc-multilib g++-multilib libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev
+        sudo apt -y install systemtap-sdt-dev libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev
     - name: Build with CI build script
       run: bash "ci_build_arch_${{matrix.arch}}.sh"
     - name: Upload JDK build output
