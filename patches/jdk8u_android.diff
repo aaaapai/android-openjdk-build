@@ -1432,19 +1432,6 @@ index 0e29abe8f8..856d8c7d06 100644
  
  ifeq ($(USE_CLANG), true)
    # However we need to clean the code up before we can unrestrictedly enable this option with Clang
-@@ -279,8 +280,10 @@ endif
- #------------------------------------------------------------------------
- # Linker flags
- 
--# statically link libstdc++.so, work with gcc but ignored by g++
--STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+# statically link libc++.so, work with gcc but ignored by g++
-+# STATIC_STDCXX = -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic
-+
-+STATIC_STDCXX = -Wl,-Bstatic -lsupc++ -Wl,-Bdynamic
- # While the VM needs the above line, adlc needs a separate setting:
- ADLC_STATIC_STDCXX = -static-libstdc++
- 
 diff --git a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp b/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
 index 59d5b04de1..c31cde8646 100644
 --- a/hotspot/src/cpu/aarch64/vm/vtableStubs_aarch64.cpp
@@ -60892,3 +60879,18 @@ index 303c96d788..aa555cc286 100644
 +    }
 +
      /**
+diff --git a/common/autoconf/toolchain.m4 b/common/autoconf/toolchain.m4
+index ba4798e..5955110 100644
+--- a/common/autoconf/toolchain.m4
++++ b/common/autoconf/toolchain.m4
+@@ -763,8 +763,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
+       BASIC_PATH_PROGS(BUILD_CC, [clang cl cc gcc])
+       BASIC_PATH_PROGS(BUILD_CXX, [clang++ cl CC g++])
+     else
+-      BASIC_REQUIRE_PROGS(BUILD_CC, [cl cc gcc])
+-      BASIC_REQUIRE_PROGS(BUILD_CXX, [cl CC g++])
++      BASIC_REQUIRE_PROGS(BUILD_CC, [cl cc clang])
++      BASIC_REQUIRE_PROGS(BUILD_CXX, [cl CC clang++])
+     fi
+     BASIC_FIXUP_EXECUTABLE(BUILD_CC)
+     BASIC_FIXUP_EXECUTABLE(BUILD_CXX)
