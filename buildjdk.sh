@@ -76,6 +76,7 @@ fi
 #   --with-toolchain-type=clang \
 #   --with-native-debug-symbols=none \
 bash ./configure \
+    g++=$thecxx \
     --with-toolchain-type=clang \
     --openjdk-target=$TARGET_PHYS \
     --with-extra-cflags="$CFLAGS" \
