@@ -27,8 +27,6 @@ fi
 # cp -R /usr/include/X11 $ANDROID_INCLUDE/
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
-chmod +x android-wrapped-clang
-chmod +x android-wrapped-clang++
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=clang \
@@ -82,7 +80,7 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
-    --with-version-pre=" " \
+    --with-version-pre= \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
@@ -92,7 +90,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,zgc \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
     --with-native-debug-symbols=external \
