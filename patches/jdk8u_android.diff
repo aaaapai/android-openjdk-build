@@ -60879,10 +60879,42 @@ index 303c96d788..aa555cc286 100644
 +    }
 +
      /**
+diff --git a/hotspot/make/linux/makefiles/gcc.make b/hotspot/make/linux/makefiles/gcc.make
+index 70b130b..c0b6951 100644
+--- a/hotspot/make/linux/makefiles/gcc.make
++++ b/hotspot/make/linux/makefiles/gcc.make
+@@ -30,10 +30,10 @@ ifeq ($(SPEC),)
+   # When cross-compiling the ALT_COMPILER_PATH points
+   # to the cross-compilation toolset
+   ifdef CROSS_COMPILE_ARCH
+-    CXX = $(ALT_COMPILER_PATH)/g++
+-    CC  = $(ALT_COMPILER_PATH)/gcc
+-    HOSTCXX = g++
+-    HOSTCC  = gcc
++    CXX = $(ALT_COMPILER_PATH)/clang++
++    CC  = $(ALT_COMPILER_PATH)/clang
++    HOSTCXX = clang++
++    HOSTCC  = clang
+     STRIP = $(ALT_COMPILER_PATH)/strip
+   else
+     ifeq ($(USE_CLANG), true)
 diff --git a/common/autoconf/toolchain.m4 b/common/autoconf/toolchain.m4
-index ba4798e..5955110 100644
+index ba4798e..1d30c0a 100644
 --- a/common/autoconf/toolchain.m4
 +++ b/common/autoconf/toolchain.m4
+@@ -34,10 +34,10 @@
+ 
+ 
+ # All valid toolchains, regardless of platform (used by help.m4)
+-VALID_TOOLCHAINS_all="gcc clang solstudio xlc microsoft"
++VALID_TOOLCHAINS_all="clang gcc solstudio xlc microsoft"
+ 
+ # These toolchains are valid on different platforms
+-VALID_TOOLCHAINS_linux="gcc clang"
++VALID_TOOLCHAINS_linux="clang gcc"
+ VALID_TOOLCHAINS_solaris="solstudio"
+ VALID_TOOLCHAINS_macosx="gcc clang"
+ VALID_TOOLCHAINS_aix="xlc"
 @@ -763,8 +763,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_BUILD_COMPILERS],
        BASIC_PATH_PROGS(BUILD_CC, [clang cl cc gcc])
        BASIC_PATH_PROGS(BUILD_CXX, [clang++ cl CC g++])
