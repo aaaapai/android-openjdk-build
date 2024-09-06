@@ -31,7 +31,7 @@ export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-functio
 # cp -R /usr/include/X11 $ANDROID_INCLUDE/
 # cp -R /usr/include/fontconfig $ANDROID_INCLUDE/
 
-export CFLAGS+=" -O3 -DANDROID -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -flto=auto -fwhole-program-vtables"
+export CFLAGS+=" -O3 -DANDROID"
 
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
