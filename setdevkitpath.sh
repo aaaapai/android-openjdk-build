@@ -45,8 +45,8 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export thecc=$TOOLCHAIN/bin/${TARGET_1}${API}-clang
-  export thecxx=$TOOLCHAIN/bin/${TARGET_1}${API}-clang++
+  export thecc=$TOOLCHAIN/bin/armv7a-linux-androideabi${API}-clang
+  export thecxx=$TOOLCHAIN/bin/armv7a-linux-androideabi${API}-clang++
 else
   export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
   export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
