@@ -4,7 +4,7 @@ export NDK_VERSION=r26d
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
-  export BUILD_FREETYPE_VERSION="2.13.2"
+  export BUILD_FREETYPE_VERSION="2.13.3"
 fi
 
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
@@ -39,14 +39,18 @@ export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
-if [[ "$TARGET_JDK" == "arm" ]]
-then
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API}"
-else
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
-fi
+export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
+
+if [[ "$TARGET_JDK" == "arm" ]]
+then
+  export thecc=$TOOLCHAIN/bin/${TARGET_1}${API}-clang
+  export thecxx=$TOOLCHAIN/bin/${TARGET_1}${API}-clang++
+else
+  export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
+  export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
+fi
 
 # Configure and build.
 export DLLTOOL=/usr/bin/llvm-dlltool-18
