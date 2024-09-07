@@ -49,14 +49,14 @@ export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
-export DLLTOOL=/usr/bin/llvm-dlltool-18
+export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$thecc
 export CXX=$thecxx
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld.lld
+export LD=$TOOLCHAIN/bin/lld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 export READELF=$TOOLCHAIN/bin/llvm-readelf
