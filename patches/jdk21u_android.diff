@@ -210,6 +210,10 @@ index be1ac3f1f..4dd31c4b1 100644
  
  endif
  
+diff --git a/make/modules/java.desktop/lib/Awt2dLibraries.gmk b/make/modules/java.desktop/lib/Awt2dLibraries.gmk
+index 96576bb8d..13dd8e3e5 100644
+--- a/make/modules/java.desktop/lib/Awt2dLibraries.gmk
++++ b/make/modules/java.desktop/lib/Awt2dLibraries.gmk
 @@ -777,7 +777,7 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
        LIBS_aix := -liconv, \
    ))
