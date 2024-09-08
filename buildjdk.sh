@@ -60,6 +60,13 @@ if [[ "$TARGET_JDK" == "x86" ]]; then
    git apply --reject --whitespace=fix ../patches/jdk8u_android_page_trap_fix.diff || echo "git apply failed (x86 page trap fix)"
 fi
 
+#添加shenandoahGC
+chmod +x ../shenandoahGC.tar.bz2.1 ../shenandoahGC.tar.bz2.2
+cat ../patches/shenandoahGC.tar.bz2.1 ../patches/shenandoahGC.tar.bz2.2 > shenandoahGC.tar.bz2
+chmod +x shenandoahGC.tar.bz2
+tar -xpvj shenandoahGC.tar.bz2 -C ../patches
+git apply --reject --whitespace=fix ../patches/shenandoahGC.diff
+
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
 #   --with-extra-cflags="$CPPFLAGS" \
 #   --with-sysroot="$(xcrun --sdk iphoneos --show-sdk-path)" \
