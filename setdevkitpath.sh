@@ -43,7 +43,7 @@ if [[ "$TARGET_JDK" == "arm" ]]
 then
   export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API}"
 else
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
+  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API} -fuse-ld=lld -flto=thin"
 fi
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
