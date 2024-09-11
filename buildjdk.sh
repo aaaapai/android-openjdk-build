@@ -4,6 +4,7 @@ set -e
 
 export LANGSTD_CFLAGS+=" -std=gnu11"
 export LANGSTD_CXXFLAGS+=" -std=gnu++14"
+export STATIC_STDCXX_FLAGS="-nostdlib++ -stdlib=libc++ -static-libgcc"
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
