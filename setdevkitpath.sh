@@ -50,6 +50,8 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
 export Python3_ROOT_DIR=$TOOLCHAIN/python3/bin/python3
+export python-path=$TOOLCHAIN/python3/bin/python3
+export pythonLocation=$TOOLCHAIN/python3/bin/python3
 export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
