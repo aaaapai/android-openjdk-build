@@ -6,6 +6,8 @@ set -e
 export LANGSTD_CFLAGS+=" -std=gnu17"
 export LANGSTD_CXXFLAGS+=" -std=gnu++17"
 
+export STATIC_STDCXX_FLAGS+=" -nostdlib++ -stdlib=libc++ -static-libgcc"
+
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
 export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
