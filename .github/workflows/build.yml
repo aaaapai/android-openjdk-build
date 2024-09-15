@@ -13,13 +13,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.1.1
-    - name: set up python  
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13.0-beta.3' 
+      uses: actions/checkout@main
     - name: set up JDK 17
-      uses: actions/setup-java@v4.1.0
+      uses: actions/setup-java@main
       with:
         java-version: 17
         distribution: temurin
@@ -30,17 +26,17 @@ jobs:
     - name: Build with CI build script
       run: bash "ci_build_arch_${{matrix.arch}}.sh"
     - name: Upload JDK build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: "jdk17-${{matrix.arch}}"
         path: jdk17*.tar.xz
     - name: Upload JRE build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: 'jre17-${{matrix.arch}}'
         path: jre17*.tar.xz
     - name: Upload JRE debuginfo build output
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
         name: "jre17-debuginfo-${{matrix.arch}}"
         path: dizout
@@ -50,31 +46,31 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@main
     - name: Get jre17-aarch32
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre17-aarch32
         path: pojav
     - name: Get jre17-aarch64
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre17-aarch64
         path: pojav
     - name: Get jre17-x86
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre17-x86
         path: pojav
     - name: Get jre17-x86_64
-      uses: actions/download-artifact@v4.1.4
+      uses: actions/download-artifact@main
       with:
         name: jre17-x86_64
         path: pojav
     - name: Repack JRE
       run: bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre17-pojav
     - name: Upload artifact
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@main
       with:
           name: jre17-pojav
           path: pojav/jre17-pojav/*
