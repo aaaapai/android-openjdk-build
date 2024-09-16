@@ -6,7 +6,7 @@ set -e
 export LANGSTD_CFLAGS+=" -std=gnu17"
 export LANGSTD_CXXFLAGS+=" -std=gnu++17"
 
-export STATIC_STDCXX_FLAGS+=" -nostdlib++ -stdlib=libc++ -static-libgcc"
+export  -static-libgcc"
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
@@ -40,12 +40,15 @@ ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-    OBJDUMP=${OBJDUMP} \
-    STRIP=${STRIP} \
-    NM=${NM} \
-    AR=${AR} \
-    OBJCOPY=${OBJCOPY} \
-    CXXFILT=${CXXFILT} \
+  LANGSTD_CFLAGS+=" -std=c23" \
+  LANGSTD_CXXFLAGS+=" -std=gnu++0x" \
+  STATIC_STDCXX_FLAGS+=" -nostdlib++ -stdlib=libc++" \
+  OBJDUMP=${OBJDUMP} \
+  STRIP=${STRIP} \
+  NM=${NM} \
+  AR=${AR} \
+  OBJCOPY=${OBJCOPY} \
+  CXXFILT=${CXXFILT} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
