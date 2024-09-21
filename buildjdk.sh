@@ -76,7 +76,6 @@ bash ./configure \
     --host=$TARGET \
     --with-toolchain-path=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin \
     --with-sysroot=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
-    --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
