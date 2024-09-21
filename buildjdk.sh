@@ -81,11 +81,6 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 
 bash ./configure \
     --with-version-pre= \
-    --target=$TARGET \
-    --host=$TARGET \
-    --with-conf-name=$TARGET \
-    --with-toolchain-path=$TOOLCHAIN/bin \
-    --with-sysroot=$TOOLCHAIN/sysroot \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
