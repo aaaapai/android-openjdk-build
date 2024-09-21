@@ -72,6 +72,10 @@ git apply --reject --whitespace=fix ../patches/jdk24u.diff || echo "git apply fa
 
 bash ./configure \
     --with-version-pre=- \
+    --target=$TARGET \
+    --host=$TARGET \
+    --with-toolchain-path=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+    --with-sysroot=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
