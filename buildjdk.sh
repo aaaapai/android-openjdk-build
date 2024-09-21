@@ -89,7 +89,7 @@ bash ./configure \
     --with-vendor-url=https://aws.amazon.com/corretto/ \
     --with-vendor-name=Amazon.com Inc. \
     --with-vendor-vm-bug-url=https://github.com/corretto/corretto-21/issues/ \
-    --with-vendor-bug-url=https://github.com/corretto/corretto-${project.version.major}/issues/ \
+    --with-vendor-bug-url=https://github.com/corretto/corretto-21/issues/ \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
