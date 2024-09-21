@@ -45,9 +45,6 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
-  STATIC_STDCXX_FLAGS="-nostdlib++ -stdlib=libc++" \
-  LANGSTD_CFLAGS="-std=gnu17" \
-  LANGSTD_CXXFLAGS="-std=gnu++17" \
   "
 if [[ "$TARGET_JDK" == "x86" ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
