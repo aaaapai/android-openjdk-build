@@ -49,6 +49,9 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
+  STATIC_STDCXX_FLAGS="-nostdlib++ -stdlib=libc++" \
+  LANGSTD_CFLAGS="-std=gnu17" \
+  LANGSTD_CXXFLAGS="-std=gnu++17" \
   "
 if [[ "$TARGET_JDK" == "x86" ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
@@ -85,7 +88,15 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 
 bash ./configure \
     --with-version-pre= \
-    --openjdk-target=$TARGET \
+    --target=$TARGET \
+    --host=$TARGET \
+    --with-conf-name=$TARGET \
+    --with-toolchain-path=$TOOLCHAIN/bin \
+    --with-sysroot=$TOOLCHAIN/sysroot \
+    --with-vendor-url=https://aws.amazon.com/corretto/ \
+    --with-vendor-name=Amazon.com Inc. \
+    --with-vendor-vm-bug-url=https://github.com/corretto/corretto-21/issues/ \
+    --with-vendor-bug-url=https://github.com/corretto/corretto-${project.version.major}/issues/ \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
