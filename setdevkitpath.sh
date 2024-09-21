@@ -4,7 +4,7 @@ export NDK_VERSION=r26d
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
-  export BUILD_FREETYPE_VERSION="2.13.2"
+  export BUILD_FREETYPE_VERSION="2.13.3"
 fi
 
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
@@ -26,7 +26,7 @@ fi
 
 export JVM_PLATFORM=linux
 # Set NDK
-export API=21
+export API=22
 
 # Runners usually ship with a recent NDK already
 if [[ -z "$ANDROID_NDK_HOME" ]]
@@ -39,21 +39,16 @@ export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
-if [[ "$TARGET_JDK" == "arm" ]]
-then
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET_2}/${API}"
-else
-  export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
-fi
+export LDFLAGS="-flto=thin"
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
-export DLLTOOL=/usr/bin/llvm-dlltool-18
+export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
-export CC=$PWD/android-wrapped-clang
-export CXX=$PWD/android-wrapped-clang++
+export CC=$thecc
+export CXX=$thecxx
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
 export LD=$TOOLCHAIN/bin/ld.lld
