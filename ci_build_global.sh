@@ -5,6 +5,7 @@ set -e
 export JDK_DEBUG_LEVEL=release
 
   if [[ -d "$ANDROID_NDK_HOME" ]]; then
+    export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/26.3.11579264
     echo "NDK already exists: $ANDROID_NDK_HOME"
   else
     echo "Downloading NDK"
