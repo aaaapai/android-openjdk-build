@@ -214,7 +214,6 @@ diff --git a/make/modules/java.desktop/lib/Awt2dLibraries.gmk b/make/modules/jav
 index 96576bb8d..13dd8e3e5 100644
 --- a/make/modules/java.desktop/lib/Awt2dLibraries.gmk
 +++ b/make/modules/java.desktop/lib/Awt2dLibraries.gmk
--
 @@ -538,7 +538,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
      LDFLAGS_unix := -L$(INSTALL_LIBRARIES_HERE), \
      LDFLAGS_aix := -Wl$(COMMA)-berok, \
