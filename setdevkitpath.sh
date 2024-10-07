@@ -1,6 +1,6 @@
 # Use the old NDK r10e to not get internal compile error at (still?)
 # https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u/blob/aarch64-shenandoah-jdk8u272-b10/jdk/src/share/native/sun/java2d/loops/GraphicsPrimitiveMgr.c
-export NDK_VERSION=r26d
+export NDK_VERSION=r27b
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
@@ -49,7 +49,7 @@ export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
 # Configure and build.
-export DLLTOOL=/usr/bin/llvm-dlltool-18
+export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$PWD/android-wrapped-clang

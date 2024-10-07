@@ -4,7 +4,7 @@ set -e
 
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
-export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
+export CFLAGS+=" -DLE_STANDALONE -Wno-error=int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -O3 -D__thumb__"
@@ -12,7 +12,7 @@ else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -O3 -mstackrealign"
   else
-     export CFLAGS+=" -O3 -flto=auto"
+     export CFLAGS+=" -O3 -flto=thin"
   fi
 fi
 
@@ -34,12 +34,12 @@ ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-    OBJDUMP=${OBJDUMP} \
-    STRIP=${STRIP} \
-    NM=${NM} \
-    AR=${AR} \
-    OBJCOPY=${OBJCOPY} \
-    CXXFILT=${CXXFILT} \
+  OBJDUMP=${OBJDUMP} \
+  STRIP=${STRIP} \
+  NM=${NM} \
+  AR=${AR} \
+  OBJCOPY=${OBJCOPY} \
+  CXXFILT=${CXXFILT} \
   "
 AUTOCONF_x11arg="--x-includes=$ANDROID_INCLUDE/X11"
 AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
@@ -48,7 +48,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   "
 
 export CFLAGS+=" -mllvm -polly -DANDROID"
-export LDFLAGS+=" -L$PWD/dummy_libs" 
+export LDFLAGS+=" -L$PWD/dummy_libs -Wl,--undefined-version" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
 mkdir -p dummy_libs
