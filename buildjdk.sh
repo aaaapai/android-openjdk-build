@@ -12,7 +12,7 @@ else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -O3 -mstackrealign"
   else
-     export CFLAGS+=" -O3 -flto=auto"
+     export CFLAGS+=" -O3 -flto=thin"
   fi
 fi
 
