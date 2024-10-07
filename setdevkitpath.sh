@@ -53,7 +53,7 @@ else
 fi
 
 # Configure and build.
-export DLLTOOL=/usr/bin/llvm-dlltool-18
+export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$PWD/android-wrapped-clang
