@@ -2,15 +2,9 @@
 set -e
 . setdevkitpath.sh
 
-# 开启gnu17,gnu++17特性
-export LANGSTD_CFLAGS+=" -std=gnu17"
-export LANGSTD_CXXFLAGS+=" -std=gnu++17"
-
-export  -static-libgcc"
-
 export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
-export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
+export CFLAGS+=" -DLE_STANDALONE -Wno-error=int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -O3 -D__thumb__"
@@ -40,9 +34,6 @@ ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
 platform_args="--with-toolchain-type=gcc \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
-  LANGSTD_CFLAGS+=" -std=c23" \
-  LANGSTD_CXXFLAGS+=" -std=gnu++0x" \
-  STATIC_STDCXX_FLAGS+=" -nostdlib++ -stdlib=libc++" \
   OBJDUMP=${OBJDUMP} \
   STRIP=${STRIP} \
   NM=${NM} \
@@ -57,7 +48,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   "
 
 export CFLAGS+=" -mllvm -polly -DANDROID"
-export LDFLAGS+=" -L$PWD/dummy_libs" 
+export LDFLAGS+=" -L$PWD/dummy_libs -Wl,--undefined-version" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
 mkdir -p dummy_libs
