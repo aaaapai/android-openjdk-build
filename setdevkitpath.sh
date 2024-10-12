@@ -39,7 +39,7 @@ export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
-export LDFLAGS="-L$TOOLCHAIN/sysroot/usr/lib/${TARGET}/${API}"
+export LDFLAGS=""
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
@@ -60,7 +60,7 @@ export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld.lld
+export LD=$TOOLCHAIN/bin/ld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 export READELF=$TOOLCHAIN/bin/llvm-readelf
