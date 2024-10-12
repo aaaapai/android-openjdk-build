@@ -12,7 +12,7 @@ else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -O3 -mstackrealign"
   else
-     export CFLAGS+=" -O3 -flto=thin"
+     export CFLAGS+=" -O3"
   fi
 fi
 
@@ -41,7 +41,7 @@ platform_args="--with-toolchain-type=gcc \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
   "
-if [[ "$TARGET_JDK" == "x86" ]] || [[ "$TARGET_JDK" == "x86_64" ]]; then
+if [[ "$TARGET_JDK" == "x86" ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
     "
 fi
