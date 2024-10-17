@@ -29,6 +29,10 @@ findexec jdkout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 cp -rv jre_override/lib/* jreout/lib/ || true
 cp -rv jre_override/lib/* jdkout/lib/ || true
 
+if [ "${TARGET_SHORT}" = "arm64" ] && [ -f jreout/lib/jspawnhelper ]; then
+    cp jreout/lib/jspawnhelper ../libjsph17.so
+fi
+
 cd jreout
 
 # Strip
