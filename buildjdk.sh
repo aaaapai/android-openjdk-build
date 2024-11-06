@@ -72,14 +72,19 @@ git apply --reject --whitespace=fix ../patches/jdk17u_android.diff || echo "git 
 
 bash ./configure \
     --with-version-pre=" " \
-    --openjdk-target=$TARGET \
+    --with-conf-name="android-linux-aarch64" \
+    --with-toolchain-path="$toolchain" \
+    --with-sysroot="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot" \
+    --host=aarch64-linux-android \
+    --target=aarch64-linux-android \
+    --openjdk-target="$TARGET" \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
     --disable-precompiled-headers \
     --disable-warnings-as-errors \
     --enable-option-checking=fatal \
-    --enable-headless-only=yes \
+    --enable-headless-only \
     --with-jvm-variants=$JVM_VARIANTS \
     --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --with-cups-include=$CUPS_DIR \
