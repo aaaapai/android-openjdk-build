@@ -77,7 +77,6 @@ bash ./configure \
     --with-sysroot="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot" \
     --host=aarch64-linux-android \
     --target=aarch64-linux-android \
-    --openjdk-target="$TARGET" \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
