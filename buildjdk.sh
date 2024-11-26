@@ -31,7 +31,7 @@ chmod +x android-wrapped-clang
 chmod +x android-wrapped-clang++
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
-platform_args="--with-toolchain-type=gcc \
+platform_args="--with-toolchain-type=clang \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
   OBJDUMP=${OBJDUMP} \
@@ -72,11 +72,11 @@ git apply --reject --whitespace=fix ../patches/jdk17u_android.diff || echo "git 
 
 bash ./configure \
     --with-version-pre=" " \
-    --with-conf-name="android-linux-aarch64" \
-    --with-toolchain-path="$toolchain" \
+    --with-conf-name="$TARGET" \
+    --target=$TARGET \
+    --host=$TARGET \
+    --with-toolchain-path="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin" \
     --with-sysroot="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot" \
-    --host=aarch64-linux-android \
-    --target=aarch64-linux-android \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
     --with-extra-ldflags="$LDFLAGS" \
@@ -87,7 +87,6 @@ bash ./configure \
     --with-jvm-variants=$JVM_VARIANTS \
     --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --with-cups-include=$CUPS_DIR \
-    --with-devkit=$TOOLCHAIN \
     --with-native-debug-symbols=external \
     --with-debug-level=$JDK_DEBUG_LEVEL \
     --with-fontconfig-include=$ANDROID_INCLUDE \
