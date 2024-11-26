@@ -71,6 +71,7 @@ git apply --reject --whitespace=fix ../patches/jdk24u.diff || echo "git apply fa
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
+    --with-conf-name=$TARGET \
     --with-version-pre=- \
     --target=$TARGET \
     --host=$TARGET \
@@ -86,7 +87,6 @@ bash ./configure \
     --with-jvm-variants=$JVM_VARIANTS \
     --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --with-cups-include=$CUPS_DIR \
-    --with-devkit=$TOOLCHAIN \
     --with-native-debug-symbols=external \
     --with-debug-level=$JDK_DEBUG_LEVEL \
     --with-fontconfig-include=$ANDROID_INCLUDE \
