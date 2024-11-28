@@ -7,12 +7,12 @@ export CUPS_DIR=$PWD/cups
 export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export CFLAGS+=" -O3 -D__thumb__"
+  export CFLAGS+=" -Ofast -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
-     export CFLAGS+=" -O3 -mstackrealign"
+     export CFLAGS+=" -Ofast -mstackrealign"
   else
-     export CFLAGS+=" -O3 -flto=thin"
+     export CFLAGS+=" -Ofast -flto=thin"
   fi
 fi
 
@@ -90,7 +90,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,-zgc \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,+link-time-opt \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
     --with-native-debug-symbols=external \
