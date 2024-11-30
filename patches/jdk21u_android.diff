@@ -2508,7 +2508,7 @@ index c6e012ecf..d4f956756 100644
  
  #endif // OS_CPU_LINUX_AARCH64_JAVATHREAD_LINUX_AARCH64_HPP
 
- diff --git a/src/java.base/share/native/libjli/java.c b/src/java.base/share/native/libjli/java.c
+diff --git a/src/java.base/share/native/libjli/java.c b/src/java.base/share/native/libjli/java.c
 index 3b4a15b..1bca2bc 100644
 --- a/src/java.base/share/native/libjli/java.c
 +++ b/src/java.base/share/native/libjli/java.c
@@ -2618,3 +2618,78 @@ index 7a24815..d20a9ff 100644
        fi
        UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
        UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
+diff --git a/src/java.base/share/native/libjava/jni_util.h b/src/java.base/share/native/libjava/jni_util.h
+index 238a20b18..3587b9348 100644
+--- a/src/java.base/share/native/libjava/jni_util.h
++++ b/src/java.base/share/native/libjava/jni_util.h
+@@ -360,7 +360,7 @@ void buildJniFunctionName(const char *sym, const char *cname,
+ 
+ jstring getLastErrorString(JNIEnv *env);
+ 
+-JNIEXPORT int JNICALL
++JNIEXPORT char * JNICALL
+ getErrorString(int err, char *buf, size_t len);
+ 
+ #ifdef STATIC_BUILD
+diff --git a/src/java.base/unix/native/libjava/ProcessImpl_md.c b/src/java.base/unix/native/libjava/ProcessImpl_md.c
+index 8f7d09bfa..588f41344 100644
+--- a/src/java.base/unix/native/libjava/ProcessImpl_md.c
++++ b/src/java.base/unix/native/libjava/ProcessImpl_md.c
+@@ -325,10 +325,9 @@ throwIOException(JNIEnv *env, int errnum, const char *defaultDetail)
+     char tmpbuf[1024];
+     jstring s;
+ 
+-    if (errnum != 0) {
+-        int ret = getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
+-        if (ret != EINVAL)
+-            detail = tmpbuf;
++    if (errnum != EINVAL) {
++        getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
++        detail = tmpbuf;
+     }
+     /* ASCII Decimal representation uses 2.4 times as many bits as binary. */
+     fmtsize = sizeof(IOE_FORMAT) + strlen(detail) + 3 * sizeof(errnum);
+diff --git a/src/java.base/unix/native/libjava/jni_util_md.c b/src/java.base/unix/native/libjava/jni_util_md.c
+index 06d5501a8..a494ccc3c 100644
+--- a/src/java.base/unix/native/libjava/jni_util_md.c
++++ b/src/java.base/unix/native/libjava/jni_util_md.c
+@@ -62,7 +62,7 @@ getLastErrorString(JNIEnv *env)
+     return (buf[0] != 0) ? JNU_NewStringPlatform(env, buf) : NULL;
+ }
+ 
+-JNIEXPORT int JNICALL
++JNIEXPORT char * JNICALL
+ getErrorString(int err, char *buf, size_t len)
+ {
+     if (err == 0 || len < 1) return 0;
+diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
+index a1fc81564..fc0356e92 100644
+--- a/make/autoconf/libraries.m4
++++ b/make/autoconf/libraries.m4
+@@ -74,12 +74,7 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
+     NEEDS_LIB_FREETYPE=true
+   fi
+ 
+-  # Check if alsa is needed
+-  if test "x$OPENJDK_TARGET_OS" = xlinux; then
+-    NEEDS_LIB_ALSA=true
+-  else
+-    NEEDS_LIB_ALSA=false
+-  fi
++  NEEDS_LIB_ALSA=false
+ 
+   # Check if ffi is needed
+   if HOTSPOT_CHECK_JVM_VARIANT(zero) || test "x$ENABLE_FALLBACK_LINKER" = "xtrue"; then
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index fdc7aad3d..05e258c87 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -138,7 +138,7 @@
+ // for timer info max values which include all bits
+ #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
+ 
+-#if defined(MUSL_LIBC) || defined(__ANDROID__)
++#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 26)
+ // dlvsym is not a part of POSIX
+ // and musl libc doesn't implement it.
+ static void *dlvsym(void *handle,
