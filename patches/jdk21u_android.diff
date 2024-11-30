@@ -2618,42 +2618,6 @@ index 7a24815..d20a9ff 100644
        fi
        UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
        UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
-diff --git a/src/java.base/unix/native/libjava/ProcessImpl_md.c b/src/java.base/unix/native/libjava/ProcessImpl_md.c
-index 8f7d09bfa..588f41344 100644
---- a/src/java.base/unix/native/libjava/ProcessImpl_md.c
-+++ b/src/java.base/unix/native/libjava/ProcessImpl_md.c
-@@ -325,10 +325,9 @@ throwIOException(JNIEnv *env, int errnum, const char *defaultDetail)
-     char tmpbuf[1024];
-     jstring s;
- 
--    if (errnum != 0) {
--        int ret = getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
--        if (ret != EINVAL)
--            detail = tmpbuf;
-+    if (errnum != EINVAL) {
-+        getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
-+        detail = tmpbuf;
-     }
-     /* ASCII Decimal representation uses 2.4 times as many bits as binary. */
-     fmtsize = sizeof(IOE_FORMAT) + strlen(detail) + 3 * sizeof(errnum);
-diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
-index a1fc81564..fc0356e92 100644
---- a/make/autoconf/libraries.m4
-+++ b/make/autoconf/libraries.m4
-@@ -74,12 +74,7 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
-     NEEDS_LIB_FREETYPE=true
-   fi
- 
--  # Check if alsa is needed
--  if test "x$OPENJDK_TARGET_OS" = xlinux; then
--    NEEDS_LIB_ALSA=true
--  else
--    NEEDS_LIB_ALSA=false
--  fi
-+  NEEDS_LIB_ALSA=false
- 
-   # Check if ffi is needed
-   if HOTSPOT_CHECK_JVM_VARIANT(zero) || test "x$ENABLE_FALLBACK_LINKER" = "xtrue"; then
 diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
 index fdc7aad3d..05e258c87 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
