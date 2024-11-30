@@ -79,9 +79,6 @@ git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git 
 #   --with-extra-cxxflags="$CXXFLAGS -Dchar16_t=uint16_t -Dchar32_t=uint32_t" \
 #   --with-extra-cflags="$CPPFLAGS" \
 
-unset LD
-export LD=$TOOLCHAIN/bin/lld
-
 bash ./configure \
     --with-version-pre= \
     --openjdk-target=$TARGET \
