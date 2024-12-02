@@ -2618,3 +2618,34 @@ index 7a24815..d20a9ff 100644
        fi
        UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
        UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
+diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
+index a1fc81564..fc0356e92 100644
+--- a/make/autoconf/libraries.m4
++++ b/make/autoconf/libraries.m4
+@@ -74,12 +74,7 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
+     NEEDS_LIB_FREETYPE=true
+   fi
+ 
+-  # Check if alsa is needed
+-  if test "x$OPENJDK_TARGET_OS" = xlinux; then
+-    NEEDS_LIB_ALSA=true
+-  else
+-    NEEDS_LIB_ALSA=false
+-  fi
++  NEEDS_LIB_ALSA=false
+ 
+   # Check if ffi is needed
+   if HOTSPOT_CHECK_JVM_VARIANT(zero) || test "x$ENABLE_FALLBACK_LINKER" = "xtrue"; then
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index fdc7aad3d..05e258c87 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -138,7 +138,7 @@
+ // for timer info max values which include all bits
+ #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
+ 
+-#if defined(MUSL_LIBC) || defined(__ANDROID__)
++#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 26)
+ // dlvsym is not a part of POSIX
+ // and musl libc doesn't implement it.
+ static void *dlvsym(void *handle,
