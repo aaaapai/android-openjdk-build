@@ -1,6 +1,6 @@
 # Use the old NDK r10e to not get internal compile error at (still?)
 # https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u/blob/aarch64-shenandoah-jdk8u272-b10/jdk/src/share/native/sun/java2d/loops/GraphicsPrimitiveMgr.c
-export NDK_VERSION=r26d
+export NDK_VERSION=r27c
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
@@ -39,7 +39,7 @@ export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 export ANDROID_INCLUDE=$TOOLCHAIN/sysroot/usr/include
 
 export CPPFLAGS="-I$ANDROID_INCLUDE -I$ANDROID_INCLUDE/$TARGET" # -I/usr/include -I/usr/lib
-export LDFLAGS="-flto=thin"
+export LDFLAGS="-flto=thin -Wl,-plugin-opt=-emulated-tls"
 export thecc=$TOOLCHAIN/bin/${TARGET}${API}-clang
 export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 
