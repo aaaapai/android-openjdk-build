@@ -7,7 +7,7 @@ git clone --depth 1 https://github.com/termux/termux-elf-cleaner || true
 cd termux-elf-cleaner
 mkdir build
 cd build
-export CFLAGS=-D__ANDROID_API__=${API}
+export CFLAGS=-D__ANDROID_API__=24
 cmake ..
 make -j4
 unset CFLAGS
