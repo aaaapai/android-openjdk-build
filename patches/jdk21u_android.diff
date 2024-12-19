@@ -12,20 +12,6 @@ index 1fdd0143a..705b3e1f9 100644
    elif test "x$OPENJDK_TARGET_OS" = xmacosx; then
      CFLAGS_OS_DEF_JVM="-D_ALLBSD_SOURCE -D_DARWIN_C_SOURCE -D_XOPEN_SOURCE"
      CFLAGS_OS_DEF_JDK="-D_ALLBSD_SOURCE -D_DARWIN_UNLIMITED_SELECT"
-diff --git a/make/autoconf/flags-ldflags.m4 b/make/autoconf/flags-ldflags.m4
-index 2aca285d3..494262487 100644
---- a/make/autoconf/flags-ldflags.m4
-+++ b/make/autoconf/flags-ldflags.m4
-@@ -173,7 +173,8 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_CPU_DEP],
-        test "x${OPENJDK_$1_CPU}" = xmips64el; then
-       $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
-     else
--      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=gnu"
-+      # Android 5.x does not support GNU hash style
-+      $1_CPU_LDFLAGS="${$1_CPU_LDFLAGS} -Wl,--hash-style=sysv"
-     fi
- 
-   elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
 diff --git a/make/autoconf/lib-freetype.m4 b/make/autoconf/lib-freetype.m4
 index 6a7109342..2d74ffc5b 100644
 --- a/make/autoconf/lib-freetype.m4
