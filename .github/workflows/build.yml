@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@main
       with:
         java-version: 21
-        distribution: temurin
+        distribution: graalvm
     - name: Install build dependencies
       run: |
         sudo apt update
@@ -41,37 +41,3 @@ jobs:
       with:
         name: "jre21-debuginfo-${{matrix.arch}}"
         path: dizout
-
-  pojav:
-    needs: build_android
-    runs-on: ubuntu-24.04
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@main
-    - name: Get jre21-aarch32
-      uses: actions/download-artifact@main
-      with:
-        name: jre21-aarch32
-        path: pojav
-    - name: Get jre21-aarch64
-      uses: actions/download-artifact@main
-      with:
-        name: jre21-aarch64
-        path: pojav
-    - name: Get jre21-x86
-      uses: actions/download-artifact@main
-      with:
-        name: jre21-x86
-        path: pojav
-    - name: Get jre21-x86_64
-      uses: actions/download-artifact@main
-      with:
-        name: jre21-x86_64
-        path: pojav
-    - name: Repack JRE
-      run: bash "repackjre.sh" $GITHUB_WORKSPACE/pojav $GITHUB_WORKSPACE/pojav/jre21-pojav
-    - name: Upload artifact
-      uses: actions/upload-artifact@main
-      with:
-          name: jre21-pojav
-          path: pojav/jre21-pojav/*
