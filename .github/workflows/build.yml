@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@main
       with:
         java-version: 21
-        distribution: graalvm
+        distribution: zulu
     - name: Install build dependencies
       run: |
         sudo apt update
