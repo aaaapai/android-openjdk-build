@@ -7,7 +7,7 @@ export CUPS_DIR=$PWD/cups
 export CFLAGS+=" -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration" # -I$FREETYPE_DIR -I$CUPS_DI
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export CFLAGS+=" -Ofast -D__thumb__"
+  export CFLAGS+=" -O3 -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -O3 -mstackrealign"
@@ -73,7 +73,7 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git apply failed (Android patch set)"
-git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed (Android patch set)"
+// git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed (Android patch set)"
 
 # rm -rf build
 
