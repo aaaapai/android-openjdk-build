@@ -10,9 +10,9 @@ then
   export CFLAGS+=" -Ofast -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
-     export CFLAGS+=" -Ofast -mstackrealign"
+     export CFLAGS+=" -O3 -mstackrealign"
   else
-     export CFLAGS+=" -Ofast -flto=thin"
+     export CFLAGS+=" -O3 -flto=thin"
   fi
 fi
 
@@ -73,6 +73,7 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk21u_android.diff || echo "git apply failed (Android patch set)"
+git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed (Android patch set)"
 
 # rm -rf build
 
