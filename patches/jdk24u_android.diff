@@ -2141,8 +2141,9 @@ index 9371bc001..ab7dd0fc0 100644
  /**
   * fstatat missing from glibc on Linux.
   */
-@@ -857,4 +857,4 @@
+@@ -857,4 +857,5 @@
      int err = 0;
++    struct timespec times2[2];
  
 -    times[0].tv_sec = accessTime / 1000000000;
 +    times[0].tv_sec = times2[0].tv_sec = accessTime / 1000000000;
