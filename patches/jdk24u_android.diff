@@ -2421,3 +2421,240 @@ index ff4c7fd..f7c31c3 100644
    HOTSPOT_VERSION_SCRIPT := $(TOPDIR)/make/data/hotspot-symbols/version-script-$(TOOLCHAIN_TYPE).txt
  
    JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT)
+diff --git a/make/common/native/Link.gmk b/make/common/native/Link.gmk
+index 1461f73..2e3402a 100644
+--- a/make/common/native/Link.gmk
++++ b/make/common/native/Link.gmk
+@@ -69,7 +69,7 @@ endef
+ ################################################################################
+ define CreateStaticLibrary
+   # Include partial linking when building the static library with clang on linux
+-  ifeq ($(call isTargetOs, linux), true)
++  ifeq ($(call isTargetOs, linux android), true)
+     ifneq ($(findstring $(TOOLCHAIN_TYPE), clang), )
+       $1_ENABLE_PARTIAL_LINKING := true
+     endif
+@@ -161,7 +161,7 @@ define CreateDynamicLibraryOrExecutable
+ 	        $$($1_SYSROOT_LDFLAGS) -o $$($1_TARGET) $$($1_LD_OBJ_ARG) \
+ 	        $$($1_LIBS) $$($1_EXTRA_LIBS))
+         ifeq ($$($1_CREATE_DEBUGINFO), true)
+-          ifeq ($(call isTargetOs, linux), true)
++          ifeq ($(call isTargetOs, linux android), true)
+             # This cannot be run separately since it updates the original target
+             # file.
+ 	    $$(call ExecuteWithLog, $$($1_OBJECT_DIR)/$$($1_SAFE_NAME)_create_debuginfo, \
+@@ -182,7 +182,7 @@ define CreateDynamicLibraryOrExecutable
+ 	      $$($1_STRIP) $$($1_STRIPFLAGS) $$($1_TARGET))
+         endif
+         ifeq ($$($1_CREATE_DEBUGINFO), true)
+-          ifeq ($(call isTargetOs, linux), true)
++          ifeq ($(call isTargetOs, linux android), true)
+             # Run this after strip is called, since strip can sometimes mangle
+             # the embedded debuglink, which we want to avoid.
+ 	    $$(call ExecuteWithLog, $$($1_OBJECT_DIR)/$$($1_SAFE_NAME)_add_debuginfo_link, \
+diff --git a/make/data/hotspot-symbols/version-script-clang.txt b/make/data/hotspot-symbols/version-script-clang.txt
+index 351d64f..08ab416 100644
+--- a/make/data/hotspot-symbols/version-script-clang.txt
++++ b/make/data/hotspot-symbols/version-script-clang.txt
+@@ -3,6 +3,5 @@ SUNWprivate_1.1 {
+     *;
+ 
+   local:
+-    _fini;
+-    _init;
++    *;
+ };
+diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
+index e5929ab..08597d5 100644
+--- a/make/hotspot/lib/JvmFlags.gmk
++++ b/make/hotspot/lib/JvmFlags.gmk
+@@ -51,6 +51,12 @@ JVM_CFLAGS_INCLUDES += \
+     -I$(TOPDIR)/src/java.base/share/native/libjimage \
+     #
+ 
++ifeq ($(call isTargetOs, android ios), true)
++  JVM_CFLAGS_INCLUDES += \
++    -I$(TOPDIR)/src/hotspot/os/linux \
++    #
++endif
++
+ # INCLUDE_SUFFIX_* is only meant for including the proper
+ # platform files. Don't use it to guard code. Use the value of
+ # HOTSPOT_TARGET_CPU_DEFINE etc. instead.
+diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
+index 6a513e1..02b5c8a 100644
+--- a/make/hotspot/lib/JvmOverrideFiles.gmk
++++ b/make/hotspot/lib/JvmOverrideFiles.gmk
+@@ -51,7 +51,7 @@ ifneq ($(FDLIBM_CFLAGS), )
+   LIBJVM_FDLIBM_COPY_OPT_FLAG := $(CXX_O_FLAG_NORM)
+ endif
+ 
+-ifeq ($(call isTargetOs, linux), true)
++ifeq ($(call isTargetOs, linux android), true)
+   BUILD_LIBJVM_sharedRuntimeTrig.cpp_CXXFLAGS := -DNO_PCH $(FDLIBM_CFLAGS) $(LIBJVM_FDLIBM_COPY_OPT_FLAG)
+   BUILD_LIBJVM_sharedRuntimeTrans.cpp_CXXFLAGS := -DNO_PCH $(FDLIBM_CFLAGS) $(LIBJVM_FDLIBM_COPY_OPT_FLAG)
+ 
+diff --git a/make/modules/java.base/Launcher.gmk b/make/modules/java.base/Launcher.gmk
+index 024c1c4..d2eaf63 100644
+--- a/make/modules/java.base/Launcher.gmk
++++ b/make/modules/java.base/Launcher.gmk
+@@ -64,7 +64,7 @@ $(eval $(call SetupBuildLauncher, keytool, \
+     MAIN_CLASS := sun.security.tools.keytool.Main, \
+ ))
+ 
+-ifeq ($(call isTargetOs, linux), true)
++ifeq ($(call isTargetOs, linux android), true)
+   ##############################################################################
+   ## Build jexec
+   ##############################################################################
+diff --git a/make/modules/java.base/lib/CoreLibraries.gmk b/make/modules/java.base/lib/CoreLibraries.gmk
+index 61ac495..f65c0be 100644
+--- a/make/modules/java.base/lib/CoreLibraries.gmk
++++ b/make/modules/java.base/lib/CoreLibraries.gmk
+@@ -28,7 +28,7 @@
+ ################################################################################
+ 
+ LIBVERIFY_OPTIMIZATION := HIGH
+-ifeq ($(call isTargetOs, linux)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
++ifeq ($(call isTargetOs, linux android)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
+   LIBVERIFY_OPTIMIZATION := LOW
+ endif
+ 
+diff --git a/make/modules/java.desktop/lib/AwtLibraries.gmk b/make/modules/java.desktop/lib/AwtLibraries.gmk
+index 5ba7c81..86a55e8 100644
+--- a/make/modules/java.desktop/lib/AwtLibraries.gmk
++++ b/make/modules/java.desktop/lib/AwtLibraries.gmk
+@@ -390,7 +390,7 @@ ifeq ($(call isTargetOs, macosx), true)
+   LIBJAWT_EXCLUDE_SRC_PATTERNS := /unix/
+ endif
+ 
+-ifeq ($(call isTargetOs, linux)+$(ENABLE_HEADLESS_ONLY), true+true)
++ifeq ($(call isTargetOs, linux android)+$(ENABLE_HEADLESS_ONLY), true+true)
+   LIBJAWT_CFLAGS += -DHEADLESS
+ endif
+ 
+diff --git a/make/modules/java.management/Lib.gmk b/make/modules/java.management/Lib.gmk
+index b9f79da..655ccb2 100644
+--- a/make/modules/java.management/Lib.gmk
++++ b/make/modules/java.management/Lib.gmk
+@@ -30,7 +30,7 @@ include LibCommon.gmk
+ ################################################################################
+ 
+ LIBMANAGEMENT_OPTIMIZATION := HIGH
+-ifeq ($(call isTargetOs, linux)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
++ifeq ($(call isTargetOs, linux android)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
+   LIBMANAGEMENT_OPTIMIZATION := LOW
+ endif
+ 
+diff --git a/make/modules/jdk.incubator.vector/Lib.gmk b/make/modules/jdk.incubator.vector/Lib.gmk
+index 69da7ed..cae854a 100644
+--- a/make/modules/jdk.incubator.vector/Lib.gmk
++++ b/make/modules/jdk.incubator.vector/Lib.gmk
+@@ -56,7 +56,7 @@ ifeq ($(call isTargetOs, linux)+$(call isTargetCpu, riscv64)+$(INCLUDE_COMPILER2
+   TARGETS += $(BUILD_LIBSLEEF)
+ endif
+ 
+-ifeq ($(call isTargetOs, linux)+$(call isTargetCpu, aarch64)+$(INCLUDE_COMPILER2), true+true+true)
++ifeq ($(call isTargetOs, linux android)+$(call isTargetCpu, aarch64)+$(INCLUDE_COMPILER2), true+true+true)
+   $(eval $(call SetupJdkLibrary, BUILD_LIBSLEEF, \
+       NAME := sleef, \
+       OPTIMIZATION := HIGH, \
+diff --git a/make/modules/jdk.jpackage/Lib.gmk b/make/modules/jdk.jpackage/Lib.gmk
+index 33d1033..eb4132a 100644
+--- a/make/modules/jdk.jpackage/Lib.gmk
++++ b/make/modules/jdk.jpackage/Lib.gmk
+@@ -36,7 +36,7 @@ JPACKAGE_CXXFLAGS_windows := -EHsc $(JPACKAGE_CFLAGS_windows)
+ ## Build jpackageapplauncher
+ ################################################################################
+ 
+-ifeq ($(call isTargetOs, linux), true)
++ifeq ($(call isTargetOs, linux android), true)
+   JPACKAGEAPPLAUNCHER_LINK_TYPE := C
+   JPACKAGEAPPLAUNCHER_INCLUDE_FILES := %.c
+ else
+@@ -74,7 +74,7 @@ $(eval $(call SetupJdkExecutable, BUILD_JPACKAGEAPPLAUNCHER, \
+ 
+ TARGETS += $(BUILD_JPACKAGEAPPLAUNCHER)
+ 
+-ifeq ($(call isTargetOs, linux), true)
++ifeq ($(call isTargetOs, linux android), true)
+   ##############################################################################
+   ## Build libjpackageapplauncheraux
+   ##############################################################################
+diff --git a/make/modules/jdk.management/Lib.gmk b/make/modules/jdk.management/Lib.gmk
+index cb65b37..a033b4c 100644
+--- a/make/modules/jdk.management/Lib.gmk
++++ b/make/modules/jdk.management/Lib.gmk
+@@ -37,7 +37,7 @@ ifeq ($(call isTargetOs, windows), true)
+ endif
+ 
+ LIBMANAGEMENT_EXT_OPTIMIZATION := HIGH
+-ifeq ($(call isTargetOs, linux)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
++ifeq ($(call isTargetOs, linux android)+$(COMPILE_WITH_DEBUG_SYMBOLS), true+true)
+   LIBMANAGEMENT_EXT_OPTIMIZATION := LOW
+ endif
+ 
+diff --git a/src/hotspot/os/posix/os_posix.cpp b/src/hotspot/os/posix/os_posix.cpp
+index 61214a4..87e3114 100644
+--- a/src/hotspot/os/posix/os_posix.cpp
++++ b/src/hotspot/os/posix/os_posix.cpp
+@@ -1277,7 +1277,7 @@ static bool _use_clock_monotonic_condattr = false;
+ // Determine what POSIX API's are present and do appropriate
+ // configuration.
+ void os::Posix::init(void) {
+-#if defined(_ALLBSD_SOURCE)
++#if defined(_ALLBSD_SOURCE) && !defined(ANDROID)
+   clock_tics_per_sec = CLK_TCK;
+ #else
+   clock_tics_per_sec = checked_cast<int>(sysconf(_SC_CLK_TCK));
+diff --git a/src/java.base/unix/native/libnet/net_util_md.h b/src/java.base/unix/native/libnet/net_util_md.h
+index 902cf96..a3f24b4 100644
+--- a/src/java.base/unix/native/libnet/net_util_md.h
++++ b/src/java.base/unix/native/libnet/net_util_md.h
+@@ -30,6 +30,10 @@
+ #include <poll.h>
+ #include <sys/socket.h>
+ 
++#ifdef ANDROID
++#include <netinet/in.h>
++#endif
++
+ /************************************************************************
+  * Macros and constants
+  */
+diff --git a/src/jdk.hotspot.agent/linux/native/libsaproc/elfmacros.h b/src/jdk.hotspot.agent/linux/native/libsaproc/elfmacros.h
+index 2dc0b61..78508bc 100644
+--- a/src/jdk.hotspot.agent/linux/native/libsaproc/elfmacros.h
++++ b/src/jdk.hotspot.agent/linux/native/libsaproc/elfmacros.h
+@@ -35,7 +35,9 @@
+ #define ELF_ADDR        Elf64_Addr
+ #define ELF_AUXV        Elf64_auxv_t
+ 
++#ifndef ANDROID
+ #define ELF_ST_TYPE     ELF64_ST_TYPE
++#endif
+ 
+ #else
+ 
+diff --git a/src/jdk.hotspot.agent/linux/native/libsaproc/ps_core.c b/src/jdk.hotspot.agent/linux/native/libsaproc/ps_core.c
+index b1b69c8..972f9e3 100644
+--- a/src/jdk.hotspot.agent/linux/native/libsaproc/ps_core.c
++++ b/src/jdk.hotspot.agent/linux/native/libsaproc/ps_core.c
+@@ -184,6 +184,9 @@ static ps_prochandle_ops core_ops = {
+ 
+ // read regs and create thread from NT_PRSTATUS entries from core file
+ static bool core_handle_prstatus(struct ps_prochandle* ph, const char* buf, size_t nbytes) {
++#ifdef ANDROID
++    return false;
++#else
+    // we have to read prstatus_t from buf
+    // assert(nbytes == sizeof(prstaus_t), "size mismatch on prstatus_t");
+    prstatus_t* prstat = (prstatus_t*) buf;
+@@ -243,6 +246,7 @@ static bool core_handle_prstatus(struct ps_prochandle* ph, const char* buf, size
+    }
+ 
+    return true;
++#endif // ANDROID
+ }
+ 
+ #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
