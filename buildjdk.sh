@@ -40,11 +40,10 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AR=${AR} \
   BUILD_STRIP=$STRIP \
   BUILD_OBJCOPY=$OBJCOPY \
-  BUILD_LD="$LD" \
-  BUILD_LDCXX="$LD" \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
+  LD=$TOOLCHAIN/bin/lld \
   "
 if [[ "$TARGET_JDK" == "x86" ]]; then
     platform_args+="--build=x86_64-unknown-linux-gnu \
