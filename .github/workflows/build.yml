@@ -15,10 +15,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
-    - name: set up JDK 21
+    - name: set up JDK 24
       uses: actions/setup-java@main
       with:
-        java-version: 21
+        java-version: 24
         distribution: zulu
     - name: Install build dependencies
       run: |
@@ -29,13 +29,13 @@ jobs:
     - name: Upload JDK build output
       uses: actions/upload-artifact@main
       with:
-        name: "jdk21-${{matrix.arch}}"
-        path: jdk21*.tar.xz
+        name: "jdk24-${{matrix.arch}}"
+        path: jdk24*.tar.xz
     - name: Upload JRE build output
       uses: actions/upload-artifact@main
       with:
-        name: 'jre21-${{matrix.arch}}'
-        path: jre21*.tar.xz
+        name: 'jre24-${{matrix.arch}}'
+        path: jre24*.tar.xz
     - name: Upload JRE debuginfo build output
       uses: actions/upload-artifact@main
       with:
