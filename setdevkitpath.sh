@@ -58,3 +58,10 @@ export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
+
+export BUILD_LD=$TOOLCHAIN/bin/ld.lld
+export BUILD_AS=$TOOLCHAIN/bin/llvm-as
+export BUILD_AR=$TOOLCHAIN/bin/llvm-ar
+export BUILD_CC=/usr/bin/clang-18
+export BUILD_CXX=/usr/bin/clang++-18
+export BUILD_NM=$TOOLCHAIN/bin/llvm-nm
