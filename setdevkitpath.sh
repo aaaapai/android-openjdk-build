@@ -65,3 +65,5 @@ export BUILD_AR=$TOOLCHAIN/bin/llvm-ar
 export BUILD_CC=/usr/bin/clang-18
 export BUILD_CXX=/usr/bin/clang++-18
 export BUILD_NM=$TOOLCHAIN/bin/llvm-nm
+export BUILD_OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
+export BUILD_STRIP=$TOOLCHAIN/bin/llvm-strip
