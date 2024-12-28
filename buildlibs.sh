@@ -9,7 +9,7 @@ export PATH=$TOOLCHAIN/bin:$PATH
 ./configure \
   --host=$TARGET \
   --prefix=${PWD}/build_android-${TARGET_SHORT} \
-  LD=$TOOLCHAIN/bin/ld.lld
+  LD=$TOOLCHAIN/bin/ld.lld \
   --without-zlib \
   --with-brotli=system \
   --with-png=no \
