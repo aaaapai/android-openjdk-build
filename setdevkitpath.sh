@@ -51,7 +51,6 @@ export CC=$thecc
 export CXX=$thecxx
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 export READELF=$TOOLCHAIN/bin/llvm-readelf
