@@ -2386,3 +2386,38 @@ index fdc7aad3d..05e258c87 100644
  // dlvsym is not a part of POSIX
  // and musl libc doesn't implement it.
  static void *dlvsym(void *handle,
+diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
+index ff4c7fd..f7c31c3 100644
+--- a/make/hotspot/lib/CompileJvm.gmk
++++ b/make/hotspot/lib/CompileJvm.gmk
+@@ -113,10 +113,10 @@ DISABLED_WARNINGS_microsoft := 4624 4244 4291 4146 4127 4722
+ 
+ # ARM source selection
+ 
+-ifeq ($(call And, $(call isTargetOs, linux) $(call isTargetCpu, arm)), true)
++ifeq ($(call And, $(call isTargetOs, linux android) $(call isTargetCpu, arm)), true)
+   JVM_EXCLUDE_PATTERNS += arm_64
+ 
+-else ifeq ($(call And, $(call isTargetOs, linux) $(call isTargetCpu, aarch64)), true)
++else ifeq ($(call And, $(call isTargetOs, linux android) $(call isTargetCpu, aarch64)), true)
+   # For 64-bit arm builds, we use the 64 bit hotspot/src/cpu/arm
+   # hotspot sources if HOTSPOT_TARGET_CPU_ARCH is set to arm.
+   # Exclude the aarch64 and 32 bit arm files for this build.
+@@ -125,7 +125,7 @@ else ifeq ($(call And, $(call isTargetOs, linux) $(call isTargetCpu, aarch64)),
+   endif
+ endif
+ 
+-ifeq ($(call isTargetOs, linux macosx windows), true)
++ifeq ($(call isTargetOs, linux android macosx windows), true)
+   JVM_PRECOMPILED_HEADER := $(TOPDIR)/src/hotspot/share/precompiled/precompiled.hpp
+ endif
+ 
+@@ -155,7 +155,7 @@ ifeq ($(call isTargetOs, windows), true)
+   JVM_LDFLAGS += -def:$(WIN_EXPORT_FILE)
+ endif
+ 
+-ifeq ($(call isTargetOs, linux), true)
++ifeq ($(call isTargetOs, linux android), true)
+   HOTSPOT_VERSION_SCRIPT := $(TOPDIR)/make/data/hotspot-symbols/version-script-$(TOOLCHAIN_TYPE).txt
+ 
+   JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT)
