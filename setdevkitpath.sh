@@ -51,7 +51,7 @@ export CC=$thecc
 export CXX=$thecxx
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
-export LD=$TOOLCHAIN/bin/ld.lld
+export LD=$TOOLCHAIN/bin/ld
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
 export OBJDUMP=$TOOLCHAIN/bin/llvm-objdump
 export READELF=$TOOLCHAIN/bin/llvm-readelf
@@ -59,6 +59,5 @@ export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
 
-export BUILD_LD=$TOOLCHAIN/bin/ld.lld
 export BUILD_CC=/usr/bin/clang-18
 export BUILD_CXX=/usr/bin/clang++-18
