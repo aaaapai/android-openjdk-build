@@ -36,7 +36,7 @@ cp -rv jre_override/lib/* jdkout/lib/ || true
 
 # tar cJf ../jre25-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
-cd ../jdkout
+cd jdkout
 tar cJf ../jdk25-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
 # Remove jreout and jdkout
