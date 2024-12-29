@@ -23,22 +23,22 @@ exit 1
 ' sh {} \; -print
 }
 
-# findexec jreout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
+findexec jreout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 findexec jdkout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 
-# cp -rv jre_override/lib/* jreout/lib/ || true
+cp -rv jre_override/lib/* jreout/lib/ || true
 cp -rv jre_override/lib/* jdkout/lib/ || true
 
-# cd jreout
+cd jreout
 
 # Strip
-# find ./ -name '*' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
+find ./ -name '*' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
 
-# tar cJf ../jre25-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
+tar cJf ../jre25-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
-cd jdkout
+cd ../jdkout
 tar cJf ../jdk25-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
 # Remove jreout and jdkout
 cd ..
-rm -rf jdkout # jreout
+rm -rf jdkout jreout
