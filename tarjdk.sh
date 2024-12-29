@@ -23,7 +23,7 @@ exit 1
 ' sh {} \; -print
 }
 
-findexec jreout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
+# findexec jreout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 findexec jdkout | xargs -- ./termux-elf-cleaner/build/termux-elf-cleaner
 
 # cp -rv jre_override/lib/* jreout/lib/ || true
