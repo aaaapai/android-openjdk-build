@@ -90,7 +90,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,-shenandoahgc,link-time-opt,opt-size \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,link-time-opt,opt-size \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
     --with-native-debug-symbols=external \
