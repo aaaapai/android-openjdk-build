@@ -71,7 +71,7 @@ cd openjdk
 
 # Apply patches
 git reset --hard
-git apply --reject --whitespace=fix ../patches/jdk24u_android.diff || echo "git apply failed (Android patch set)"
+git apply --reject --whitespace=fix ../patches/jdk25u_android.diff || echo "git apply failed (Android patch set)"
 # git apply --reject --whitespace=fix ../patches/Optimizing.diff || echo "git apply failed (Android patch set)"
 
 # rm -rf build
