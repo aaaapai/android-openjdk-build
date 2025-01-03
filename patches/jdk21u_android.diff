@@ -2609,3 +2609,29 @@ index 7a24815..d20a9ff 100644
        fi
        UTIL_LOOKUP_PROGS(BUILD_NM, nm gcc-nm)
        UTIL_LOOKUP_PROGS(BUILD_AR, ar gcc-ar lib)
+diff --git a/src/hotspot/cpu/arm/c1_globals_arm.hpp b/src/hotspot/cpu/arm/c1_globals_arm.hpp
+index d22d39d63..3e0d9a1cd 100644
+--- a/src/hotspot/cpu/arm/c1_globals_arm.hpp
++++ b/src/hotspot/cpu/arm/c1_globals_arm.hpp
+@@ -35,7 +35,7 @@
+
+ #ifndef COMPILER2 // avoid duplicated definitions, favoring C2 version
+ define_pd_global(bool, BackgroundCompilation,        true );
+-define_pd_global(bool, InlineIntrinsics,             true );
++define_pd_global(bool, InlineIntrinsics,             false); // Making it true breaks java.lang.Math
+ define_pd_global(bool, PreferInterpreterNativeStubs, false);
+ define_pd_global(bool, ProfileTraps,                 false);
+ define_pd_global(bool, UseOnStackReplacement,        true );
+diff --git a/src/hotspot/cpu/arm/c2_globals_arm.hpp b/src/hotspot/cpu/arm/c2_globals_arm.hpp
+index 57ed8f11c..02476a05b 100644
+--- a/src/hotspot/cpu/arm/c2_globals_arm.hpp
++++ b/src/hotspot/cpu/arm/c2_globals_arm.hpp
+@@ -34,7 +34,7 @@
+
+ define_pd_global(bool, BackgroundCompilation,        true);
+ define_pd_global(bool, CICompileOSR,                 true);
+-define_pd_global(bool, InlineIntrinsics,             true);
++define_pd_global(bool, InlineIntrinsics,             false); // Making it true breaks java.lang.Math
+ define_pd_global(bool, PreferInterpreterNativeStubs, false);
+ define_pd_global(bool, ProfileTraps,                 true);
+ define_pd_global(bool, UseOnStackReplacement,        true);
