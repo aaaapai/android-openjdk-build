@@ -17,6 +17,7 @@ else
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
+then
    export CFLAGS+=" -march=armv8-a+neon+crc+crypto+fp16 -mcpu=cortex-a76"
 fi
    
