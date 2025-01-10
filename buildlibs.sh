@@ -22,5 +22,5 @@ if [[ "$error_code" -ne 0 ]]; then
   exit $error_code
 fi
 
-CFLAGS="-Ofast -fno-emulated-tls -fno-rtti" CXXFLAGS="-Ofast -fno-emulated-tls -fno-rtti" make -j4
+CFLAGS="-O3 -fno-emulated-tls -fno-rtti -march=armv8-a+simd+crc+crypto+fp16" CXXFLAGS="-Ofast -fno-emulated-tls -fno-rtti -march=armv8-a+simd+crc+crypto+fp16" make -j4
 make install
