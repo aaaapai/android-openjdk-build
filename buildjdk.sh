@@ -18,7 +18,7 @@ fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
 then
-   export CFLAGS+=" -march=armv8-a+msimd+crc+crypto+fp16 -mcpu=cortex-a76"
+   export CFLAGS+=" -march=armv8-a+simd+crc+crypto+fp16 -mcpu=cortex-a76"
 fi
    
 # if [ "$TARGET_JDK" == "aarch32" ] || [ "$TARGET_JDK" == "aarch64" ]
