@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@main
       with:
         java-version: 24-ea
-        distribution: graalvm
+        distribution: openj9
     - name: Install build dependencies
       run: |
         sudo apt update
