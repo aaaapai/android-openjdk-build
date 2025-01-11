@@ -1,4 +1,4 @@
-# mobile-openjdk21-build
+# mobile-openjdk25-build
 
 Based on http://openjdk.java.net/projects/mobile/android.html
 
