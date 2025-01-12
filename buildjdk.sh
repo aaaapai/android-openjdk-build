@@ -85,7 +85,7 @@ git apply --reject --whitespace=fix ../patches/jdk25u_android.diff || echo "git 
 #   --with-extra-cflags="$CPPFLAGS" \
 
 bash ./configure \
-    --with-version-pre=GraalVM \
+    --with-version-pre= \
     --openjdk-target=$TARGET \
     --with-extra-cflags="$CFLAGS" \
     --with-extra-cxxflags="$CFLAGS" \
