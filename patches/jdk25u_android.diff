@@ -177,7 +177,7 @@ index 96576bb8d..13dd8e3e5 100644
 @@ -409,3 +409,3 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
      LIBS := $(LIBFONTMANAGER_LIBS), \
 -    LIBS_unix := $(LIBM), \
-+    LIBS_unix := $(LIBM) -lawt_headless, \
++    LIBS_unix := $(LIBM) -lawt -lawt_headless -ljava -ljvm $(LIBCXX), \
      LIBS_macosx := \
 @@ -777,4 +777,4 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
    ))
@@ -2615,7 +2615,7 @@ index 902cf96..a3f24b4 100644
  #include <poll.h>
  #include <sys/socket.h>
  
-+#ifdef ANDROID
++#ifdef __ANDROID__
 +#include <netinet/in.h>
 +#endif
 +
@@ -2644,7 +2644,7 @@ index b1b69c8..972f9e3 100644
  
  // read regs and create thread from NT_PRSTATUS entries from core file
  static bool core_handle_prstatus(struct ps_prochandle* ph, const char* buf, size_t nbytes) {
-+#ifdef ANDROID
++#ifdef __ANDROID__
 +    return false;
 +#else
     // we have to read prstatus_t from buf
@@ -2654,7 +2654,7 @@ index b1b69c8..972f9e3 100644
     }
  
     return true;
-+#endif // ANDROID
++#endif // __ANDROID__
  }
  
  #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
