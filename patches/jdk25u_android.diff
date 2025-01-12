@@ -177,7 +177,7 @@ index 96576bb8d..13dd8e3e5 100644
 @@ -409,3 +409,3 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
      LIBS := $(LIBFONTMANAGER_LIBS), \
 -    LIBS_unix := $(LIBM), \
-+    LIBS_unix := $(LIBM) -lawt -lawt_headless -ljava -ljvm $(LIBCXX), \
++    LIBS_unix := $(LIBM) -lawt -lawt_headless -ljava $(LIBCXX), \
      LIBS_macosx := \
 @@ -777,4 +777,4 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
    ))
