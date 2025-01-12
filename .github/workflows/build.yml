@@ -24,7 +24,7 @@ jobs:
       uses: nttld/setup-ndk@main
       id: setup-ndk
       with:
-        ndk-version: 28.0.12674087-rc1
+        ndk-version: r28-beta2
         add-to-path: false
         local-cache: true
     - name: Install build dependencies
