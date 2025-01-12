@@ -20,7 +20,7 @@ jobs:
       with:
         java-version: 24-ea
         distribution: zulu
-    - name: Set up ndk r28-rc1
+    - name: Set up ndk r28-beta2
       uses: nttld/setup-ndk@main
       id: setup-ndk
       with:
