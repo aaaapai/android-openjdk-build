@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
@@ -20,12 +20,21 @@ jobs:
       with:
         java-version: 24-ea
         distribution: zulu
+    - name: Set up ndk r28-rc1
+      uses: nttld/setup-ndk@main
+      id: setup-ndk
+      with:
+        ndk-version: 28.0.12674087-rc1
+        add-to-path: false
+        local-cache: true
     - name: Install build dependencies
       run: |
         sudo apt update
         sudo apt -y install systemtap-sdt-dev libxtst-dev libasound2-dev libelf-dev libfontconfig1-dev libx11-dev libxext-dev libxrandr-dev libxrender-dev libxtst-dev libxt-dev
     - name: Build with CI build script
       run: bash "ci_build_arch_${{matrix.arch}}.sh"
+      env:
+        ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
     - name: Upload JDK build output
       uses: actions/upload-artifact@main
       with:
