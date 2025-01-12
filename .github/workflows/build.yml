@@ -25,7 +25,6 @@ jobs:
       id: setup-ndk
       with:
         ndk-version: r28-beta2
-        add-to-path: false
         local-cache: true
     - name: Install build dependencies
       run: |
