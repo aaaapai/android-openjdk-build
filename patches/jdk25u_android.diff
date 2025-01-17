@@ -2658,3 +2658,44 @@ index b1b69c8..972f9e3 100644
  }
  
  #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
+diff --git a/make/modules/java.desktop/lib/AwtLibraries.gmk b/make/modules/java.desktop/lib/AwtLibraries.gmk
+index 5ba7c81..ba67938 100644
+--- a/make/modules/java.desktop/lib/AwtLibraries.gmk
++++ b/make/modules/java.desktop/lib/AwtLibraries.gmk
+@@ -188,15 +188,15 @@ ifeq ($(call isTargetOs, windows macosx), false)
+       DISABLED_WARNINGS_gcc_X11SurfaceData.c := unused-function, \
+       DISABLED_WARNINGS_clang_X11Renderer.c := unused-function, \
+       DISABLED_WARNINGS_clang_X11SurfaceData.c := unused-function, \
+-      JDK_LIBS := libawt java.base:libjava, \
+-      LIBS_linux := $(LIBDL) $(LIBM), \
++      JDK_LIBS := libawt libawt_headless java.base:libjava, \
++      LIBS_linux := $(LIBDL) $(LIBM) -lawt -lawt_headless, \
+       STATIC_LIB_EXCLUDE_OBJS := $(LIBAWT_HEADLESS_STATIC_EXCLUDE_OBJS), \
+   ))
+ 
+   TARGETS += $(BUILD_LIBAWT_HEADLESS)
+ endif
+ 
+-ifeq ($(call isTargetOs, windows macosx)+$(ENABLE_HEADLESS_ONLY), false+false)
++ifeq ($(call isTargetOs, linux macosx aix android), true)
+   ##############################################################################
+   ## Build libawt_xawt
+   ##############################################################################
+@@ -390,7 +390,7 @@ ifeq ($(call isTargetOs, macosx), true)
+   LIBJAWT_EXCLUDE_SRC_PATTERNS := /unix/
+ endif
+ 
+-ifeq ($(call isTargetOs, linux)+$(ENABLE_HEADLESS_ONLY), true+true)
++ifeq ($(call isTargetOs, linux android)+$(ENABLE_HEADLESS_ONLY), true+true)
+   LIBJAWT_CFLAGS += -DHEADLESS
+ endif
+ 
+@@ -398,7 +398,7 @@ ifeq ($(call isTargetOs, windows)+$(call isTargetCpu, x86), true+true)
+   LIBJAWT_LIBS_windows := kernel32.lib
+ endif
+ 
+-ifeq ($(call isTargetOsType, unix)+$(call isTargetOs, macosx), true+false)
++ifeq ($(call isTargetOsType, unix android)+$(call isTargetOs, macosx), true+false)
+   LIBJAWT_JDK_LIBS_unix := libawt
+   ifeq ($(ENABLE_HEADLESS_ONLY), false)
+     LIBJAWT_JDK_LIBS_unix += libawt_xawt
