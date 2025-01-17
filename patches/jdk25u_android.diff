@@ -2667,9 +2667,8 @@ index 5ba7c81..ba67938 100644
        DISABLED_WARNINGS_clang_X11Renderer.c := unused-function, \
        DISABLED_WARNINGS_clang_X11SurfaceData.c := unused-function, \
 -      JDK_LIBS := libawt java.base:libjava, \
--      LIBS_linux := $(LIBDL) $(LIBM), \
+       LIBS_linux := $(LIBDL) $(LIBM), \
 +      JDK_LIBS := libawt libawt_headless java.base:libjava, \
-+      LIBS_linux := $(LIBDL) $(LIBM) -lawt -lawt_headless, \
        STATIC_LIB_EXCLUDE_OBJS := $(LIBAWT_HEADLESS_STATIC_EXCLUDE_OBJS), \
    ))
  
