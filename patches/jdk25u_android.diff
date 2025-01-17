@@ -2662,7 +2662,7 @@ diff --git a/make/modules/java.desktop/lib/AwtLibraries.gmk b/make/modules/java.
 index 5ba7c81..ba67938 100644
 --- a/make/modules/java.desktop/lib/AwtLibraries.gmk
 +++ b/make/modules/java.desktop/lib/AwtLibraries.gmk
-@@ -188,15 +188,15 @@ ifeq ($(call isTargetOs, windows macosx), false)
+@@ -188,10 +188,10 @@ ifeq ($(call isTargetOs, windows macosx), false)
        DISABLED_WARNINGS_gcc_X11SurfaceData.c := unused-function, \
        DISABLED_WARNINGS_clang_X11Renderer.c := unused-function, \
        DISABLED_WARNINGS_clang_X11SurfaceData.c := unused-function, \
@@ -2675,12 +2675,6 @@ index 5ba7c81..ba67938 100644
  
    TARGETS += $(BUILD_LIBAWT_HEADLESS)
  endif
- 
--ifeq ($(call isTargetOs, windows macosx)+$(ENABLE_HEADLESS_ONLY), false+false)
-+ifeq ($(call isTargetOs, linux macosx aix android), true)
-   ##############################################################################
-   ## Build libawt_xawt
-   ##############################################################################
 @@ -390,7 +390,7 @@ ifeq ($(call isTargetOs, macosx), true)
    LIBJAWT_EXCLUDE_SRC_PATTERNS := /unix/
  endif
