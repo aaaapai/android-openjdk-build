@@ -2667,29 +2667,3 @@ index b1b69c8..972f9e3 100644
    LIBJAWT_CFLAGS += -DHEADLESS
  endif
  
-diff --git a/src/java.base/unix/classes/java/lang/ProcessImpl.java b/src/java.base/unix/classes/java/lang/ProcessImpl.java
-index 7b5d27f..cc9772d 100644
---- a/src/java.base/unix/classes/java/lang/ProcessImpl.java
-+++ b/src/java.base/unix/classes/java/lang/ProcessImpl.java
-@@ -119,7 +119,7 @@ final class ProcessImpl extends Process {
-     }
- 
-     private static final LaunchMechanism launchMechanism = launchMechanism();
--    private static final byte[] helperpath = toCString(StaticProperty.javaHome() + "/lib/jspawnhelper");
-+    private static final byte[] helperpath = toCString(StaticProperty.javaHome() + "/lib/libjspawnhelper.so");
- 
-     private static byte[] toCString(String s) {
-         if (s == null)
-diff --git a/src/jdk.jlink/share/classes/jdk/tools/jlink/builder/DefaultImageBuilder.java b/src/jdk.jlink/share/classes/jdk/tools/jlink/builder/DefaultImageBuilder.java
-index a3f465c..9fd874a 100644
---- a/src/jdk.jlink/share/classes/jdk/tools/jlink/builder/DefaultImageBuilder.java
-+++ b/src/jdk.jlink/share/classes/jdk/tools/jlink/builder/DefaultImageBuilder.java
-@@ -211,7 +211,7 @@ public final class DefaultImageBuilder implements ImageBuilder {
-                 Path lib = root.resolve(LIB_DIRNAME);
-                 if (Files.isDirectory(lib)) {
-                     forEachPath(lib,
--                        (path, attrs) -> path.getFileName().toString().equals("jspawnhelper")
-+                        (path, attrs) -> path.getFileName().toString().equals("libjspawnhelper.so")
-                                       || path.getFileName().toString().equals("jexec"),
-                         this::setExecutable);
-                 }
