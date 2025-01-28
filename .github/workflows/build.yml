@@ -11,15 +11,15 @@ jobs:
       fail-fast: false
 
     name: "Build for Android ${{matrix.arch}}"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
-    - name: set up JDK 24
+    - name: set up JDK 25
       uses: actions/setup-java@main
       with:
-        java-version: 24-ea
-        distribution: zulu
+        java-version: 25-ea
+        distribution: oracle
     - name: Install build dependencies
       run: |
         sudo chmod +x /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy
