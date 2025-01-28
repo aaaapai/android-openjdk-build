@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@main
       with:
         java-version: 25-ea
-        distribution: oracle
+        distribution: temurin
     - name: Install build dependencies
       run: |
         sudo chmod +x /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy
