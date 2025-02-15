@@ -175,10 +175,10 @@ index 96576bb8d..13dd8e3e5 100644
 --- a/make/modules/java.desktop/lib/ClientLibraries.gmk
 +++ b/make/modules/java.desktop/lib/ClientLibraries.gmk
 @@ -409,3 +409,3 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
+     JDK_LIBS_macosx := libawt_lwawt, \
+-    JDK_LIBS_unix := java.base:libjvm, \
++    JDK_LIBS_unix := java.base:libjvm libawt_headless, \
      LIBS := $(LIBFONTMANAGER_LIBS), \
--    LIBS_unix := $(LIBM), \
-+    LIBS_unix := $(LIBM) -lawt -lawt_headless -ljava $(LIBCXX), \
-     LIBS_macosx := \
 @@ -777,4 +777,4 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
    ))
  
