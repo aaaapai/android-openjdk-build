@@ -15,11 +15,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
-    - name: set up JDK 25
+    - name: set up JDK 26
       uses: actions/setup-java@main
       with:
-        java-version: 25-ea
-        distribution: zulu
+        java-version: 26-ea
+        distribution: temurin
     - name: Install build dependencies
       run: |    
        sudo apt update
@@ -29,15 +29,15 @@ jobs:
     - name: Upload JDK build output
       uses: actions/upload-artifact@main
       with:
-        name: "jdk25-${{matrix.arch}}"
-        path: jdk25*.tar.xz
+        name: "jdk26-${{matrix.arch}}"
+        path: jdk26*.tar.xz
     - name: Upload JRE build output
       uses: actions/upload-artifact@main
       with:
-        name: 'jre25-${{matrix.arch}}'
-        path: jre25*.tar.xz
+        name: 'jre26-${{matrix.arch}}'
+        path: jre26*.tar.xz
     - name: Upload JRE debuginfo build output
       uses: actions/upload-artifact@main
       with:
-        name: "jre25-debuginfo-${{matrix.arch}}"
+        name: "jre26-debuginfo-${{matrix.arch}}"
         path: dizout
