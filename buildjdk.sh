@@ -58,7 +58,7 @@ export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-Bsymboli
 export CFLAGS+=" -flto=auto -fno-emulated-tls"
 export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 #polly
-export CFLAGS+=" -mllvm -polly -mllvm -polly-optimizer-level=2 -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=2 -mllvm -polly-scheduling-chunksize=2 -mllvm -polly-ignore-aliasing=true -mllvm -polly-remarks-minimal -mllvm -polly-enable-simplify -mllvm -polly-allow-unsigned -mllvm -polly-fusion -mllvm -polly-allow-nonaffine -mllvm -polly-process-unprofitable=true"
+export CFLAGS+=" -mllvm -polly -mllvm --polly-optimizer-level=2 -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=2 -mllvm -polly-scheduling-chunksize=2 -mllvm -polly-ignore-aliasing=true -mllvm -polly-remarks-minimal -mllvm -polly-enable-simplify -mllvm -polly-allow-unsigned -mllvm --polly-fusion -mllvm --polly-allow-nonaffine -mllvm -polly-process-unprofitable=true"
 export OMP_NUM_THREADS=2
 #fast-math
 export CFLAGS+=" -fno-math-errno"
