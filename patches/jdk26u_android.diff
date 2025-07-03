@@ -2340,18 +2340,6 @@ index fdc7aad3d..05e258c87 100644
 -static void *dlvsym(void *handle,
 +void *dlvsym(void *handle,
                      const char *symbol,
-diff --git a/make/data/hotspot-symbols/version-script-clang.txt b/make/data/hotspot-symbols/version-script-clang.txt
-index 351d64f..08ab416 100644
---- a/make/data/hotspot-symbols/version-script-clang.txt
-+++ b/make/data/hotspot-symbols/version-script-clang.txt
-@@ -3,6 +3,5 @@ SUNWprivate_1.1 {
-     *;
- 
-   local:
--    _fini;
--    _init;
-+    *;
- };
 diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
 index e5929ab..08597d5 100644
 --- a/make/hotspot/lib/JvmFlags.gmk
