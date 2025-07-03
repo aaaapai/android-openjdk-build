@@ -782,7 +782,7 @@ index cf0f48974..04a5930b5 100644
 +    ::execve("/bin/sh", (char* const*)argv, env);
 +
 +    // execve failed
-+    ::_exit(-1);
++    ::os::exit(-1);
 +
 +  } else  {
 +    // copied from J2SE ..._waitForProcessExit() in UNIXProcess_md.c; we don't
