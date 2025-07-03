@@ -728,7 +728,7 @@ index ff416d47e..fca2f6aa4 100644
 +  while (list != nullptr) {
 +    ifaddrs* current = list;
 +    list = list->ifa_next;
-+    free(current);
++    os::free(current);
 +  }
 +}
 +#endif
