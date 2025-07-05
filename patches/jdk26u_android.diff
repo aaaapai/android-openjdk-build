@@ -135,17 +135,6 @@ index 00e73f7dd..70accf224 100644
  isTargetOsType = \
    $(strip $(if $(filter $(OPENJDK_TARGET_OS_TYPE), $1), true, false))
  
-diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
-index 377018cdb..c1c624896 100644
---- a/make/hotspot/lib/JvmOverrideFiles.gmk
-+++ b/make/hotspot/lib/JvmOverrideFiles.gmk
-@@ -62,4 +62,5 @@ ifeq ($(call isTargetOs, linux), true)
- 	#
- 
--  ifeq ($(call isTargetCpu, x86), true)
-+  #ifeq ($(call isTargetCpu, x86), true)
-+  ifeq (false, true)
-     # Performance measurements show that by compiling GC related code, we could
 diff --git a/make/modules/java.base/lib/CoreLibraries.gmk b/make/modules/java.base/lib/CoreLibraries.gmk
 index 186eff3d6..ca76357b0 100644
 --- a/make/modules/java.base/lib/CoreLibraries.gmk
@@ -232,14 +221,6 @@ diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.c
 index 42680218d..403d8905b 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
-@@ -135,6 +135,6 @@
- #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
- 
--#ifdef MUSL_LIBC
-+#if defined(MUSL_LIBC) || defined(__ANDROID__)
- // dlvsym is not a part of POSIX
- // and musl libc doesn't implement it.
- static void *dlvsym(void *handle,
 @@ -214,6 +214,8 @@ static int clock_tics_per_sec = 100;
  // avoid this
  static bool suppress_primordial_thread_resolution = false;
@@ -318,49 +299,6 @@ index 42680218d..403d8905b 100644
  // Remember the stack's state. The Linux dynamic linker will change
  // the stack to 'executable' at most once, so we must safepoint only once.
  bool os::Linux::_stack_is_executable = false;
-@@ -1753,6 +1791,7 @@ void * os::Linux::dll_load_in_vmthread(const char *filename, char *ebuf,
- }
- 
- const char* os::Linux::dll_path(void* lib) {
-+#ifdef RTLD_DI_LINKMAP
-   struct link_map *lmap;
-   const char* l_path = nullptr;
-   assert(lib != nullptr, "dll_path parameter must not be null");
-@@ -1762,6 +1801,9 @@ const char* os::Linux::dll_path(void* lib) {
-     l_path = lmap->l_name;
-   }
-   return l_path;
-+#else
-+  return NULL;
-+#endif
- }
- 
- static unsigned count_newlines(const char* s) {
-@@ -2475,2 +2517,16 @@ void os::jvm_path(char *buf, jint buflen) {
-   assert(ret, "cannot locate libjvm");
-+
-+#ifdef __ANDROID__
-+  if (dli_fname[0] == '\0') {
-+    return;
-+  }
-+
-+  if (strchr(dli_fname, '/') == NULL) {
-+    bool ok = read_so_path_from_maps(dli_fname, buf, buflen);
-+    assert(ok, "unable to turn relative libjvm.so path into absolute");
-+    return;
-+  }
-+
-+  snprintf(buf, buflen, /* "%s/lib/%s/server/%s", java_home_var, cpu_arch, */ "%s", dli_fname);
-+#else // !__ANDROID__
-   char *rp = nullptr;
-@@ -2540,6 +2596,7 @@ void os::jvm_path(char *buf, jint buflen) {
-       }
-     }
-   }
-+#endif
- 
-   strncpy(saved_jvm_path, buf, MAXPATHLEN);
-   saved_jvm_path[MAXPATHLEN - 1] = '\0';
 @@ -2855,7 +2912,8 @@ void os::Linux::sched_getcpu_init() {
    }
  
@@ -2089,13 +2027,6 @@ diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/ja
 index 9371bc001..ab7dd0fc0 100644
 --- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
 +++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
-@@ -80,5 +80,5 @@
- // not relying on included headers.
-
--#ifndef __GLIBC__
-+#if !defined(__GLIBC__) && !defined(__ANDROID__)
- // Alpine doesn't know these types, define them
- typedef unsigned int       __uint32_t;
 @@ -149,7 +150,42 @@ static fstatat64_func* my_fstatat64_func = NULL;
  #if defined(__linux__)
  static statx_func* my_statx_func = NULL;
@@ -2264,26 +2195,6 @@ index 4ec11a136..01b85db4d 100644
  
      /*
       *  OK we may have the stack available in the kernel,
-diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
-index c0626e8f9a45..3cd0550eb314 100644
---- a/make/autoconf/flags-cflags.m4
-+++ b/make/autoconf/flags-cflags.m4
-@@ -58,13 +58,7 @@ AC_DEFUN([FLAGS_SETUP_SHARED_LIBS],
-       SET_SHARED_LIBRARY_NAME='-Wl,-soname=[$]1'
-       SET_SHARED_LIBRARY_MAPFILE='-Wl,-version-script=[$]1'
- 
--      # arm specific settings
--      if test "x$OPENJDK_TARGET_CPU" = "xarm"; then
--        # '-Wl,-z,origin' isn't used on arm.
--        SET_SHARED_LIBRARY_ORIGIN='-Wl,-rpath,\$$$$ORIGIN[$]1'
--      else
--        SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
--      fi
-+      SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
-     fi
- 
-   elif test "x$TOOLCHAIN_TYPE" = xxlc; then
-
 diff --git a/make/autoconf/toolchain.m4 b/make/autoconf/toolchain.m4
 index 7a24815..d20a9ff 100644
 --- a/make/autoconf/toolchain.m4
@@ -2330,16 +2241,6 @@ diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.c
 index fdc7aad3d..05e258c87 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
-@@ -138,7 +138,7 @@
- #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
- 
--#if defined(MUSL_LIBC) || defined(__ANDROID__)
-+#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 26)
- // dlvsym is not a part of POSIX
- // and musl libc doesn't implement it.
--static void *dlvsym(void *handle,
-+void *dlvsym(void *handle,
-                     const char *symbol,
 diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
 index e5929ab..08597d5 100644
 --- a/make/hotspot/lib/JvmFlags.gmk
@@ -2421,3 +2322,460 @@ index b1b69c8..972f9e3 100644
  }
  
  #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
+diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
+index e80d9a98957db..44ccb2fca1141 100644
+--- a/make/autoconf/flags-cflags.m4
++++ b/make/autoconf/flags-cflags.m4
+@@ -71,7 +71,7 @@ AC_DEFUN([FLAGS_SETUP_SHARED_LIBS],
+       # arm specific settings
+       if test "x$OPENJDK_TARGET_CPU" = "xarm"; then
+         # '-Wl,-z,origin' isn't used on arm.
+-        SET_SHARED_LIBRARY_ORIGIN='-Wl,-rpath,\$$$$ORIGIN[$]1'
++        SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
+       else
+         SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
+       fi
+@@ -766,6 +766,13 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_CPU_DEP],
+       $1_CFLAGS_CPU="-mcpu=pwr8"
+     fi
+ 
++    if test "x$FLAGS_CPU" = xarm; then
++      # For whatever reason arm build with clang fails with:
++      #   ad_arm.cpp:19849:4: error: "ARM must be defined"
++      # Fix by defining arm here as well.
++      $1_CFLAGS_CPU_JVM="-DARM"
++    fi
++
+   elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
+     if test "x$FLAGS_CPU" = xx86; then
+       $1_CFLAGS_CPU_JVM="-arch:IA32"
+diff --git a/make/autoconf/lib-std.m4 b/make/autoconf/lib-std.m4
+index e470cdbe66fe6..12f01d5625e12 100644
+--- a/make/autoconf/lib-std.m4
++++ b/make/autoconf/lib-std.m4
+@@ -47,7 +47,7 @@ AC_DEFUN_ONCE([LIB_SETUP_STD_LIBS],
+   if test "x$OPENJDK_TARGET_OS" = xlinux; then
+     # Test if stdc++ can be linked statically.
+     AC_MSG_CHECKING([if static link of stdc++ is possible])
+-    STATIC_STDCXX_FLAGS="-static-libstdc++ -static-libgcc"
++    STATIC_STDCXX_FLAGS=""
+     AC_LANG_PUSH(C++)
+     OLD_LIBS="$LIBS"
+     LIBS="$STATIC_STDCXX_FLAGS"
+diff --git a/make/data/hotspot-symbols/version-script-clang.txt b/make/data/hotspot-symbols/version-script-clang.txt
+index 351d64fdd1d57..08ab416cde3e1 100644
+--- a/make/data/hotspot-symbols/version-script-clang.txt
++++ b/make/data/hotspot-symbols/version-script-clang.txt
+@@ -3,6 +3,5 @@ SUNWprivate_1.1 {
+     *;
+ 
+   local:
+-    _fini;
+-    _init;
++    *;
+ };
+diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
+index 6b5edc85b2369..d0f737bbfa5d9 100644
+--- a/make/hotspot/lib/CompileJvm.gmk
++++ b/make/hotspot/lib/CompileJvm.gmk
+@@ -162,7 +162,7 @@ endif
+ ifeq ($(call isTargetOs, linux), true)
+   HOTSPOT_VERSION_SCRIPT := $(TOPDIR)/make/data/hotspot-symbols/version-script-$(TOOLCHAIN_TYPE).txt
+ 
+-  JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT)
++  JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT) -Wl,--no-undefined-version -Wl,--no-undefined
+ endif
+ 
+ ################################################################################
+diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
+index 3eedb64a597a3..d773c5f949523 100644
+--- a/make/hotspot/lib/JvmOverrideFiles.gmk
++++ b/make/hotspot/lib/JvmOverrideFiles.gmk
+@@ -63,7 +63,8 @@ ifeq ($(call isTargetOs, linux), true)
+       $(OPT_SPEED_SRC) \
+       #
+ 
+-  ifeq ($(call isTargetCpu, x86), true)
++  #ifeq ($(call isTargetCpu, x86), true)
++  ifeq (false, true)
+     # Performance measurements show that by compiling GC related code, we could
+     # significantly reduce the GC pause time on 32 bit Linux/Unix platforms by
+     # compiling without the PIC flag (-fPIC on linux).
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index b747fe4d88f87..542c130873c1f 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -137,10 +137,10 @@
+ 
+ #define MAX_PATH    (2 * K)
+ 
+-#ifdef MUSL_LIBC
++#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 24)
+ // dlvsym is not a part of POSIX
+ // and musl libc doesn't implement it.
+-static void *dlvsym(void *handle,
++void *dlvsym(void *handle,
+                     const char *symbol,
+                     const char *version) {
+    // load the latest version of symbol
+@@ -1988,6 +1988,7 @@ void * os::Linux::dll_load_in_vmthread(const char *filename, char *ebuf,
+ }
+ 
+ const char* os::Linux::dll_path(void* lib) {
++#ifdef RTLD_DI_LINKMAP
+   struct link_map *lmap;
+   const char* l_path = nullptr;
+   assert(lib != nullptr, "dll_path parameter must not be null");
+@@ -1997,6 +1998,9 @@ const char* os::Linux::dll_path(void* lib) {
+     l_path = lmap->l_name;
+   }
+   return l_path;
++#else
++  return NULL;
++#endif
+ }
+ 
+ static unsigned count_newlines(const char* s) {
+diff --git a/src/hotspot/os/posix/os_posix.cpp b/src/hotspot/os/posix/os_posix.cpp
+index d417f384a18c8..d26f81a4d5914 100644
+--- a/src/hotspot/os/posix/os_posix.cpp
++++ b/src/hotspot/os/posix/os_posix.cpp
+@@ -107,6 +107,8 @@ static int clock_tics_per_sec = 100;
+ // Platform minimum stack allowed
+ size_t os::_os_min_stack_allowed = PTHREAD_STACK_MIN;
+ 
++static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen);
++
+ // Check core dump limit and report possible place where core can be found
+ void os::check_core_dump_prerequisites(char* buffer, size_t bufferSize, bool check_only) {
+   if (!FLAG_IS_DEFAULT(CreateCoredumpOnCrash) && !CreateCoredumpOnCrash) {
+@@ -1064,6 +1066,30 @@ bool os::same_files(const char* file1, const char* file2) {
+ 
+ static char saved_jvm_path[MAXPATHLEN] = {0};
+ 
++static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen) {
++  FILE *fp = fopen("/proc/self/maps", "r");
++  assert(fp, "Failed to open /proc/self/maps");
++  if (!fp) {
++    return false;
++  }
++
++  char maps_buffer[2048];
++  while (fgets(maps_buffer, 2048, fp) != NULL) {
++    if (strstr(maps_buffer, so_name) == NULL) {
++      continue;
++    }
++
++    char *so_path = strchr(maps_buffer, '/');
++    so_path[strlen(so_path) - 1] = '\0'; // Cut trailing \n
++    jio_snprintf(buf, buflen, "%s", so_path);
++    fclose(fp);
++    return true;
++  }
++
++  fclose(fp);
++  return false;
++}
++
+ // Find the full path to the current module, libjvm.so
+ void os::jvm_path(char *buf, jint buflen) {
+   // Error checking.
+@@ -1099,6 +1125,19 @@ void os::jvm_path(char *buf, jint buflen) {
+   }
+   fname = dli_fname;
+ #endif // AIX
++#ifdef __ANDROID__
++  if (dli_fname[0] == '\0') {
++    return;
++  }
++
++  if (strchr(dli_fname, '/') == NULL) {
++    bool ok = read_so_path_from_maps(dli_fname, buf, buflen);
++    assert(ok, "unable to turn relative libjvm.so path into absolute");
++    return;
++  }
++
++  snprintf(buf, buflen, /* "%s/lib/%s/server/%s", java_home_var, cpu_arch, */ "%s", dli_fname);
++#else // !__ANDROID__
+   char* rp = nullptr;
+   if (fname[0] != '\0') {
+     rp = os::realpath(fname, buf, buflen);
+@@ -1146,6 +1185,7 @@ void os::jvm_path(char *buf, jint buflen) {
+       }
+     }
+   }
++#endif
+ 
+   strncpy(saved_jvm_path, buf, MAXPATHLEN);
+   saved_jvm_path[MAXPATHLEN - 1] = '\0';
+diff --git a/src/hotspot/share/jvmci/jvmciRuntime.cpp b/src/hotspot/share/jvmci/jvmciRuntime.cpp
+index ad848998823f2..bf54f44fa8d78 100644
+--- a/src/hotspot/share/jvmci/jvmciRuntime.cpp
++++ b/src/hotspot/share/jvmci/jvmciRuntime.cpp
+@@ -1248,7 +1248,7 @@ JNIEnv* JVMCIRuntime::init_shared_library_javavm(int* create_JavaVM_err, const c
+ 
+     ResourceMark rm;
+     JavaVMInitArgs vm_args;
+-    vm_args.version = JNI_VERSION_1_2;
++    vm_args.version = JNI_VERSION_24;
+     vm_args.ignoreUnrecognized = JNI_TRUE;
+     JavaVMOption options[6];
+     jlong javaVM_id = 0;
+@@ -1270,7 +1270,7 @@ JNIEnv* JVMCIRuntime::init_shared_library_javavm(int* create_JavaVM_err, const c
+     options[5].optionString = (char*) "_createvm_errorstr";
+     options[5].extraInfo = (void*) err_msg;
+ 
+-    vm_args.version = JNI_VERSION_1_2;
++    vm_args.version = JNI_VERSION_24;
+     vm_args.options = options;
+     vm_args.nOptions = sizeof(options) / sizeof(JavaVMOption);
+ 
+diff --git a/src/java.base/share/classes/jdk/internal/util/StaticProperty.java b/src/java.base/share/classes/jdk/internal/util/StaticProperty.java
+index 4fb3ae7a184ee..b5cc8b8d8804f 100644
+--- a/src/java.base/share/classes/jdk/internal/util/StaticProperty.java
++++ b/src/java.base/share/classes/jdk/internal/util/StaticProperty.java
+@@ -116,7 +116,7 @@ private StaticProperty() {}
+             USER_SCRIPT = "";
+         } else {
+             USER_SCRIPT = getProperty(props, "user.script", "");
+-            USER_COUNTRY = getProperty(props, "user.country", "");
++            USER_COUNTRY = getProperty(props, "user.country", "CN");
+             USER_VARIANT = getProperty(props, "user.variant", "");
+         }
+         USER_SCRIPT_DISPLAY = getProperty(props, "user.script.display", USER_SCRIPT);
+diff --git a/src/java.base/share/native/libjava/check_version.c b/src/java.base/share/native/libjava/check_version.c
+index 17a590fea1456..70fa6982dbe89 100644
+--- a/src/java.base/share/native/libjava/check_version.c
++++ b/src/java.base/share/native/libjava/check_version.c
+@@ -30,5 +30,5 @@
+ JNIEXPORT jint JNICALL
+ DEF_JNI_OnLoad(JavaVM *vm, void *reserved)
+ {
+-    return JNI_VERSION_1_2;
++    return JNI_VERSION_24;
+ }
+diff --git a/src/java.base/unix/native/libjava/ProcessImpl_md.c b/src/java.base/unix/native/libjava/ProcessImpl_md.c
+index 1d0c8d21d3757..7cc8885a8c17c 100644
+--- a/src/java.base/unix/native/libjava/ProcessImpl_md.c
++++ b/src/java.base/unix/native/libjava/ProcessImpl_md.c
+@@ -339,13 +339,9 @@ throwIOExceptionImpl(JNIEnv *env, int errnum, const char *externalDetail, const
+     char tmpbuf[1024];
+     jstring s;
+ 
+-    if (errnum != 0) {
+-        int ret = getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
+-        if (ret != EINVAL) {
+-            errorDetail = tmpbuf;
+-        } else {
+-            errorDetail = "unknown";
+-        }
++    if (errnum != EINVAL) {
++        getErrorString(errnum, tmpbuf, sizeof(tmpbuf));
++        errorDetail = tmpbuf;
+     } else {
+         errorDetail = "none";
+     }
+diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+index fbf996886ae40..9218aa5605914 100644
+--- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
++++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+@@ -70,7 +70,7 @@
+ // by defining binary compatible statx structs in this file and
+ // not relying on included headers.
+ 
+-#ifndef __GLIBC__
++#if !defined(__BIONIC__) && !defined(__GLIBC__)
+ // Alpine doesn't know these types, define them
+ typedef unsigned int       __uint32_t;
+ typedef unsigned short     __uint16_t;
+@@ -382,7 +382,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_init(JNIEnv* env, jclass this)
+ #ifdef _DARWIN_FEATURE_64_BIT_INODE
+     capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_BIRTHTIME;
+ #endif
+-#if defined(__linux__)
++#if defined(__linux__) && !defined(__ANDROID__)
+     my_statx_func = (statx_func*) dlsym(RTLD_DEFAULT, "statx");
+     if (my_statx_func != NULL) {
+         capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_BIRTHTIME;
+diff --git a/src/java.desktop/unix/native/common/java2d/x11/X11FontScaler_md.c b/src/java.desktop/unix/native/common/java2d/x11/X11FontScaler_md.c
+index 0d352c36bbebe..064bf7439f021 100644
+--- a/src/java.desktop/unix/native/common/java2d/x11/X11FontScaler_md.c
++++ b/src/java.desktop/unix/native/common/java2d/x11/X11FontScaler_md.c
+@@ -47,7 +47,7 @@ static int pixmapWidth = 0;
+ static int pixmapHeight = 0;
+ 
+ #define FONT_AWT_LOCK() \
+-env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_1_2); \
++env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_24); \
+ AWT_LOCK();
+ 
+ int CreatePixmapAndGC (int width, int height)
+diff --git a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c b/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
+index 356b52dfb3487..d2cd0e043c9f9 100644
+--- a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
++++ b/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
+@@ -57,14 +57,14 @@ typedef jint JNICALL JNI_OnLoad_type(JavaVM *vm, void *reserved);
+    first loaded */
+ JNIEXPORT JavaVM *jvm;
+ 
+-JNIEXPORT jboolean JNICALL AWTIsHeadless() {
++JNIEXPORT jboolean JNICALL AWTIsHeadless(void) {
+     static JNIEnv *env = NULL;
+     static jboolean isHeadless;
+     jmethodID headlessFn;
+     jclass graphicsEnvClass;
+ 
+     if (env == NULL) {
+-        env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_1_2);
++        env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_24);
+         graphicsEnvClass = (*env)->FindClass(env,
+                                              "java/awt/GraphicsEnvironment");
+         CHECK_EXCEPTION_FATAL(env, "FindClass java/awt/GraphicsEnvironment failed");
+@@ -104,12 +104,12 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
+     char *p, *tk;
+     JNI_OnLoad_type *JNI_OnLoad_ptr;
+     struct utsname name;
+-    JNIEnv *env = (JNIEnv *)JNU_GetEnv(vm, JNI_VERSION_1_2);
++    JNIEnv *env = (JNIEnv *)JNU_GetEnv(vm, JNI_VERSION_24);
+     void *v;
+ 
+     if (awtHandle != NULL) {
+         /* Avoid several loading attempts */
+-        return JNI_VERSION_1_2;
++        return JNI_VERSION_24;
+     }
+ 
+     jvm = vm;
+@@ -152,7 +152,7 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
+         awtHandle = dlopen(buf, RTLD_LAZY | RTLD_GLOBAL);
+     }
+ 
+-    return JNI_VERSION_1_2;
++    return JNI_VERSION_24;
+ }
+ 
+ JNIEXPORT jint JNICALL
+diff --git a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
+index a866858dae520..9629aef8e251b 100644
+--- a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
++++ b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
+@@ -66,7 +66,7 @@ dw_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     dw_f2b_loop_32
+ dw_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     disjoint_words_finish
+         cmp     r2, #16
+         blt	disjoint_words_small
+@@ -114,7 +114,7 @@ cw_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cw_f2b_loop_32
+ cw_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_words_finish
+         cmp     r2, #16
+         blt	conjoint_words_small
+@@ -147,7 +147,7 @@ cw_b2f_loop_32:
+         stmdb to!, {r3-r9,ip}
+         bgt     cw_b2f_loop_32
+ cw_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_words_finish
+         cmp     r2, #16
+         blt	cw_b2f_copy_small
+@@ -199,7 +199,7 @@ cs_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cs_f2b_loop_32
+ cs_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_shorts_finish
+         movs    r6, r2, lsr #3
+         .align 3
+@@ -215,11 +215,11 @@ cs_f2b_4:
+         beq     conjoint_shorts_finish
+         cmp     r2, #4
+         ldrh    r3, [from], #2
+-        ldrgeh  r4, [from], #2
+-        ldrgth  r5, [from], #2
++        ldrhgt  r4, [from], #2
++        ldrhgt  r5, [from], #2
+         strh    r3, [to], #2
+-        strgeh  r4, [to], #2
+-        strgth  r5, [to], #2
++        strhge  r4, [to], #2
++        strhgt  r5, [to], #2
+         b       conjoint_shorts_finish
+ 
+         # Destination not aligned
+@@ -277,11 +277,11 @@ cs_f2b_4_u:
+         beq     conjoint_shorts_finish
+         cmp     r2, #4
+         ldrh    r3, [from], #2
+-        ldrgeh  r4, [from], #2
+-        ldrgth  r5, [from], #2
++        ldrhgt  r4, [from], #2
++        ldrhgt  r5, [from], #2
+         strh    r3, [to], #2
+-        strgeh  r4, [to], #2
+-        strgth  r5, [to], #2
++        strhge  r4, [to], #2
++        strhgt  r5, [to], #2
+         b       conjoint_shorts_finish
+ 
+         # Src and dest overlap, copy in a descending order
+@@ -304,7 +304,7 @@ cs_b2f_loop_32:
+         stmdb to!, {r3-r9,ip}
+         bgt     cs_b2f_loop_32
+ cs_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_shorts_finish
+         cmp     r2, #24
+         blt     cs_b2f_16
+@@ -330,11 +330,11 @@ cs_b2f_8:
+ cs_b2f_all_copy:
+         cmp     r2, #4
+         ldrh    r3, [from, #-2]!
+-        ldrgeh  r4, [from, #-2]!
+-        ldrgth  r5, [from, #-2]!
++        ldrhgt  r4, [from, #-2]!
++        ldrhgt  r5, [from, #-2]!
+         strh    r3, [to, #-2]!
+-        strgeh  r4, [to, #-2]!
+-        strgth  r5, [to, #-2]!
++        strhge  r4, [to, #-2]!
++        strhgt  r5, [to, #-2]!
+         b       conjoint_shorts_finish
+ 
+         # Destination not aligned
+@@ -369,7 +369,7 @@ cs_b2f_16_loop_u:
+         bgt     cs_b2f_16_loop_u
+         beq     conjoint_shorts_finish
+ cs_b2f_16_loop_u_finished:
+-        addlts  r2, #16
++        addslt  r2, #16
+         ldr     r3, [from]
+         cmp     r2, #10
+         blt     cs_b2f_2_u_loop
+@@ -432,7 +432,7 @@ cl_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cl_f2b_loop_32
+ cl_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_longs_finish
+ conjoint_longs_small:
+         cmp     r2, #16
+@@ -465,7 +465,7 @@ cl_b2f_loop_32:
+         stmdb 	to!, {r3 - r9, ip}
+         bgt     cl_b2f_loop_32
+ cl_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_longs_finish
+         cmp     r2, #16
+         blt	cl_b2f_copy_8
