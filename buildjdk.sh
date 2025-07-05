@@ -8,10 +8,12 @@ export CUPS_DIR=$PWD/cups
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -D__thumb__"
+  export buildjdk_ld="$TOOLCHAIN/bin/ld"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -mstackrealign"
   fi
+  export buildjdk_ld="$thecxx"
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
@@ -35,7 +37,7 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
-  LD=$TOOLCHAIN/bin/ld.lld \
+  LD=$buildjdk_ld \
   "
 
 if [[ "$TARGET_JDK" == "x86" ]]; then
@@ -50,7 +52,7 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   "
 
 #no error
-export CFLAGS+=" -DANDROID -D__ANDROID__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration"
+export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -Wl,--enable-new-dtags -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration"
 
 export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fomit-frame-pointer -fvectorize -fslp-vectorize -fno-semantic-interposition -pipe -integrated-as -pthread"
 export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-Bsymbolic -Wl,-O3 -Wl,--sort-common -Wl,--relax -Wl,--gc-sections -Wl,--as-needed -l:libomp.a -l:libc++.a"
