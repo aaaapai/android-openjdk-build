@@ -2237,10 +2237,6 @@ index a1fc81564..fc0356e92 100644
  
    # Check if ffi is needed
    if HOTSPOT_CHECK_JVM_VARIANT(zero) || test "x$ENABLE_FALLBACK_LINKER" = "xtrue"; then
-diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
-index fdc7aad3d..05e258c87 100644
---- a/src/hotspot/os/linux/os_linux.cpp
-+++ b/src/hotspot/os/linux/os_linux.cpp
 diff --git a/make/hotspot/lib/JvmFlags.gmk b/make/hotspot/lib/JvmFlags.gmk
 index e5929ab..08597d5 100644
 --- a/make/hotspot/lib/JvmFlags.gmk
