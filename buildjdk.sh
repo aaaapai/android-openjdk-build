@@ -55,15 +55,15 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
 export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -Wl,--enable-new-dtags -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration"
 
 export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fomit-frame-pointer -fvectorize -fslp-vectorize -fno-semantic-interposition -pipe -integrated-as -pthread"
-export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-Bsymbolic -Wl,-O3 -Wl,--sort-common -Wl,--relax -Wl,--gc-sections -Wl,--as-needed -l:libomp.a -l:libc++.a"
+export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-O3 -Wl,--gc-sections -Wl,--as-needed"
 #LTO
 if [[ "$TARGET_JDK" != "arm" ]]
 then
-export CFLAGS+=" -flto=auto -fno-emulated-tls -fwhole-program-vtables"
-export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
+export CFLAGS+=" -flto=thin -fno-emulated-tls -fwhole-program-vtables"
+export LDFLAGS+=" -flto=rhin -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 fi
 #polly
-export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=4 -mllvm -polly-scheduling-chunksize=4"
+export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-num-threads=4 -mllvm -polly-scheduling-chunksize=4"
 export OMP_NUM_THREADS=4
 #fast-math
 export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
