@@ -2354,7 +2354,7 @@ index e470cdbe66fe6..12f01d5625e12 100644
      # Test if stdc++ can be linked statically.
      AC_MSG_CHECKING([if static link of stdc++ is possible])
 -    STATIC_STDCXX_FLAGS="-static-libstdc++ -static-libgcc"
-+    STATIC_STDCXX_FLAGS=""
++    STATIC_STDCXX_FLAGS="-static-libstdc++"
      AC_LANG_PUSH(C++)
      OLD_LIBS="$LIBS"
      LIBS="$STATIC_STDCXX_FLAGS"
