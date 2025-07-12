@@ -38,6 +38,7 @@ platform_args="--with-toolchain-type=clang \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
   LD=$buildjdk_ld \
+  READELF=$TOOLCHAIN/bin/llvm-readelf \
   "
 
 if [[ "$TARGET_JDK" == "x86" ]]; then
