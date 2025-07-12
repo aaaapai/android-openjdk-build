@@ -9,7 +9,7 @@ fi
 
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
 then
-  export JDK_DEBUG_LEVEL=fastdebug
+  export JDK_DEBUG_LEVEL=release
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
