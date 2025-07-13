@@ -2,7 +2,6 @@
 set -e
 . setdevkitpath.sh
 
-<<EOF
 unset AR AS CC CXX LD OBJCOPY RANLIB STRIP CPPFLAGS LDFLAGS
 git clone --depth 1 https://github.com/termux/termux-elf-cleaner || true
 cd termux-elf-cleaner
@@ -13,7 +12,6 @@ cmake ..
 make -j4
 unset CFLAGS
 cd ../..
-EOF
 
 findexec() { find $1 -type f -name "*" -not -name "*.o" -exec sh -c '
     case "$(head -n 1 "$1")" in
