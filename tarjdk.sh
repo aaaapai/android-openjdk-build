@@ -23,8 +23,8 @@ exit 1
 ' sh {} \; -print
 }
 
-#findexec jreout | xargs ./termux-elf-cleaner/build/termux-elf-cleaner --api-level ${API}
-#findexec jdkout | xargs ./termux-elf-cleaner/build/termux-elf-cleaner --api-level ${API}
+findexec jreout | xargs ./termux-elf-cleaner/build/termux-elf-cleaner --api-level ${API}
+findexec jdkout | xargs ./termux-elf-cleaner/build/termux-elf-cleaner --api-level ${API}
 
 cp -rv jre_override/lib/* jreout/lib/ || true
 cp -rv jre_override/lib/* jdkout/lib/ || true
