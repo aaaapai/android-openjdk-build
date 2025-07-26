@@ -57,11 +57,10 @@ export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-i
 
 export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fomit-frame-pointer -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -pthread -stdlib=libc++"
 export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -Wl,-O3 -Wl,--gc-sections -Wl,--as-needed"
-#LTO
-if [[ "$TARGET_JDK" != "arm" ]]
-then
-export CFLAGS+=" -flto=thin -fno-emulated-tls -fwhole-program-vtables"
-export LDFLAGS+=" -flto=thin -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
+# 地域歧视
+if [[ "$API" >= "29" ]]; then
+export CFLAGS+=" -fno-emulated-tls"
+export LDFLAGS+=" -Wl,-plugin-opt=-emulated-tls=0"
 fi
 #polly
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel"
