@@ -55,6 +55,8 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
 #no error
 export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration -Wno-unused-command-line-argument"
 
+export CFLAGS+=" -O3 -mllvm -polly -mllvm -polly-vectorizer=stripmine"
+<< EOF
 #-fomit-frame-pointer -fno-semantic-interposition -mllvm -hot-cold-split=true
 export CFLAGS+=" -O3 -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -stdlib=libc++"
 export LDFLAGS+=" -fuse-ld=lld -Wl,-O3 -Wl,--gc-sections -Wl,--as-needed"
@@ -68,6 +70,7 @@ fi
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel"
 #fast-math
 # export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
+EOF
 
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
@@ -103,7 +106,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,link-time-opt,opt-size \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --enable-linktime-gc \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
