@@ -106,7 +106,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,link-time-opt \
     --enable-linktime-gc \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
