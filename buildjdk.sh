@@ -60,8 +60,8 @@ export LDFLAGS+=" -fuse-ld=lld -Wl,-O3 -Wl,--gc-sections -Wl,--as-needed"
 # 地域歧视
 if [[ "$API" -ge "29" ]]
 then
-export CFLAGS+=" -flto -fno-emulated-tls"
-export LDFLAGS+=" -flto  -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
+export CFLAGS+=" -flto=auto -fno-emulated-tls"
+export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 fi
 #polly
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel"
@@ -102,7 +102,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,link-time-opt \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --enable-linktime-gc \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
