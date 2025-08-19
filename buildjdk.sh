@@ -57,12 +57,14 @@ export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-i
 
 export CFLAGS+=" -O3 -fomit-frame-pointer -fno-semantic-interposition -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -stdlib=libc++"
 export LDFLAGS+=" -fuse-ld=lld -Wl,--gc-sections -Wl,--as-needed"
+
 # 地域歧视
-if [[ "$API" -ge "29" ]]
-then
-export CFLAGS+=" -flto=auto -fno-emulated-tls"
-export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
-fi
+# if [[ "$API" -ge "29" ]]
+# then
+export CFLAGS+=" -flto -fno-emulated-tls"
+export LDFLAGS+=" -flto -Wl,-plugin-opt=-emulated-tls=0"
+# fi
+
 #polly
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel"
 #fast-math
@@ -84,9 +86,9 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk26u_android.diff || echo "git apply failed (Android patch set)"
-if [[ "$API" == "21" ]] || [[ "$API" == "22" ]]; then
-   git apply --reject --whitespace=fix ../patches/jdk26u_android5.diff || echo "git apply failed (Android patch set)"
-fi
+# if [[ "$API" == "21" ]] || [[ "$API" == "22" ]]; then
+#   git apply --reject --whitespace=fix ../patches/jdk26u_android5.diff || echo "git apply failed (Android patch set)"
+# fi
 git apply --reject --whitespace=fix ../patches/jdk26u_termux.diff || echo "git apply failed (Termux patch set)"
 
 bash ./configure \
