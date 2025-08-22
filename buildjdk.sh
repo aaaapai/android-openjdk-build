@@ -56,17 +56,17 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
 export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration -Wno-unused-command-line-argument"
 
 export CFLAGS+=" -O3 -fomit-frame-pointer -fno-semantic-interposition -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -stdlib=libc++"
-export LDFLAGS+=" -fuse-ld=lld -Wl,--gc-sections -Wl,--as-needed"
+export LDFLAGS+=" -fuse-ld=lld -Wl,--gc-sections -Wl,-O3 -Wl,--sort-common -Wl,--as-needed -l:libomp.a"
 
 # 地域歧视
 # if [[ "$API" -ge "29" ]]
 # then
-export CFLAGS+=" -flto -fno-emulated-tls"
-export LDFLAGS+=" -flto -Wl,-plugin-opt=-emulated-tls=0"
+export CFLAGS+=" -flto -Wl,--lto-O3 -fno-emulated-tls"
+export LDFLAGS+=" -flto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 # fi
 
 #polly
-export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel"
+export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM"
 #fast-math
 # export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
 
