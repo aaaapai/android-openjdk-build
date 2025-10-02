@@ -70,7 +70,7 @@ export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-
 #fast-math
 # export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
 
-export LDFLAGS+=" -L$PWD/dummy_libs" 
+export LDFLAGS+=" -L$PWD/dummy_libs -Wl,-z,max-page-size=16384" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
 mkdir -p dummy_libs
