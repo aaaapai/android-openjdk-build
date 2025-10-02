@@ -2174,7 +2174,7 @@ index d417f384a18c8..d26f81a4d5914 100644
 +    return;
 +  }
 +
-+  snprintf(buf, buflen, /* "%s/lib/%s/server/%s", java_home_var, cpu_arch, */ "%s", dli_fname);
++  os::snprintf(buf, buflen, /* "%s/lib/%s/server/%s", java_home_var, cpu_arch, */ "%s", dli_fname);
 +#else // !__ANDROID__
    char* rp = nullptr;
    if (fname[0] != '\0') {
