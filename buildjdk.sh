@@ -123,6 +123,10 @@ fi
 
 jobs=$(nproc)
 
+if [[ "$TOO_MANY_CORES" == "1" ]]; then
+  jobs=6
+fi
+
 echo Running ${jobs} jobs to build the jdk
 
 cd build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEBUG_LEVEL}
