@@ -38,10 +38,10 @@ cd jreout
 # Strip
 find ./ -name '*' -execdir ${TOOLCHAIN}/bin/llvm-strip {} \;
 
-tar cJf ../jre26-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
+tar cJf ../jre26-${TARGET_OS}-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
 cd ../jdkout
-tar cJf ../jdk26-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
+tar cJf ../jdk26-${TARGET_OS}-${TARGET_SHORT}-`date +%Y%m%d`-${JDK_DEBUG_LEVEL}.tar.xz .
 
 # Remove jreout and jdkout
 cd ..
