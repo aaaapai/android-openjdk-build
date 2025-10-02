@@ -30,12 +30,12 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: "jdk26-${{matrix.arch}}"
-        path: jdk26*.tar.xz
+        path: jdk26-android*.tar.xz
     - name: Upload JRE build output
       uses: actions/upload-artifact@main
       with:
         name: 'jre26-${{matrix.arch}}'
-        path: jre26*.tar.xz
+        path: jre26-android*.tar.xz
     - name: Upload JRE debuginfo build output
       uses: actions/upload-artifact@main
       with:
