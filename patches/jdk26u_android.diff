@@ -2781,93 +2781,81 @@ index 7caf8f98a00fb..7b2dd23a44ca2 100644
     /proc/[number]/stat
                Status information about the process.  This is used by ps(1).  It is defined in /usr/src/linux/fs/proc/array.c.
 diff --git a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
-index 529cf22078ea5..a7faec6394505 100644
+index 529cf22078ea5..9041f85d76474 100644
 --- a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
 +++ b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
-@@ -37,26 +37,26 @@
+@@ -36,29 +36,4 @@
+ #include <unistd.h>
  #endif
  
- // If needed, add os::strndup and use that instead.
+-// If needed, add os::strndup and use that instead.
 -FORBID_C_FUNCTION(char* strndup(const char*, size_t), noexcept, "don't use");
-+FORBID_C_FUNCTION(char* strndup(const char*, size_t), /*noexcept*/, "don't use");
- 
- // These are unimplementable for Windows, and they aren't useful for a
- // POSIX implementation of NMT either.
- // https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
+-
+-// These are unimplementable for Windows, and they aren't useful for a
+-// POSIX implementation of NMT either.
+-// https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
 -FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), noexcept, "don't use");
 -FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), noexcept, "don't use");
-+FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), /*noexcept*/, "don't use");
-+FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), /*noexcept*/, "don't use");
- 
- // realpath with a null second argument mallocs a string for the result.
- // With a non-null second argument, there is a risk of buffer overrun.
- PRAGMA_DIAG_PUSH
- FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
+-
+-// realpath with a null second argument mallocs a string for the result.
+-// With a non-null second argument, there is a risk of buffer overrun.
+-PRAGMA_DIAG_PUSH
+-FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
 -FORBID_C_FUNCTION(char* realpath(const char*, char*), noexcept, "use os::realpath");
-+FORBID_C_FUNCTION(char* realpath(const char*, char*), /*noexcept*/, "use os::realpath");
- PRAGMA_DIAG_POP
- 
- // Returns a malloc'ed string.
+-PRAGMA_DIAG_POP
+-
+-// Returns a malloc'ed string.
 -FORBID_C_FUNCTION(char* get_current_dir_name(), noexcept, "use os::get_current_directory");
-+FORBID_C_FUNCTION(char* get_current_dir_name(), /*noexcept*/, "use os::get_current_directory");
- 
- // Problematic API that should never be used.
+-
+-// Problematic API that should never be used.
 -FORBID_C_FUNCTION(char* getwd(char*), noexcept, "use os::get_current_directory");
-+FORBID_C_FUNCTION(char* getwd(char*), /*noexcept*/, "use os::get_current_directory");
- 
- // BSD utility that is subtly different from realloc.
- FORBID_C_FUNCTION(void* reallocf(void*, size_t), /* not noexcept */, "use os::realloc");
+-
+-// BSD utility that is subtly different from realloc.
+-FORBID_C_FUNCTION(void* reallocf(void*, size_t), /* not noexcept */, "use os::realloc");
+-
+ #endif // OS_POSIX_FORBIDDENFUNCTIONS_POSIX_HPP
 diff --git a/src/hotspot/share/utilities/forbiddenFunctions.hpp b/src/hotspot/share/utilities/forbiddenFunctions.hpp
-index 47becd7b4c74d..d92afe4e6e42e 100644
+index 47becd7b4c74d..f6cbf8db65b2f 100644
 --- a/src/hotspot/share/utilities/forbiddenFunctions.hpp
 +++ b/src/hotspot/share/utilities/forbiddenFunctions.hpp
-@@ -49,35 +49,35 @@
- // or have security concerns, either with preferred alternatives, or to be
- // avoided entirely.
+@@ -44,40 +44,4 @@
+ #include "forbiddenFunctions_posix.hpp"
+ #endif
  
+-// Forbid the use of various C library functions.  Some of these have os::
+-// replacements that should be used instead.  Others are considered obsolete
+-// or have security concerns, either with preferred alternatives, or to be
+-// avoided entirely.
+-
 -FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
 -FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
-+FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), , "use os::exit")
-+FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), , "use os::exit")
- 
- // Windows puts _exit in <stdlib.h>, POSIX in <unistd.h>.
- FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
- 
+-
+-// Windows puts _exit in <stdlib.h>, POSIX in <unistd.h>.
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
+-
 -FORBID_IMPORTED_C_FUNCTION(char* strerror(int), noexcept, "use os::strerror");
 -FORBID_IMPORTED_C_FUNCTION(char* strtok(char*, const char*), noexcept, "use strtok_r");
-+FORBID_IMPORTED_C_FUNCTION(char* strerror(int), , "use os::strerror");
-+FORBID_IMPORTED_C_FUNCTION(char* strtok(char*, const char*), , "use strtok_r");
- 
- // AIX declarations for sprintf and snprintf are not noexcept, which is
- // inconsistent with most other system header declarations, including being
- // inconsistent with vsprintf and fsnprintf.
+-
+-// AIX declarations for sprintf and snprintf are not noexcept, which is
+-// inconsistent with most other system header declarations, including being
+-// inconsistent with vsprintf and fsnprintf.
 -FORBID_C_FUNCTION(int sprintf(char*, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
 -FORBID_C_FUNCTION(int snprintf(char*, size_t, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
-+FORBID_C_FUNCTION(int sprintf(char*, const char*, ...), , "use os::snprintf");
-+FORBID_C_FUNCTION(int snprintf(char*, size_t, const char*, ...), , "use os::snprintf");
- 
- PRAGMA_DIAG_PUSH
- FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
+-
+-PRAGMA_DIAG_PUSH
+-FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
 -FORBID_C_FUNCTION(int vsprintf(char*, const char*, va_list), noexcept, "use os::vsnprintf");
 -FORBID_C_FUNCTION(int vsnprintf(char*, size_t, const char*, va_list), noexcept, "use os::vsnprintf");
-+FORBID_C_FUNCTION(int vsprintf(char*, const char*, va_list), , "use os::vsnprintf");
-+FORBID_C_FUNCTION(int vsnprintf(char*, size_t, const char*, va_list), , "use os::vsnprintf");
- PRAGMA_DIAG_POP
- 
- // All of the following functions return raw C-heap pointers (sometimes as an
- // option, e.g. realpath or getwd) or, in case of free(), take raw C-heap
- // pointers.  We generally want allocation to be done through NMT.
+-PRAGMA_DIAG_POP
+-
+-// All of the following functions return raw C-heap pointers (sometimes as an
+-// option, e.g. realpath or getwd) or, in case of free(), take raw C-heap
+-// pointers.  We generally want allocation to be done through NMT.
 -FORBID_IMPORTED_C_FUNCTION(void* malloc(size_t size), noexcept, "use os::malloc");
 -FORBID_IMPORTED_C_FUNCTION(void free(void *ptr), noexcept, "use os::free");
 -FORBID_IMPORTED_C_FUNCTION(void* calloc(size_t nmemb, size_t size), noexcept, "use os::malloc and zero out manually");
 -FORBID_IMPORTED_C_FUNCTION(void* realloc(void *ptr, size_t size), noexcept, "use os::realloc");
 -FORBID_IMPORTED_C_FUNCTION(char* strdup(const char *s), noexcept, "use os::strdup");
 -FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), noexcept, "don't use");
-+FORBID_IMPORTED_C_FUNCTION(void* malloc(size_t size), , "use os::malloc");
-+FORBID_IMPORTED_C_FUNCTION(void free(void *ptr), , "use os::free");
-+FORBID_IMPORTED_C_FUNCTION(void* calloc(size_t nmemb, size_t size), , "use os::malloc and zero out manually");
-+FORBID_IMPORTED_C_FUNCTION(void* realloc(void *ptr, size_t size), , "use os::realloc");
-+FORBID_IMPORTED_C_FUNCTION(char* strdup(const char *s), /*noexcept*/, "use os::strdup");
-+FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), /*noexcept*/, "don't use");
- 
+-
  #endif // SHARE_UTILITIES_FORBIDDENFUNCTIONS_HPP
