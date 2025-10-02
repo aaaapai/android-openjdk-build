@@ -2868,7 +2868,7 @@ index 912e4f622dbae..8dac110adecc0 100644
  LAUNCHER_NAME=openjdk
  PRODUCT_NAME=OpenJDK
 -PRODUCT_SUFFIX="Runtime Environment"
-+PRODUCT_SUFFIX="典型的安卓运行时环境"
++PRODUCT_SUFFIX="典型的安卓思维安卓学历安卓素质安卓运行时环境"
  JDK_RC_PLATFORM_NAME=Platform
  COMPANY_NAME=N/A
  HOTSPOT_VM_DISTRO="OpenJDK"
