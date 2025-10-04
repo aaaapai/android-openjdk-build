@@ -233,7 +233,7 @@ index 42680218d..403d8905b 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
 @@ -135,6 +135,6 @@
- #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
+ #define MAX_PATH    (2 * K)
  
 -#ifdef MUSL_LIBC
 +#if defined(MUSL_LIBC) || defined(__ANDROID__)
@@ -728,7 +728,7 @@ index ff416d47e..fca2f6aa4 100644
 +  while (list != nullptr) {
 +    ifaddrs* current = list;
 +    list = list->ifa_next;
-+    free(current);
++    os::free(current);
 +  }
 +}
 +#endif
@@ -782,7 +782,7 @@ index cf0f48974..04a5930b5 100644
 +    ::execve("/bin/sh", (char* const*)argv, env);
 +
 +    // execve failed
-+    ::_exit(-1);
++    os::exit(-1);
 +
 +  } else  {
 +    // copied from J2SE ..._waitForProcessExit() in UNIXProcess_md.c; we don't
@@ -2331,7 +2331,7 @@ index fdc7aad3d..05e258c87 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
 @@ -138,7 +138,7 @@
- #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
+ #define MAX_PATH    (2 * K)
  
 -#if defined(MUSL_LIBC) || defined(__ANDROID__)
 +#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 26)
