@@ -59,3 +59,6 @@ export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
 
 export TARGET_OS=android
+
+export MX_PATH=$PWD/mx
+export PATH=$MX_PATH:$PATH
