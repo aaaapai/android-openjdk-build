@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
-    - uses: graalvm/setup-graalvm@v1
+    - uses: graalvm/setup-graalvm@main
       with:
           java-version: '25'
           distribution: 'graalvm-community'
