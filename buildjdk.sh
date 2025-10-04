@@ -8,10 +8,12 @@ export CUPS_DIR=$PWD/cups
 if [[ "$TARGET_JDK" == "arm" ]]
 then
   export CFLAGS+=" -D__thumb__"
+  export buildjdk_ld="$TOOLCHAIN/bin/ld"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -mstackrealign"
   fi
+  export buildjdk_ld="$thecxx"
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
@@ -35,7 +37,8 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
-  LD=$TOOLCHAIN/bin/ld.lld \
+  LD=$buildjdk_ld \
+  READELF=$TOOLCHAIN/bin/llvm-readelf \
   "
 
 if [[ "$TARGET_JDK" == "x86" ]]; then
@@ -50,20 +53,24 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   "
 
 #no error
-export CFLAGS+=" -DANDROID -D__ANDROID__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration"
+export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration -Wno-unused-command-line-argument -Wno-exception-specification"
 
-export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fomit-frame-pointer -fvectorize -fslp-vectorize -fno-semantic-interposition -fopenmp -pipe -integrated-as"
-export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-Bsymbolic -Wl,-O3 -Wl,--sort-common -Wl,--relax -Wl,--gc-sections -Wl,--as-needed -fopenmp -l:libomp.a"
-#LTO
-export CFLAGS+=" -flto=auto -fno-emulated-tls"
-export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
+export CFLAGS+=" -O3 -fomit-frame-pointer -fno-semantic-interposition -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -stdlib=libc++"
+export LDFLAGS+=" -fuse-ld=lld -Wl,--gc-sections -Wl,-O3 -Wl,--sort-common -Wl,--as-needed -l:libomp.a"
+
+# 地域歧视
+# if [[ "$API" -ge "29" ]]
+# then
+export CFLAGS+=" -flto -Wl,--lto-O3 -fno-emulated-tls"
+export LDFLAGS+=" -flto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
+# fi
+
 #polly
-export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=4 -mllvm -polly-scheduling-chunksize=4"
-export OMP_NUM_THREADS=4
+export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM"
 #fast-math
-export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
+# export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
 
-export LDFLAGS+=" -L$PWD/dummy_libs" 
+export LDFLAGS+=" -L$PWD/dummy_libs -Wl,-z,max-page-size=16384" 
 
 # Create dummy libraries so we won't have to remove them in OpenJDK makefiles
 mkdir -p dummy_libs
@@ -79,9 +86,13 @@ cd openjdk
 # Apply patches
 git reset --hard
 git apply --reject --whitespace=fix ../patches/jdk25u_android.diff || echo "git apply failed (Android patch set)"
+# if [[ "$API" == "21" ]] || [[ "$API" == "22" ]]; then
+#   git apply --reject --whitespace=fix ../patches/jdk26u_android5.diff || echo "git apply failed (Android patch set)"
+# fi
+# git apply --reject --whitespace=fix ../patches/jdk26u_termux.diff || echo "git apply failed (Termux patch set)"
 
 bash ./configure \
-    --with-version-pre="" \
+    --with-version-pre="-graalvm" \
     --with-version-opt="" \
     --with-boot-jdk-jvmargs="-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+UseNUMA -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:ProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1 -XX:AllocatePrefetchStyle=3 -XX:AllocatePrefetchStyle=1 -XX:+UseCriticalJavaThreadPriority -XX:+UseStringDeduplication -XX:+UseFastJNIAccessors -XX:+UseThreadPriorities" \
     --openjdk-target=$TARGET \
@@ -93,7 +104,7 @@ bash ./configure \
     --enable-option-checking=fatal \
     --enable-headless-only=yes \
     --with-jvm-variants=$JVM_VARIANTS \
-    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc,link-time-opt,opt-size \
+    --with-jvm-features=-dtrace,-zero,-vm-structs,-epsilongc \
     --enable-linktime-gc \
     --with-cups-include=$CUPS_DIR \
     --with-devkit=$TOOLCHAIN \
@@ -111,6 +122,10 @@ if [[ "$error_code" -ne 0 ]]; then
 fi
 
 jobs=$(nproc)
+
+if [[ "$TOO_MANY_CORES" == "1" ]]; then
+  jobs=6
+fi
 
 echo Running ${jobs} jobs to build the jdk
 
