@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-git clone --depth 1 https://github.com/openjdk/jdk25u openjdk
+git clone -b jdk25 --depth 1 https://github.com/graalvm/labs-openjdk openjdk
