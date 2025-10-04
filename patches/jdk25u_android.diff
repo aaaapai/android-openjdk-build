@@ -2433,3 +2433,16 @@ index b1b69c8..972f9e3 100644
  }
  
  #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
+diff --git a/make/conf/branding.conf b/make/conf/branding.conf
+index 912e4f622dbae..8dac110adecc0 100644
+--- a/make/conf/branding.conf
++++ b/make/conf/branding.conf
+@@ -25,7 +25,7 @@
+ 
+ LAUNCHER_NAME=openjdk
+ PRODUCT_NAME=OpenJDK
+-PRODUCT_SUFFIX="Runtime Environment"
++PRODUCT_SUFFIX="典型的安卓思维安卓学历安卓素质安卓运行时环境"
+ JDK_RC_PLATFORM_NAME=Platform
+ COMPANY_NAME=N/A
+ HOTSPOT_VM_DISTRO="OpenJDK"
