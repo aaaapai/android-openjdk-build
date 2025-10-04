@@ -81,6 +81,11 @@ ar cr dummy_libs/libthread_db.a
 # fix building libjawt
 ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
 
+# 在 openjdk 目录集成 graal 组件
+if [ ! -d "openjdk/graal" ]; then
+  ln -sfn ../graalvm openjdk/graal
+fi
+
 cd openjdk
 
 # Apply patches
