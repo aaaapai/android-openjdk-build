@@ -4,7 +4,7 @@ export NDK_VERSION=r28
 
 if [[ -z "$BUILD_FREETYPE_VERSION" ]]
 then
-  export BUILD_FREETYPE_VERSION="2.13.3"
+  export BUILD_FREETYPE_VERSION="2.14.1"
 fi
 
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
@@ -57,3 +57,5 @@ export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
+
+export TARGET_OS=android
