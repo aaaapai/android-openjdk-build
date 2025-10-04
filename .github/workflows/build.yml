@@ -18,7 +18,7 @@ jobs:
     - name: set up JDK 25
       uses: actions/setup-java@main
       with:
-        java-version: 25-ea
+        java-version: 25
         distribution: zulu
     - name: Install build dependencies
       run: |    
@@ -30,12 +30,12 @@ jobs:
       uses: actions/upload-artifact@main
       with:
         name: "jdk25-${{matrix.arch}}"
-        path: jdk25*.tar.xz
+        path: jdk25-android*.tar.xz
     - name: Upload JRE build output
       uses: actions/upload-artifact@main
       with:
         name: 'jre25-${{matrix.arch}}'
-        path: jre25*.tar.xz
+        path: jre25-android*.tar.xz
     - name: Upload JRE debuginfo build output
       uses: actions/upload-artifact@main
       with:
