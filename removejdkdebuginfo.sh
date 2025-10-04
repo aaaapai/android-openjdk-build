@@ -10,9 +10,9 @@ mkdir -p dizout dSYM-temp/{lib,bin}
 
 cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so $targetpath/images/jdk/lib/
 
-bash ./graal_build.bash
-
 cp -r $targetpath/images/jdk jdkout
+
+bash ./graal_build.bash
 
 # JDK no longer create separate JRE image, so we have to create one manually.
 #mkdir -p jreout/bin
