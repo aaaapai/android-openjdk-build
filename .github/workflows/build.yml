@@ -40,3 +40,9 @@ jobs:
       with:
         name: "jre25-debuginfo-${{matrix.arch}}"
         path: dizout
+
+    - name: Upload graal
+      uses: actions/upload-artifact@main
+      with:
+        name: "graal-${{matrix.arch}}"
+        path: //
