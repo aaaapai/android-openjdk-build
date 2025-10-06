@@ -53,7 +53,9 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
   "
 
 #no error
-export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration -Wno-unused-command-line-argument -Wno-exception-specification"
+export CFLAGS+=" -DANDROID -D__ANDROID__=1 -D__TERMUX__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration -Wno-unused-command-line-argument -Wno-exception-specification -O1 -mllvm -polly -mllvm -polly-omp-backend=LLVM -fno-optimize-sibling-calls"
+
+<< EOF
 
 export CFLAGS+=" -O3 -fomit-frame-pointer -fno-semantic-interposition -mllvm -hot-cold-split=true -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fvectorize -fslp-vectorize -pipe -integrated-as -stdlib=libc++"
 export LDFLAGS+=" -fuse-ld=lld -Wl,--gc-sections -Wl,-O3 -Wl,--sort-common -Wl,--as-needed -l:libomp.a"
@@ -69,6 +71,7 @@ export LDFLAGS+=" -flto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM"
 #fast-math
 # export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
+EOF
 
 export LDFLAGS+=" -L$PWD/dummy_libs -Wl,-z,max-page-size=16384" 
 
