@@ -81,11 +81,6 @@ ar cr dummy_libs/libthread_db.a
 # fix building libjawt
 ln -s -f $CUPS_DIR/cups $ANDROID_INCLUDE/
 
-# 在 openjdk 目录集成 graal 组件
-if [ ! -d "openjdk/graal" ]; then
-  ln -sfn ../graalvm openjdk/graal
-fi
-
 cd openjdk
 
 # Apply patches
@@ -97,7 +92,7 @@ git apply --reject --whitespace=fix ../patches/jdk25u_android.diff || echo "git 
 # git apply --reject --whitespace=fix ../patches/jdk26u_termux.diff || echo "git apply failed (Termux patch set)"
 
 bash ./configure \
-    --with-version-pre="-graalvm" \
+    --with-version-pre="-jvmci" \
     --with-version-opt="" \
     --with-boot-jdk-jvmargs="-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+UseNUMA -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:ProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1 -XX:AllocatePrefetchStyle=3 -XX:AllocatePrefetchStyle=1 -XX:+UseCriticalJavaThreadPriority -XX:+UseStringDeduplication -XX:+UseFastJNIAccessors -XX:+UseThreadPriorities" \
     --openjdk-target=$TARGET \
