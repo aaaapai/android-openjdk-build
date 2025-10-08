@@ -12,8 +12,6 @@ cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.
 
 cp -r $targetpath/images/jdk jdkout
 
-bash ./graal_build.bash
-
 # JDK no longer create separate JRE image, so we have to create one manually.
 #mkdir -p jreout/bin
 #cp jdkout/bin/{java,jfr,keytool,rmiregistry} jreout/bin/
