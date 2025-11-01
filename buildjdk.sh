@@ -2,7 +2,7 @@
 set -e
 . setdevkitpath.sh
 
-export FREETYPE_DIR=$PWD/freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT
+export FREETYPE_DIR=$PWD/freetype/build_android-$TARGET_SHORT
 export CUPS_DIR=$PWD/cups
 
 if [[ "$TARGET_JDK" == "arm" ]]
