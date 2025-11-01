@@ -6,6 +6,9 @@ cd freetype
 echo "Building Freetype"
 
 export PATH=$TOOLCHAIN/bin:$PATH
+
+./autogen.sh
+
 ./configure \
   --host=$TARGET \
   --prefix=${PWD}/build_android-${TARGET_SHORT} \
