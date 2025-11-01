@@ -8,7 +8,7 @@ targetpath=openjdk/build/${JVM_PLATFORM}-${TARGET_JDK}-${JVM_VARIANTS}-${JDK_DEB
 rm -rf dizout jdkout dSYM-temp
 mkdir -p dizout dSYM-temp/{lib,bin}
 
-cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so $targetpath/images/jdk/lib/
+cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so $targetpath/images/jdk/lib/
 
 cp -r $targetpath/images/jdk jdkout
 
@@ -39,8 +39,8 @@ $JLINK_STRIP_ARG \
 --release-info=jdkout/release \
 --compress=0 
 
-cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
-cp freetype-$BUILD_FREETYPE_VERSION/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
+cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
+cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
 cp awt_xawt/libawt_xawt.so jreout/lib/
 cp awt_xawt/libawt_xawt.so jdkout/lib/
 
