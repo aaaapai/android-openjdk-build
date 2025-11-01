@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 . setdevkitpath.sh
-cd freetype-$BUILD_FREETYPE_VERSION
+cd freetype
 
 echo "Building Freetype"
 
@@ -23,5 +23,5 @@ if [[ "$error_code" -ne 0 ]]; then
 fi
 
 
-CFLAGS="-Ofast -fno-emulated-tls -fno-rtti -march=armv8-a+simd" CXXFLAGS="-Ofast -fno-emulated-tls -fno-rtti -march=armv8-a+simd" make -j4
+CFLAGS="-O3 -fno-rtti -mllvm -polly" CXXFLAGS="-O3 -fno-rtti -mllvm -polly" make -j6
 make install
