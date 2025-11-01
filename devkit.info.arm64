@@ -1,3 +1,6 @@
 DEVKIT_NAME="Android ARM64"
-DEVKIT_TOOLCHAIN_PATH="$DEVKIT_ROOT/aarch64-linux-android/bin"
-DEVKIT_SYSROOT="$DEVKIT_ROOT/sysroot"
+
+DEVKIT_TOOLCHAIN_PATH="$TOOLCHAIN/bin"
+export CC="$thecc"
+export CXX="$thecxx"
+export STRIP="$TOOLCHAIN/bin/llvm-strip"
