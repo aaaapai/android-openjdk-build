@@ -4,6 +4,5 @@ set -e
 
 . setdevkitpath.sh
 
-wget https://downloads.sourceforge.net/project/freetype/freetype2/$BUILD_FREETYPE_VERSION/freetype-$BUILD_FREETYPE_VERSION.tar.gz
-tar xf freetype-$BUILD_FREETYPE_VERSION.tar.gz
+git clone --depth 1 https://github.com/LWJGL-CI/freetype
 git clone --depth 1 https://github.com/OpenPrinting/cups
