@@ -229,7 +229,7 @@ index 42680218d..403d8905b 100644
 +
  // utility functions
  
- julong os::Linux::available_memory_in_container() {
+ bool os::available_memory(physical_memory_size_type& value) {
 @@ -348,2 +350,4 @@ bool os::Linux::get_tick_information(CPUPerfTicks* pticks, int which_logical_cpu
      #define SYS_gettid 143
 +   #elif defined(__arm64__) || defined(__aarch64__)
