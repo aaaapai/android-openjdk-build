@@ -2051,21 +2051,9 @@ index 351d64fdd1d57..08ab416cde3e1 100644
    local:
 -    _fini;
 -    _init;
-+    *;
++    .init_array;
++    .fini_array;
  };
-diff --git a/make/hotspot/lib/CompileJvm.gmk b/make/hotspot/lib/CompileJvm.gmk
-index 6b5edc85b2369..d0f737bbfa5d9 100644
---- a/make/hotspot/lib/CompileJvm.gmk
-+++ b/make/hotspot/lib/CompileJvm.gmk
-@@ -162,7 +162,7 @@ endif
- ifeq ($(call isTargetOs, linux), true)
-   HOTSPOT_VERSION_SCRIPT := $(TOPDIR)/make/data/hotspot-symbols/version-script-$(TOOLCHAIN_TYPE).txt
- 
--  JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT)
-+  JVM_LDFLAGS += -Wl,-version-script=$(HOTSPOT_VERSION_SCRIPT) -Wl,--no-undefined-version -Wl,--no-undefined
- endif
- 
- ################################################################################
 diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
 index 3eedb64a597a3..d773c5f949523 100644
 --- a/make/hotspot/lib/JvmOverrideFiles.gmk
