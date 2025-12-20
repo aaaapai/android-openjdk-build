@@ -85,11 +85,11 @@ cd openjdk
 
 # Apply patches
 git reset --hard
-git apply --reject --whitespace=fix ../patches/jdk26u_android.diff || echo "git apply failed (Android patch set)"
+git apply --reject --whitespace=fix ../patches/jdk27u_android.diff || echo "git apply failed (Android patch set)"
 # if [[ "$API" == "21" ]] || [[ "$API" == "22" ]]; then
-#   git apply --reject --whitespace=fix ../patches/jdk26u_android5.diff || echo "git apply failed (Android patch set)"
+#   git apply --reject --whitespace=fix ../patches/jdk27u_android5.diff || echo "git apply failed (Android patch set)"
 # fi
-# git apply --reject --whitespace=fix ../patches/jdk26u_termux.diff || echo "git apply failed (Termux patch set)"
+# git apply --reject --whitespace=fix ../patches/jdk27u_termux.diff || echo "git apply failed (Termux patch set)"
 
 bash ./configure \
     --with-version-pre="-ea" \
