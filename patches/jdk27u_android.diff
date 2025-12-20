@@ -2037,7 +2037,7 @@ index e470cdbe66fe6..12f01d5625e12 100644
      # Test if stdc++ can be linked statically.
      AC_MSG_CHECKING([if static link of stdc++ is possible])
 -    STATIC_STDCXX_FLAGS="-static-libstdc++ -static-libgcc"
-+    STATIC_STDCXX_FLAGS="-static-libstdc++"
++    STATIC_STDCXX_FLAGS="-stdlib=libc++ -static"
      AC_LANG_PUSH(C++)
      OLD_LIBS="$LIBS"
      LIBS="$STATIC_STDCXX_FLAGS"
@@ -2051,7 +2051,7 @@ index 351d64fdd1d57..08ab416cde3e1 100644
    local:
 -    _fini;
 -    _init;
-+    ;
++    yeeeeeeeeeee*;
  };
 diff --git a/make/hotspot/lib/JvmOverrideFiles.gmk b/make/hotspot/lib/JvmOverrideFiles.gmk
 index 3eedb64a597a3..d773c5f949523 100644
