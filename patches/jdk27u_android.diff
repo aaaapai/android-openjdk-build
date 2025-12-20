@@ -231,9 +231,9 @@ index 42680218d..403d8905b 100644
  
  bool os::available_memory(physical_memory_size_type& value) {
 @@ -348,2 +350,4 @@ bool os::Linux::get_tick_information(CPUPerfTicks* pticks, int which_logical_cpu
-     #define SYS_gettid 143
-+   #elif defined(__arm64__) || defined(__aarch64__)
-+     #define SYS_gettid 178
+     #define SYS_gettid 186
++  #elif defined(__arm64__) || defined(__aarch64__)
++    #define SYS_gettid 178
    #else
 @@ -535,6 +539,7 @@ extern "C" void breakpoint() {
  // detecting pthread library
@@ -2119,15 +2119,13 @@ diff --git a/src/hotspot/os/posix/os_posix.cpp b/src/hotspot/os/posix/os_posix.c
 index d417f384a18c8..d26f81a4d5914 100644
 --- a/src/hotspot/os/posix/os_posix.cpp
 +++ b/src/hotspot/os/posix/os_posix.cpp
-@@ -107,6 +107,8 @@ static int clock_tics_per_sec = 100;
+@@ -107,4 +107,6 @@ static int clock_tics_per_sec = 100;
  // Platform minimum stack allowed
  size_t os::_os_min_stack_allowed = PTHREAD_STACK_MIN;
  
 +static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen);
 +
  // Check core dump limit and report possible place where core can be found
- void os::check_core_dump_prerequisites(char* buffer, size_t bufferSize, bool check_only) {
-   if (!FLAG_IS_DEFAULT(CreateCoredumpOnCrash) && !CreateCoredumpOnCrash) {
 @@ -1064,6 +1066,30 @@ bool os::same_files(const char* file1, const char* file2) {
  
  static char saved_jvm_path[MAXPATHLEN] = {0};
