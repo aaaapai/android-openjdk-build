@@ -29,15 +29,15 @@ jobs:
     - name: Upload JDK build output
       uses: actions/upload-artifact@main
       with:
-        name: "jdk26-${{matrix.arch}}"
-        path: jdk26-android*.tar.xz
+        name: "jdk27-${{matrix.arch}}"
+        path: jdk27-android*.tar.xz
     - name: Upload JRE build output
       uses: actions/upload-artifact@main
       with:
-        name: 'jre26-${{matrix.arch}}'
-        path: jre26-android*.tar.xz
+        name: 'jre27-${{matrix.arch}}'
+        path: jre27-android*.tar.xz
     - name: Upload JRE debuginfo build output
       uses: actions/upload-artifact@main
       with:
-        name: "jre26-debuginfo-${{matrix.arch}}"
+        name: "jre27-debuginfo-${{matrix.arch}}"
         path: dizout
