@@ -221,15 +221,6 @@ diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.c
 index 42680218d..403d8905b 100644
 --- a/src/hotspot/os/linux/os_linux.cpp
 +++ b/src/hotspot/os/linux/os_linux.cpp
-@@ -214,6 +214,8 @@ static int clock_tics_per_sec = 100;
- // avoid this
- static bool suppress_primordial_thread_resolution = false;
- 
-+static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen);
-+
- // utility functions
- 
- bool os::available_memory(physical_memory_size_type& value) {
 @@ -348,2 +350,4 @@ bool os::Linux::get_tick_information(CPUPerfTicks* pticks, int which_logical_cpu
      #define SYS_gettid 186
 +  #elif defined(__arm64__) || defined(__aarch64__)
@@ -1665,7 +1656,7 @@ index b2dedca35..c01ccfb8d 100644
  {
 @@ -119,6 +144,6 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
          dladdr((void *)AWT_OnLoad, &dlinfo);
-         if (os::realpath((char *)dlinfo.dli_fname, buf) == NULL) {
+         if (realpath((char *)dlinfo.dli_fname, buf) == NULL) {
 -            perror((char *)dlinfo.dli_fname);
 +            read_so_path_from_maps(dlinfo.dli_fname,buf);
          }
@@ -2677,30 +2668,6 @@ index a866858dae520..9629aef8e251b 100644
          beq     conjoint_longs_finish
          cmp     r2, #16
          blt	cl_b2f_copy_8
-diff --git a/src/hotspot/share/cppstdlib/cstdlib.hpp b/src/hotspot/share/cppstdlib/cstdlib.hpp
-index 2b58e7378820c..527ee4c6e6406 100644
---- a/src/hotspot/share/cppstdlib/cstdlib.hpp
-+++ b/src/hotspot/share/cppstdlib/cstdlib.hpp
-@@ -76,8 +76,8 @@ using ::calloc;
- #endif // AIX altivec allocator support
- 
- // Prefer os:: variants of these.
--FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
--FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
-+//FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
-+//FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
- 
- // Windows puts _exit in <stdlib.h>. POSIX puts it in <unistd.h>.
- // We can't forbid it here when using clang if it's not in <stdlib.h> - see
-@@ -98,8 +98,6 @@ FORBID_IMPORTED_C_FUNCTION(void* realloc(void*, size_t), noexcept, "use os::real
- // https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
- // They also aren't useful for a POSIX implementation of NMT.
- #ifndef _WINDOWS
--FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), noexcept, "don't use");
--FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), noexcept, "don't use");
- #endif // !_WINDOWS
- 
- #endif // SHARE_CPPSTDLIB_CSTDLIB_HPP
 diff --git a/src/hotspot/share/utilities/forbiddenFunctions.hpp b/src/hotspot/share/utilities/forbiddenFunctions.hpp
 index 9d1b88e6233b5..d93f0219d219b 100644
 --- a/src/hotspot/share/utilities/forbiddenFunctions.hpp
@@ -2741,3 +2708,45 @@ index 9d1b88e6233b5..d93f0219d219b 100644
 +//FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), noexcept, "don't use");
  
  #endif // SHARE_UTILITIES_FORBIDDENFUNCTIONS_HPP
+diff --git a/src/hotspot/share/cppstdlib/cstdlib.hpp b/src/hotspot/share/cppstdlib/cstdlib.hpp
+index 2b58e7378820c..39889261ce6df 100644
+--- a/src/hotspot/share/cppstdlib/cstdlib.hpp
++++ b/src/hotspot/share/cppstdlib/cstdlib.hpp
+@@ -76,30 +76,28 @@ using ::calloc;
+ #endif // AIX altivec allocator support
+ 
+ // Prefer os:: variants of these.
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
+ 
+ // Windows puts _exit in <stdlib.h>. POSIX puts it in <unistd.h>.
+ // We can't forbid it here when using clang if it's not in <stdlib.h> - see
+ // the clang definition for FORBIDDEN_FUNCTION_NORETURN_ATTRIBUTE.
+ #ifdef _WINDOWS
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
+ #endif // _WINDOWS
+ 
+ // These functions return raw C-heap pointers or, in case of free(), take raw
+ // C-heap pointers.  We generally want allocation to be done through NMT, using
+ // os::malloc and friends.
+-FORBID_IMPORTED_C_FUNCTION(void* malloc(size_t), noexcept, "use os::malloc");
+-FORBID_IMPORTED_C_FUNCTION(void free(void*), noexcept, "use os::free");
+-FORBID_IMPORTED_C_FUNCTION(void* calloc(size_t, size_t), noexcept, "use os::malloc and zero out manually");
+-FORBID_IMPORTED_C_FUNCTION(void* realloc(void*, size_t), noexcept, "use os::realloc");
++//FORBID_IMPORTED_C_FUNCTION(void* malloc(size_t), noexcept, "use os::malloc");
++//FORBID_IMPORTED_C_FUNCTION(void free(void*), noexcept, "use os::free");
++//FORBID_IMPORTED_C_FUNCTION(void* calloc(size_t, size_t), noexcept, "use os::malloc and zero out manually");
++//FORBID_IMPORTED_C_FUNCTION(void* realloc(void*, size_t), noexcept, "use os::realloc");
+ 
+ // These are not provided (and are unimplementable?) by Windows.
+ // https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
+ // They also aren't useful for a POSIX implementation of NMT.
+ #ifndef _WINDOWS
+-FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), noexcept, "don't use");
+-FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), noexcept, "don't use");
+ #endif // !_WINDOWS
+ 
+ #endif // SHARE_CPPSTDLIB_CSTDLIB_HPP
