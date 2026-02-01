@@ -507,130 +507,6 @@ index 000000000..745243d62
 +extern fpu_control_t __fpu_control;
 +#endif /* __SOFTFP__ */
 +#endif /* _FPU_CONTROL_H */
-diff --git a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-index eb560d8f0..be8da136b 100644
---- a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-+++ b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-@@ -88,7 +88,7 @@ dw_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     dw_f2b_loop_32
- dw_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     disjoint_words_finish
-         cmp     r2, #16
- 	blt	disjoint_words_small
-@@ -136,7 +136,7 @@ cw_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cw_f2b_loop_32
- cw_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_words_finish
-         cmp     r2, #16
- 	blt	conjoint_words_small
-@@ -169,7 +169,7 @@ cw_b2f_loop_32:
-         stmdb to!, {r3-r9,ip}
-         bgt     cw_b2f_loop_32
- cw_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_words_finish
-         cmp     r2, #16
- 	blt	cw_b2f_copy_small
-@@ -221,7 +221,7 @@ cs_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cs_f2b_loop_32
- cs_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_shorts_finish
-         movs    r6, r2, lsr #3
-         .align 3
-@@ -237,11 +237,11 @@ cs_f2b_4:
-         beq     conjoint_shorts_finish
-         cmp     r2, #4
-         ldrh    r3, [from], #2
--        ldrgeh  r4, [from], #2
--        ldrgth  r5, [from], #2
-+        ldrhge  r4, [from], #2
-+        ldrhgt  r5, [from], #2
-         strh    r3, [to], #2
--        strgeh  r4, [to], #2
--        strgth  r5, [to], #2
-+        strhge  r4, [to], #2
-+        strhgt  r5, [to], #2
-         b       conjoint_shorts_finish
- 
- 	# Destination not aligned
-@@ -299,11 +299,11 @@ cs_f2b_4_u:
-         beq     conjoint_shorts_finish
-         cmp     r2, #4
-         ldrh    r3, [from], #2
--        ldrgeh  r4, [from], #2
--        ldrgth  r5, [from], #2
-+        ldrhge  r4, [from], #2
-+        ldrhgt  r5, [from], #2
-         strh    r3, [to], #2
--        strgeh  r4, [to], #2
--        strgth  r5, [to], #2
-+        strhge  r4, [to], #2
-+        strhgt  r5, [to], #2
-         b       conjoint_shorts_finish
- 
- 	# Src and dest overlap, copy in a descending order
-@@ -326,7 +326,7 @@ cs_b2f_loop_32:
-         stmdb to!, {r3-r9,ip}
-         bgt     cs_b2f_loop_32
- cs_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_shorts_finish
-         cmp     r2, #24
-         blt     cs_b2f_16
-@@ -352,11 +352,11 @@ cs_b2f_8:
- cs_b2f_all_copy:
-         cmp     r2, #4
-         ldrh    r3, [from, #-2]!
--        ldrgeh  r4, [from, #-2]!
--        ldrgth  r5, [from, #-2]!
-+        ldrhge  r4, [from, #-2]!
-+        ldrhgt  r5, [from, #-2]!
-         strh    r3, [to, #-2]!
--        strgeh  r4, [to, #-2]!
--        strgth  r5, [to, #-2]!
-+        strhge  r4, [to, #-2]!
-+        strhgt  r5, [to, #-2]!
-         b       conjoint_shorts_finish
- 
- 	# Destination not aligned
-@@ -391,7 +391,7 @@ cs_b2f_16_loop_u:
-         bgt     cs_b2f_16_loop_u
-         beq     conjoint_shorts_finish
- cs_b2f_16_loop_u_finished:
--        addlts  r2, #16
-+        addslt  r2, #16
-         ldr     r3, [from]
- 	cmp     r2, #10
-         blt     cs_b2f_2_u_loop
-@@ -454,7 +454,7 @@ cl_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cl_f2b_loop_32
- cl_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_longs_finish
- conjoint_longs_small:
-         cmp     r2, #16
-@@ -487,7 +487,7 @@ cl_b2f_loop_32:
-         stmdb 	to!, {r3 - r9, ip}
-         bgt     cl_b2f_loop_32
- cl_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_longs_finish
-         cmp     r2, #16
- 	blt	cl_b2f_copy_8
 diff --git a/src/hotspot/os_cpu/linux_arm/os_linux_arm.cpp b/src/hotspot/os_cpu/linux_arm/os_linux_arm.cpp
 index d4c9bb304..3123efef2 100644
 --- a/src/hotspot/os_cpu/linux_arm/os_linux_arm.cpp
@@ -788,22 +664,6 @@ index 000000000..605302c09
 +extern fpu_control_t __fpu_control;
 +
 +#endif	/* fpu_control.h */
-diff --git a/src/hotspot/os_cpu/linux_x86/os_linux_x86.cpp b/src/hotspot/os_cpu/linux_x86/os_linux_x86.cpp
-index 90c7d3c93..0a10fba48 100644
---- a/src/hotspot/os_cpu/linux_x86/os_linux_x86.cpp
-+++ b/src/hotspot/os_cpu/linux_x86/os_linux_x86.cpp
-@@ -74,8 +74,10 @@
- # include <pwd.h>
- # include <poll.h>
- # include <ucontext.h>
--#ifndef AMD64
-+#if !defined(AMD64) && !defined(__ANDROID__)
- # include <fpu_control.h>
-+#elif defined(__ANDROID__)
-+# include "fpu_control.h"
- #endif
- 
- #ifdef AMD64
 diff --git a/src/hotspot/share/utilities/elfFile.hpp b/src/hotspot/share/utilities/elfFile.hpp
 index 32ce08821..7103f3736 100644
 --- a/src/hotspot/share/utilities/elfFile.hpp
@@ -1243,7 +1103,7 @@ index 000000000..7018b6ce2
 +  result->mode = ERROR;
 +  if (!__parse_encoding(__src_encoding, &result->src_encoding, 0 /* nullptr */) ||
 +      !__parse_encoding(__dst_encoding, &result->dst_encoding, &result->mode)) {
-+    free(result);
++    os::free(result);
 +    errno = EINVAL;
 +    return INVALID_ICONV_T;
 +  }
@@ -1265,7 +1125,7 @@ index 000000000..7018b6ce2
 +    errno = EBADF;
 +    return -1;
 +  }
-+  free(__converter);
++  os::free(__converter);
 +  return 0;
 +}
 +
@@ -1805,7 +1665,7 @@ index b2dedca35..c01ccfb8d 100644
  {
 @@ -119,6 +144,6 @@ AWT_OnLoad(JavaVM *vm, void *reserved)
          dladdr((void *)AWT_OnLoad, &dlinfo);
-         if (realpath((char *)dlinfo.dli_fname, buf) == NULL) {
+         if (os::realpath((char *)dlinfo.dli_fname, buf) == NULL) {
 -            perror((char *)dlinfo.dli_fname);
 +            read_so_path_from_maps(dlinfo.dli_fname,buf);
          }
@@ -2001,19 +1861,6 @@ index b1b69c8..972f9e3 100644
  }
  
  #define ROUNDUP(x, y)  ((((x)+((y)-1))/(y))*(y))
-diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
-index e80d9a98957db..44ccb2fca1141 100644
---- a/make/autoconf/flags-cflags.m4
-+++ b/make/autoconf/flags-cflags.m4
-@@ -71,7 +71,7 @@ AC_DEFUN([FLAGS_SETUP_SHARED_LIBS],
-       # arm specific settings
-       if test "x$OPENJDK_TARGET_CPU" = "xarm"; then
-         # '-Wl,-z,origin' isn't used on arm.
--        SET_SHARED_LIBRARY_ORIGIN='-Wl,-rpath,\$$$$ORIGIN[$]1'
-+        SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
-       else
-         SET_SHARED_LIBRARY_ORIGIN="-Wl,-z,origin $SET_EXECUTABLE_ORIGIN"
-       fi
 @@ -766,6 +766,13 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_CPU_DEP],
        $1_CFLAGS_CPU="-mcpu=pwr8"
      fi
@@ -2243,15 +2090,6 @@ diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/ja
 index fbf996886ae40..9218aa5605914 100644
 --- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
 +++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
-@@ -70,7 +70,7 @@
- // by defining binary compatible statx structs in this file and
- // not relying on included headers.
- 
--#ifndef __GLIBC__
-+#if !defined(__BIONIC__) && !defined(__GLIBC__)
- // Alpine doesn't know these types, define them
- typedef unsigned int       __uint32_t;
- typedef unsigned short     __uint16_t;
 @@ -382,7 +382,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_init(JNIEnv* env, jclass this)
  #ifdef _DARWIN_FEATURE_64_BIT_INODE
      capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_BIRTHTIME;
@@ -2319,130 +2157,6 @@ index 356b52dfb3487..d2cd0e043c9f9 100644
  }
  
  JNIEXPORT jint JNICALL
-diff --git a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-index a866858dae520..9629aef8e251b 100644
---- a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-+++ b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
-@@ -66,7 +66,7 @@ dw_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     dw_f2b_loop_32
- dw_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     disjoint_words_finish
-         cmp     r2, #16
-         blt	disjoint_words_small
-@@ -114,7 +114,7 @@ cw_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cw_f2b_loop_32
- cw_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_words_finish
-         cmp     r2, #16
-         blt	conjoint_words_small
-@@ -147,7 +147,7 @@ cw_b2f_loop_32:
-         stmdb to!, {r3-r9,ip}
-         bgt     cw_b2f_loop_32
- cw_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_words_finish
-         cmp     r2, #16
-         blt	cw_b2f_copy_small
-@@ -199,7 +199,7 @@ cs_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cs_f2b_loop_32
- cs_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_shorts_finish
-         movs    r6, r2, lsr #3
-         .align 3
-@@ -215,11 +215,11 @@ cs_f2b_4:
-         beq     conjoint_shorts_finish
-         cmp     r2, #4
-         ldrh    r3, [from], #2
--        ldrgeh  r4, [from], #2
--        ldrgth  r5, [from], #2
-+        ldrhgt  r4, [from], #2
-+        ldrhgt  r5, [from], #2
-         strh    r3, [to], #2
--        strgeh  r4, [to], #2
--        strgth  r5, [to], #2
-+        strhge  r4, [to], #2
-+        strhgt  r5, [to], #2
-         b       conjoint_shorts_finish
- 
-         # Destination not aligned
-@@ -277,11 +277,11 @@ cs_f2b_4_u:
-         beq     conjoint_shorts_finish
-         cmp     r2, #4
-         ldrh    r3, [from], #2
--        ldrgeh  r4, [from], #2
--        ldrgth  r5, [from], #2
-+        ldrhgt  r4, [from], #2
-+        ldrhgt  r5, [from], #2
-         strh    r3, [to], #2
--        strgeh  r4, [to], #2
--        strgth  r5, [to], #2
-+        strhge  r4, [to], #2
-+        strhgt  r5, [to], #2
-         b       conjoint_shorts_finish
- 
-         # Src and dest overlap, copy in a descending order
-@@ -304,7 +304,7 @@ cs_b2f_loop_32:
-         stmdb to!, {r3-r9,ip}
-         bgt     cs_b2f_loop_32
- cs_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_shorts_finish
-         cmp     r2, #24
-         blt     cs_b2f_16
-@@ -330,11 +330,11 @@ cs_b2f_8:
- cs_b2f_all_copy:
-         cmp     r2, #4
-         ldrh    r3, [from, #-2]!
--        ldrgeh  r4, [from, #-2]!
--        ldrgth  r5, [from, #-2]!
-+        ldrhgt  r4, [from, #-2]!
-+        ldrhgt  r5, [from, #-2]!
-         strh    r3, [to, #-2]!
--        strgeh  r4, [to, #-2]!
--        strgth  r5, [to, #-2]!
-+        strhge  r4, [to, #-2]!
-+        strhgt  r5, [to, #-2]!
-         b       conjoint_shorts_finish
- 
-         # Destination not aligned
-@@ -369,7 +369,7 @@ cs_b2f_16_loop_u:
-         bgt     cs_b2f_16_loop_u
-         beq     conjoint_shorts_finish
- cs_b2f_16_loop_u_finished:
--        addlts  r2, #16
-+        addslt  r2, #16
-         ldr     r3, [from]
-         cmp     r2, #10
-         blt     cs_b2f_2_u_loop
-@@ -432,7 +432,7 @@ cl_f2b_loop_32:
-         stmia to!, {r3 - r9, ip}
-         bgt     cl_f2b_loop_32
- cl_f2b_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_longs_finish
- conjoint_longs_small:
-         cmp     r2, #16
-@@ -465,7 +465,7 @@ cl_b2f_loop_32:
-         stmdb 	to!, {r3 - r9, ip}
-         bgt     cl_b2f_loop_32
- cl_b2f_loop_32_finish:
--        addlts  r2, #32
-+        addslt  r2, #32
-         beq     conjoint_longs_finish
-         cmp     r2, #16
-         blt	cl_b2f_copy_8
 diff --git a/src/hotspot/os/linux/os_perf_linux.cpp b/src/hotspot/os/linux/os_perf_linux.cpp
 index 7caf8f98a00fb..7b2dd23a44ca2 100644
 --- a/src/hotspot/os/linux/os_perf_linux.cpp
@@ -2765,85 +2479,6 @@ index 7caf8f98a00fb..7b2dd23a44ca2 100644
  /**
     /proc/[number]/stat
                Status information about the process.  This is used by ps(1).  It is defined in /usr/src/linux/fs/proc/array.c.
-diff --git a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
-index 529cf22078ea5..9041f85d76474 100644
---- a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
-+++ b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
-@@ -36,29 +36,4 @@
- #include <unistd.h>
- #endif
- 
--// If needed, add os::strndup and use that instead.
--FORBID_C_FUNCTION(char* strndup(const char*, size_t), noexcept, "don't use");
--
--// These are unimplementable for Windows, and they aren't useful for a
--// POSIX implementation of NMT either.
--// https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
--FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), noexcept, "don't use");
--FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), noexcept, "don't use");
--
--// realpath with a null second argument mallocs a string for the result.
--// With a non-null second argument, there is a risk of buffer overrun.
--PRAGMA_DIAG_PUSH
--FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
--FORBID_C_FUNCTION(char* realpath(const char*, char*), noexcept, "use os::realpath");
--PRAGMA_DIAG_POP
--
--// Returns a malloc'ed string.
--FORBID_C_FUNCTION(char* get_current_dir_name(), noexcept, "use os::get_current_directory");
--
--// Problematic API that should never be used.
--FORBID_C_FUNCTION(char* getwd(char*), noexcept, "use os::get_current_directory");
--
--// BSD utility that is subtly different from realloc.
--FORBID_C_FUNCTION(void* reallocf(void*, size_t), /* not noexcept */, "use os::realloc");
--
- #endif // OS_POSIX_FORBIDDENFUNCTIONS_POSIX_HPP
-diff --git a/src/hotspot/share/utilities/forbiddenFunctions.hpp b/src/hotspot/share/utilities/forbiddenFunctions.hpp
-index 47becd7b4c74d..f6cbf8db65b2f 100644
---- a/src/hotspot/share/utilities/forbiddenFunctions.hpp
-+++ b/src/hotspot/share/utilities/forbiddenFunctions.hpp
-@@ -44,40 +44,4 @@
- #include "forbiddenFunctions_posix.hpp"
- #endif
- 
--// Forbid the use of various C library functions.  Some of these have os::
--// replacements that should be used instead.  Others are considered obsolete
--// or have security concerns, either with preferred alternatives, or to be
--// avoided entirely.
--
--FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
--FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
--
--// Windows puts _exit in <stdlib.h>, POSIX in <unistd.h>.
--FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
--
--FORBID_IMPORTED_C_FUNCTION(char* strerror(int), noexcept, "use os::strerror");
--FORBID_IMPORTED_C_FUNCTION(char* strtok(char*, const char*), noexcept, "use strtok_r");
--
--// AIX declarations for sprintf and snprintf are not noexcept, which is
--// inconsistent with most other system header declarations, including being
--// inconsistent with vsprintf and fsnprintf.
--FORBID_C_FUNCTION(int sprintf(char*, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
--FORBID_C_FUNCTION(int snprintf(char*, size_t, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
--
--PRAGMA_DIAG_PUSH
--FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
--FORBID_C_FUNCTION(int vsprintf(char*, const char*, va_list), noexcept, "use os::vsnprintf");
--FORBID_C_FUNCTION(int vsnprintf(char*, size_t, const char*, va_list), noexcept, "use os::vsnprintf");
--PRAGMA_DIAG_POP
--
--// All of the following functions return raw C-heap pointers (sometimes as an
--// option, e.g. realpath or getwd) or, in case of free(), take raw C-heap
--// pointers.  We generally want allocation to be done through NMT.
--FORBID_IMPORTED_C_FUNCTION(void* malloc(size_t size), noexcept, "use os::malloc");
--FORBID_IMPORTED_C_FUNCTION(void free(void *ptr), noexcept, "use os::free");
--FORBID_IMPORTED_C_FUNCTION(void* calloc(size_t nmemb, size_t size), noexcept, "use os::malloc and zero out manually");
--FORBID_IMPORTED_C_FUNCTION(void* realloc(void *ptr, size_t size), noexcept, "use os::realloc");
--FORBID_IMPORTED_C_FUNCTION(char* strdup(const char *s), noexcept, "use os::strdup");
--FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), noexcept, "don't use");
--
- #endif // SHARE_UTILITIES_FORBIDDENFUNCTIONS_HPP
 diff --git a/make/conf/branding.conf b/make/conf/branding.conf
 index 912e4f622dbae..8dac110adecc0 100644
 --- a/make/conf/branding.conf
@@ -2853,7 +2488,256 @@ index 912e4f622dbae..8dac110adecc0 100644
  LAUNCHER_NAME=openjdk
  PRODUCT_NAME=OpenJDK
 -PRODUCT_SUFFIX="Runtime Environment"
-+PRODUCT_SUFFIX="DroidAn Walktime Environment"
++PRODUCT_SUFFIX="Mandroid Walktime Environment"
  JDK_RC_PLATFORM_NAME=Platform
  COMPANY_NAME=N/A
  HOTSPOT_VM_DISTRO="OpenJDK"
+diff --git a/src/hotspot/os/linux/os_linux.cpp b/src/hotspot/os/linux/os_linux.cpp
+index 7190845a8ba5a..44571a0a4f03b 100644
+--- a/src/hotspot/os/linux/os_linux.cpp
++++ b/src/hotspot/os/linux/os_linux.cpp
+@@ -209,6 +209,8 @@ static malloc_info_func_t g_malloc_info = nullptr;
+ // avoid this
+ static bool suppress_primordial_thread_resolution = false;
+ 
++static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen);
++
+ // utility functions
+ 
+ bool os::is_containerized() {
+@@ -873,7 +875,7 @@ static void *thread_native_entry(Thread *thread) {
+ 
+   thread->record_stack_base_and_size();
+ 
+-#ifndef __GLIBC__
++#if !defined(__BIONIC__) && !defined(__GLIBC__) // BIONIC: 我也要不用喵?
+   // Try to randomize the cache line index of hot stack frames.
+   // This helps when threads of the same stack traces evict each other's
+   // cache lines. The threads can be either from the same JVM instance, or
+diff --git a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
+index 1c91e9d2599db..16f40d7c1258a 100644
+--- a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
++++ b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
+@@ -37,25 +37,25 @@
+ #endif
+ 
+ // POSIX puts _exit in <unistd.h>.
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void _exit(int), /* not noexcept */, "use os::exit")
+ 
+ // If needed, add os::strndup and use that instead.
+-FORBID_C_FUNCTION(char* strndup(const char*, size_t), noexcept, "don't use");
++//FORBID_C_FUNCTION(char* strndup(const char*, size_t), noexcept, "don't use");
+ 
+ // realpath with a null second argument mallocs a string for the result.
+ // With a non-null second argument, there is a risk of buffer overrun.
+-PRAGMA_DIAG_PUSH
+-FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
+-FORBID_C_FUNCTION(char* realpath(const char*, char*), noexcept, "use os::realpath");
+-PRAGMA_DIAG_POP
++//PRAGMA_DIAG_PUSH
++//FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
++//FORBID_C_FUNCTION(char* realpath(const char*, char*), noexcept, "use os::realpath");
++//PRAGMA_DIAG_POP
+ 
+ // Returns a malloc'ed string.
+-FORBID_C_FUNCTION(char* get_current_dir_name(), noexcept, "use os::get_current_directory");
++//FORBID_C_FUNCTION(char* get_current_dir_name(), noexcept, "use os::get_current_directory");
+ 
+ // Problematic API that should never be used.
+-FORBID_C_FUNCTION(char* getwd(char*), noexcept, "use os::get_current_directory");
++//FORBID_C_FUNCTION(char* getwd(char*), noexcept, "use os::get_current_directory");
+ 
+ // BSD utility that is subtly different from realloc.
+-FORBID_C_FUNCTION(void* reallocf(void*, size_t), /* not noexcept */, "use os::realloc");
++//FORBID_C_FUNCTION(void* reallocf(void*, size_t), /* not noexcept */, "use os::realloc");
+ 
+ #endif // OS_POSIX_FORBIDDENFUNCTIONS_POSIX_HPP
+diff --git a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
+index a866858dae520..9629aef8e251b 100644
+--- a/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
++++ b/src/hotspot/os_cpu/linux_arm/linux_arm_32.S
+@@ -66,7 +66,7 @@ dw_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     dw_f2b_loop_32
+ dw_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     disjoint_words_finish
+         cmp     r2, #16
+         blt	disjoint_words_small
+@@ -114,7 +114,7 @@ cw_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cw_f2b_loop_32
+ cw_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_words_finish
+         cmp     r2, #16
+         blt	conjoint_words_small
+@@ -147,7 +147,7 @@ cw_b2f_loop_32:
+         stmdb to!, {r3-r9,ip}
+         bgt     cw_b2f_loop_32
+ cw_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_words_finish
+         cmp     r2, #16
+         blt	cw_b2f_copy_small
+@@ -199,7 +199,7 @@ cs_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cs_f2b_loop_32
+ cs_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_shorts_finish
+         movs    r6, r2, lsr #3
+         .align 3
+@@ -215,11 +215,11 @@ cs_f2b_4:
+         beq     conjoint_shorts_finish
+         cmp     r2, #4
+         ldrh    r3, [from], #2
+-        ldrgeh  r4, [from], #2
+-        ldrgth  r5, [from], #2
++        ldrhgt  r4, [from], #2
++        ldrhgt  r5, [from], #2
+         strh    r3, [to], #2
+-        strgeh  r4, [to], #2
+-        strgth  r5, [to], #2
++        strhge  r4, [to], #2
++        strhgt  r5, [to], #2
+         b       conjoint_shorts_finish
+ 
+         # Destination not aligned
+@@ -277,11 +277,11 @@ cs_f2b_4_u:
+         beq     conjoint_shorts_finish
+         cmp     r2, #4
+         ldrh    r3, [from], #2
+-        ldrgeh  r4, [from], #2
+-        ldrgth  r5, [from], #2
++        ldrhgt  r4, [from], #2
++        ldrhgt  r5, [from], #2
+         strh    r3, [to], #2
+-        strgeh  r4, [to], #2
+-        strgth  r5, [to], #2
++        strhge  r4, [to], #2
++        strhgt  r5, [to], #2
+         b       conjoint_shorts_finish
+ 
+         # Src and dest overlap, copy in a descending order
+@@ -304,7 +304,7 @@ cs_b2f_loop_32:
+         stmdb to!, {r3-r9,ip}
+         bgt     cs_b2f_loop_32
+ cs_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_shorts_finish
+         cmp     r2, #24
+         blt     cs_b2f_16
+@@ -330,11 +330,11 @@ cs_b2f_8:
+ cs_b2f_all_copy:
+         cmp     r2, #4
+         ldrh    r3, [from, #-2]!
+-        ldrgeh  r4, [from, #-2]!
+-        ldrgth  r5, [from, #-2]!
++        ldrhgt  r4, [from, #-2]!
++        ldrhgt  r5, [from, #-2]!
+         strh    r3, [to, #-2]!
+-        strgeh  r4, [to, #-2]!
+-        strgth  r5, [to, #-2]!
++        strhge  r4, [to, #-2]!
++        strhgt  r5, [to, #-2]!
+         b       conjoint_shorts_finish
+ 
+         # Destination not aligned
+@@ -369,7 +369,7 @@ cs_b2f_16_loop_u:
+         bgt     cs_b2f_16_loop_u
+         beq     conjoint_shorts_finish
+ cs_b2f_16_loop_u_finished:
+-        addlts  r2, #16
++        addslt  r2, #16
+         ldr     r3, [from]
+         cmp     r2, #10
+         blt     cs_b2f_2_u_loop
+@@ -432,7 +432,7 @@ cl_f2b_loop_32:
+         stmia to!, {r3 - r9, ip}
+         bgt     cl_f2b_loop_32
+ cl_f2b_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_longs_finish
+ conjoint_longs_small:
+         cmp     r2, #16
+@@ -465,7 +465,7 @@ cl_b2f_loop_32:
+         stmdb 	to!, {r3 - r9, ip}
+         bgt     cl_b2f_loop_32
+ cl_b2f_loop_32_finish:
+-        addlts  r2, #32
++        addslt  r2, #32
+         beq     conjoint_longs_finish
+         cmp     r2, #16
+         blt	cl_b2f_copy_8
+diff --git a/src/hotspot/share/cppstdlib/cstdlib.hpp b/src/hotspot/share/cppstdlib/cstdlib.hpp
+index 2b58e7378820c..527ee4c6e6406 100644
+--- a/src/hotspot/share/cppstdlib/cstdlib.hpp
++++ b/src/hotspot/share/cppstdlib/cstdlib.hpp
+@@ -76,8 +76,8 @@ using ::calloc;
+ #endif // AIX altivec allocator support
+ 
+ // Prefer os:: variants of these.
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
+-FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void exit(int), noexcept, "use os::exit")
++//FORBID_IMPORTED_NORETURN_C_FUNCTION(void _Exit(int), noexcept, "use os::exit")
+ 
+ // Windows puts _exit in <stdlib.h>. POSIX puts it in <unistd.h>.
+ // We can't forbid it here when using clang if it's not in <stdlib.h> - see
+@@ -98,8 +98,6 @@ FORBID_IMPORTED_C_FUNCTION(void* realloc(void*, size_t), noexcept, "use os::real
+ // https://stackoverflow.com/questions/62962839/stdaligned-alloc-missing-from-visual-studio-2019
+ // They also aren't useful for a POSIX implementation of NMT.
+ #ifndef _WINDOWS
+-FORBID_C_FUNCTION(void* aligned_alloc(size_t, size_t), noexcept, "don't use");
+-FORBID_C_FUNCTION(int posix_memalign(void**, size_t, size_t), noexcept, "don't use");
+ #endif // !_WINDOWS
+ 
+ #endif // SHARE_CPPSTDLIB_CSTDLIB_HPP
+diff --git a/src/hotspot/share/utilities/forbiddenFunctions.hpp b/src/hotspot/share/utilities/forbiddenFunctions.hpp
+index 9d1b88e6233b5..d93f0219d219b 100644
+--- a/src/hotspot/share/utilities/forbiddenFunctions.hpp
++++ b/src/hotspot/share/utilities/forbiddenFunctions.hpp
+@@ -43,24 +43,24 @@
+ // or have security concerns, either with preferred alternatives, or to be
+ // avoided entirely.
+ 
+-FORBID_IMPORTED_C_FUNCTION(char* strerror(int), noexcept, "use os::strerror");
+-FORBID_IMPORTED_C_FUNCTION(char* strtok(char*, const char*), noexcept, "use strtok_r");
++//FORBID_IMPORTED_C_FUNCTION(char* strerror(int), noexcept, "use os::strerror");
++//FORBID_IMPORTED_C_FUNCTION(char* strtok(char*, const char*), noexcept, "use strtok_r");
+ 
+ // AIX declarations for sprintf and snprintf are not noexcept, which is
+ // inconsistent with most other system header declarations, including being
+ // inconsistent with vsprintf and fsnprintf.
+-FORBID_C_FUNCTION(int sprintf(char*, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
+-FORBID_C_FUNCTION(int snprintf(char*, size_t, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
++//FORBID_C_FUNCTION(int sprintf(char*, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
++//FORBID_C_FUNCTION(int snprintf(char*, size_t, const char*, ...), NOT_AIX(noexcept), "use os::snprintf");
+ 
+-PRAGMA_DIAG_PUSH
+-FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
+-FORBID_C_FUNCTION(int vsprintf(char*, const char*, va_list), noexcept, "use os::vsnprintf");
+-FORBID_C_FUNCTION(int vsnprintf(char*, size_t, const char*, va_list), noexcept, "use os::vsnprintf");
+-PRAGMA_DIAG_POP
++//PRAGMA_DIAG_PUSH
++//FORBIDDEN_FUNCTION_IGNORE_CLANG_FORTIFY_WARNING
++//FORBID_C_FUNCTION(int vsprintf(char*, const char*, va_list), noexcept, "use os::vsnprintf");
++//FORBID_C_FUNCTION(int vsnprintf(char*, size_t, const char*, va_list), noexcept, "use os::vsnprintf");
++//PRAGMA_DIAG_POP
+ 
+ // All of the following functions return raw C-heap pointers.  We generally
+ // want allocation to be done through NMT.
+-FORBID_IMPORTED_C_FUNCTION(char* strdup(const char *s), noexcept, "use os::strdup");
+-FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), noexcept, "don't use");
++//FORBID_IMPORTED_C_FUNCTION(char* strdup(const char *s), noexcept, "use os::strdup");
++//FORBID_IMPORTED_C_FUNCTION(wchar_t* wcsdup(const wchar_t *s), noexcept, "don't use");
+ 
+ #endif // SHARE_UTILITIES_FORBIDDENFUNCTIONS_HPP
