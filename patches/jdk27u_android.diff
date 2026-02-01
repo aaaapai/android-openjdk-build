@@ -1094,7 +1094,7 @@ index 000000000..7018b6ce2
 +  result->mode = ERROR;
 +  if (!__parse_encoding(__src_encoding, &result->src_encoding, 0 /* nullptr */) ||
 +      !__parse_encoding(__dst_encoding, &result->dst_encoding, &result->mode)) {
-+    os::free(result);
++    free(result);
 +    errno = EINVAL;
 +    return INVALID_ICONV_T;
 +  }
@@ -1116,7 +1116,7 @@ index 000000000..7018b6ce2
 +    errno = EBADF;
 +    return -1;
 +  }
-+  os::free(__converter);
++  free(__converter);
 +  return 0;
 +}
 +
@@ -2453,7 +2453,7 @@ index 7caf8f98a00fb..7b2dd23a44ca2 100644
 +  while (list != nullptr) {
 +    ifaddrs* current = list;
 +    list = list->ifa_next;
-+    os::free(current);
++    free(current);
 +  }
 +}
 +#endif
