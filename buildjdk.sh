@@ -18,7 +18,7 @@ fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
 then
-   export CFLAGS+=" -march=armv8-a+simd+crc+fp16+dotprod+lse -mno-omit-leaf-frame-pointer -fsigned-char -Wno-psabi"
+   export CFLAGS+=" -march=armv8-a+simd"
 fi
 
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
