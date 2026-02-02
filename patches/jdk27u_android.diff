@@ -2740,3 +2740,21 @@ index 7190845a8ba5a..eecc659f7c4a4 100644
      if (handle != nullptr) {
        set_numa_node_to_cpus(CAST_TO_FN_PTR(numa_node_to_cpus_func_t,
                                             libnuma_dlsym(handle, "numa_node_to_cpus")));
+diff --git a/make/autoconf/flags-cflags.m4 b/make/autoconf/flags-cflags.m4
+index 639c3852212bf..349b8ed43f653 100644
+--- a/make/autoconf/flags-cflags.m4
++++ b/make/autoconf/flags-cflags.m4
+@@ -769,6 +769,13 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_CPU_DEP],
+       $1_CFLAGS_CPU="-mcpu=pwr8"
+     fi
+ 
++    if test "x$FLAGS_CPU" = xarm; then
++      # For whatever reason arm build with clang fails with:
++      #   ad_arm.cpp:19849:4: error: "ARM must be defined"
++      # Fix by defining arm here as well.
++      $1_CFLAGS_CPU_JVM="-DARM"
++    fi
++
+   elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
+     if test "x$FLAGS_CPU" = xx86; then
+       $1_CFLAGS_CPU_JVM="-arch:IA32"
