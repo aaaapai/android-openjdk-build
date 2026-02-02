@@ -2496,15 +2496,6 @@ index 7190845a8ba5a..44571a0a4f03b 100644
  // utility functions
  
  bool os::is_containerized() {
-@@ -873,7 +875,7 @@ static void *thread_native_entry(Thread *thread) {
- 
-   thread->record_stack_base_and_size();
- 
--#ifndef __GLIBC__
-+#if !defined(__BIONIC__) && !defined(__GLIBC__) // BIONIC: 我也要不用喵?
-   // Try to randomize the cache line index of hot stack frames.
-   // This helps when threads of the same stack traces evict each other's
-   // cache lines. The threads can be either from the same JVM instance, or
 diff --git a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp b/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
 index 1c91e9d2599db..16f40d7c1258a 100644
 --- a/src/hotspot/os/posix/forbiddenFunctions_posix.hpp
