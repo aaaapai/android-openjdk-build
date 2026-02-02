@@ -36,7 +36,7 @@ platform_args="--with-toolchain-type=clang \
   BUILD_AS="$AS" \
   OBJCOPY=${OBJCOPY} \
   CXXFILT=${CXXFILT} \
-  LD=$buildjdk_ld \
+  LD=${LD} \
   READELF=$TOOLCHAIN/bin/llvm-readelf \
   "
 
