@@ -42,7 +42,7 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
-if [[ "$TARGET_JDK" != "aarch64" ]]
+if [[ "$TARGET_JDK" == "aarch64" ]]
 then
 export CC=$thecc
 export CXX=$thecxx
