@@ -41,8 +41,8 @@ $JLINK_STRIP_ARG \
 
 cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jreout/lib/
 cp freetype/build_android-$TARGET_SHORT/lib/libfreetype.so jdkout/lib/
-cp awt_xawt/libawt_xawt.so jreout/lib/
-cp awt_xawt/libawt_xawt.so jdkout/lib/
+cp awt_xawt/${TARGET_JDK}/libawt_xawt.so jreout/lib/
+cp awt_xawt/${TARGET_JDK}/libawt_xawt.so jdkout/lib/
 
 # mv jreout/lib/${TARGET_JDK}/libfontmanager.diz jreout/lib/${TARGET_JDK}/libfontmanager.diz.keep
 # find jreout -name "*.debuginfo" | xargs -- rm
