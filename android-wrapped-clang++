@@ -1,2 +1,17 @@
 #!/bin/bash
-exec $thecxx -std=gnu++17
+if [[ "$1" = "--version" ]]; then
+  echo "${TARGET}-g++ (GCC) 4.9 20140827 (prerelease)"
+  echo "Copyright (C) 2014 Free Software Foundation, Inc."
+  echo "This is free software; see the source for copying conditions.  There is NO"
+  echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+else
+  args=()
+  for arg in "$@"; do
+    case "$arg" in
+      -fno-var-tracking-assignments) ;;
+      -fno-lifetime-dse) ;;
+      *) args+=("$arg") ;;
+    esac
+  done
+  exec $thecc -Wno-unknown-attributes -Wno-unknown-warning-option "${args[@]}"
+fi
