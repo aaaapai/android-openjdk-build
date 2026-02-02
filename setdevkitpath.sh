@@ -44,6 +44,12 @@ export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
 export CC=$thecc
 export CXX=$thecxx
+if [[ "$TARGET_JDK" == "aarch64" ]]
+then
+export LD=$TOOLCHAIN/bin/ld.lld
+else
+export LD=$TOOLCHAIN/bin/ld
+fi
 export AR=$TOOLCHAIN/bin/llvm-ar
 export AS=$TOOLCHAIN/bin/llvm-as
 export OBJCOPY=$TOOLCHAIN/bin/llvm-objcopy
@@ -52,5 +58,4 @@ export READELF=$TOOLCHAIN/bin/llvm-readelf
 export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
 export STRIP=$TOOLCHAIN/bin/llvm-strip
 export LINK=$TOOLCHAIN/bin/llvm-link
-
 export TARGET_OS=android
