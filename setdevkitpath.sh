@@ -47,8 +47,10 @@ then
 export CC=$thecc
 export CXX=$thecxx
 else
-export CC=android-wrapped-clang
-export CXX=android-wrapped-clang++
+chmod +x $PWD/android-wrapped-clang
+chmod +x $PWD/android-wrapped-clang++
+export CC=$PWD/android-wrapped-clang
+export CXX=$PWD/android-wrapped-clang++
 fi
 if [[ "$TARGET_JDK" == "aarch64" ]]
 then
