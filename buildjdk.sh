@@ -7,7 +7,7 @@ export CUPS_DIR=$PWD/cups
 
 if [[ "$TARGET_JDK" == "arm" ]]
 then
-  export CFLAGS+=" -D__thumb__ -Dfseeko=fseek -Dftello=ftell"
+  export CFLAGS+=" -D__thumb__"
 else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -mstackrealign"
