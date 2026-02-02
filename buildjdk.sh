@@ -12,17 +12,22 @@ else
   if [[ "$TARGET_JDK" == "x86" ]]; then
      export CFLAGS+=" -mstackrealign"
   fi
-  export buildjdk_ld="$thecxx"
+fi
+
+if [[ "$TARGET_JDK" != "aarch64" ]]
+then
+  export BUILD_Compiler="gcc"
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
 then
    export CFLAGS+=" -march=armv8-a+simd"
+   export BUILD_Compiler="clang"
 fi
 
 ln -s -f /usr/include/X11 $ANDROID_INCLUDE/
 ln -s -f /usr/include/fontconfig $ANDROID_INCLUDE/
-platform_args="--with-toolchain-type=clang \
+platform_args="--with-toolchain-type=${BUILD_Compiler} \
   --with-freetype-include=$FREETYPE_DIR/include/freetype2 \
   --with-freetype-lib=$FREETYPE_DIR/lib \
   OBJDUMP=${OBJDUMP} \
