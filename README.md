@@ -1,5 +1,4 @@
-无语，典型的安卓思维
-# mobile-openjdk26-build
+# mobile-openjdk27-build
 
 Based on http://openjdk.java.net/projects/mobile/android.html
 
