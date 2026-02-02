@@ -65,7 +65,7 @@ export LDFLAGS+=" -flto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 #polly
 export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM"
 else
-export CFLAGS+= " -O3 -pipe -integrated-as -fdata-sections -ffunction-sections -fmerge-all-constants"
+export CFLAGS+=" -O3 -pipe -integrated-as -fdata-sections -ffunction-sections -fmerge-all-constants"
 export LDFLAGS+=" -flto -fuse-ld=lld -l:libomp.a"
 
 #polly
