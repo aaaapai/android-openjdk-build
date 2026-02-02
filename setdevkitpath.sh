@@ -1,6 +1,6 @@
 # Use the old NDK r10e to not get internal compile error at (still?)
 # https://github.com/PojavLauncherTeam/openjdk-multiarch-jdk8u/blob/aarch64-shenandoah-jdk8u272-b10/jdk/src/share/native/sun/java2d/loops/GraphicsPrimitiveMgr.c
-export NDK_VERSION=r28
+export NDK_VERSION=r29
 
 if [[ -z "$JDK_DEBUG_LEVEL" ]]
 then
@@ -21,7 +21,7 @@ fi
 
 export JVM_PLATFORM=linux
 # Set NDK
-export API=29
+export API=24
 
 # Runners usually ship with a recent NDK already
 if [[ -z "$ANDROID_NDK_HOME" ]]
