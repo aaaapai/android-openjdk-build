@@ -52,16 +52,15 @@ AUTOCONF_EXTRA_ARGS+="OBJCOPY=$OBJCOPY \
 #no error
 export CFLAGS+=" -DANDROID -D__ANDROID__=1 -DLE_STANDALONE -Wno-int-conversion -Wno-error=implicit-function-declaration"
 
-export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fomit-frame-pointer -fvectorize -fslp-vectorize -fno-semantic-interposition -fopenmp -pipe -integrated-as"
-export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-Bsymbolic -Wl,-O3 -Wl,--sort-common -Wl,--relax -Wl,--gc-sections -Wl,--as-needed -fopenmp -l:libomp.a"
+export CFLAGS+=" -O3 -mllvm -hot-cold-split=true -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -ftree-vectorize -fomit-frame-pointer -fvectorize -fslp-vectorize -fno-semantic-interposition -pipe -integrated-as"
+export LDFLAGS+=" -fuse-ld=lld -Wl,--strip-all -fvisibility=hidden -Wl,-O3 -Wl,--gc-sections -Wl,--as-needed -l:libomp.a"
 #LTO
 export CFLAGS+=" -flto=auto -fno-emulated-tls"
 export LDFLAGS+=" -flto=auto -Wl,--lto-O3 -Wl,-plugin-opt=-emulated-tls=0"
 #polly
-export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-scheduling=static -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM -mllvm -polly-num-threads=4 -mllvm -polly-scheduling-chunksize=4"
-export OMP_NUM_THREADS=4
+export CFLAGS+=" -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -mllvm -polly-omp-backend=LLVM"
 #fast-math
-export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
+# export CFLAGS+=" -ffast-math -fno-finite-math-only -fno-signed-zeros -fno-trapping-math -fno-math-errno -freciprocal-math -fno-associative-math"
 
 export LDFLAGS+=" -L$PWD/dummy_libs" 
 
