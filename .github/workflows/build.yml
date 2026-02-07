@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@main
       with:
         java-version: 21
-        distribution: zulu
+        distribution: dragonwell
     - name: Install build dependencies
       run: |
         sudo apt update
