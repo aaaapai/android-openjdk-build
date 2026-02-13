@@ -2738,3 +2738,16 @@ index 9b3c65b0656ae..bd359cbce6c88 100644
 +#endif // __ANDROID__
 +
  #endif // SHARE_UTILITIES_FORBIDDENFUNCTIONS_HPP
+diff --git a/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp b/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
+index ab7498b313c5b..a3245ed0c2aa6 100644
+--- a/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
++++ b/src/hotspot/os/linux/gc/z/zNUMA_linux.cpp
+@@ -36,7 +36,7 @@ static uint* z_numa_id_to_node = nullptr;
+ static uint32_t* z_node_to_numa_id = nullptr;
+ 
+ void ZNUMA::pd_initialize() {
+-  _enabled = UseNUMA;
++  _enabled = false;
+ 
+   size_t configured_nodes = 0;
+ 
