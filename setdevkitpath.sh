@@ -42,16 +42,18 @@ export thecxx=$TOOLCHAIN/bin/${TARGET}${API}-clang++
 export DLLTOOL=$TOOLCHAIN/bin/llvm-dlltool
 export CXXFILT=$TOOLCHAIN/bin/llvm-cxxfilt
 export NM=$TOOLCHAIN/bin/llvm-nm
-if [[ "$TARGET_JDK" == "aarch64" ]]
-then
+ # if [[ "$TARGET_JDK" == "aarch64" ]]
+#then
 export CC=$thecc
 export CXX=$thecxx
+<< EOF
 else
 chmod +x $PWD/android-wrapped-clang
 chmod +x $PWD/android-wrapped-clang++
 export CC=$PWD/android-wrapped-clang
 export CXX=$PWD/android-wrapped-clang++
 fi
+EOF
 if [[ "$TARGET_JDK" == "aarch64" ]]
 then
 export LD=$TOOLCHAIN/bin/ld.lld
