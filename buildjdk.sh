@@ -16,7 +16,7 @@ fi
 
 if [[ "$TARGET_JDK" != "aarch64" ]]
 then
-  export BUILD_Compiler="gcc"
+  export BUILD_Compiler="clang" # gcc
 fi
 
 if [[ "$TARGET_JDK" == "aarch64" ]]
