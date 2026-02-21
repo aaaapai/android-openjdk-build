@@ -1566,60 +1566,6 @@ index 902cf9673..3b8acd66b 100644
  #include <netdb.h>
  #include <poll.h>
  #include <sys/socket.h>
-diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
-index 9371bc001..ab7dd0fc0 100644
---- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
-+++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
-@@ -149,7 +150,42 @@ static fstatat64_func* my_fstatat64_func = NULL;
- #if defined(__linux__)
- static statx_func* my_statx_func = NULL;
- #endif
- 
-+#ifdef __ANDROID__
-+/*
-+ * TODO: Android lacks support for the methods listed below.  In it's place are
-+ * alternatives that use existing Android functionality, but lack reentrant
-+ * support.  Determine if the following are the most suitable alternatives.
-+ *
-+ */
-+int getgrgid_r(gid_t gid, struct group* grp, char* buf, size_t buflen, struct group** result) {
-+
-+  *result = NULL;
-+  errno = 0;
-+  grp = getgrgid(gid);
-+  if (grp == NULL) {
-+        return errno;
-+  }
-+  // buf not used by caller (see below)
-+  *result = grp;
-+  return 0;
-+}
-+
-+int getgrnam_r(const char *name, struct group* grp, char* buf, size_t buflen, struct group** result) {
-+
-+  *result = NULL;
-+  errno = 0;
-+  grp = getgrnam(name);
-+  if (grp == NULL) {
-+        return errno;
-+  }
-+  // buf not used by caller (see below)
-+  *result = grp;
-+  return 0;
-+
-+}
-+#endif
-+
- /**
-  * fstatat missing from glibc on Linux.
-  */
-@@ -857,4 +857,5 @@
-     int err = 0;
-+    struct timespec times2[2];
- 
--    times[0].tv_sec = accessTime / 1000000000;
-+    times[0].tv_sec = times2[0].tv_sec = accessTime / 1000000000;
-     times[0].tv_nsec = accessTime % 1000000000;
 diff --git a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c b/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
 index b2dedca35..c01ccfb8d 100644
 --- a/src/java.desktop/unix/native/libawt/awt/awt_LoadLibrary.c
@@ -2760,3 +2706,16 @@ index ab7498b313c5b..a3245ed0c2aa6 100644
  
    size_t configured_nodes = 0;
  
+diff --git a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+index 4b5cfabebfbc5..3c185a05a8b9a 100644
+--- a/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
++++ b/src/java.base/unix/native/libnio/fs/UnixNativeDispatcher.c
+@@ -375,7 +375,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_init(JNIEnv* env, jclass this)
+ #ifdef _DARWIN_FEATURE_64_BIT_INODE
+     capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_BIRTHTIME;
+ #endif
+-#if defined(__linux__)
++#if defined(__linux__) && !defined(__ANDROID__)
+     my_statx_func = (statx_func*) dlsym(RTLD_DEFAULT, "statx");
+     if (my_statx_func != NULL) {
+         capabilities |= sun_nio_fs_UnixNativeDispatcher_SUPPORTS_BIRTHTIME;
