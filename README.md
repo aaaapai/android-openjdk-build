@@ -1,3 +1,6 @@
+It's time to say goodbye to this Repositories.
+Let's meet again next time:)
+
 # mobile-openjdk27-build
 
 Based on http://openjdk.java.net/projects/mobile/android.html
