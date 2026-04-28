@@ -1,5 +1,4 @@
-It's time to say goodbye to this Repositories.
-Let's meet again next time:)
+This repo is achieved now, see https://github.com/aaaapai/OpenJDK-Builder.
 
 # mobile-openjdk27-build
 
